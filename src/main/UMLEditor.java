@@ -84,8 +84,10 @@ public class UMLEditor {
 				String type = args[1];
 				String className = args[2];
 				
-				classHandler.addClass(className, type);
-				System.out.println("Added class \'" + className + "\'.");
+				if(classHandler.addClass(className, type))
+					System.out.println("Added class \'" + className + "\'." + " of type " + type + ".");
+				else
+					System.err.println("Error adding class.");
 			}
 			else {
 				System.out.println("you didn't give me a class bruh");
@@ -95,7 +97,11 @@ public class UMLEditor {
 			// Make sure there is an argument for the class name
 			if(args.length > 1) {
 				String className = args[1];
-				classHandler.removeClass(className);
+				
+				if(classHandler.removeClass(className))
+					System.out.println("Removed class \'" + className + "\'.");
+				else
+					System.err.println("Error removing class.");
 			} 
 			else {
 				System.out.println("you didn't give me a class bruh 2: electric boogaloo");
@@ -162,7 +168,34 @@ public class UMLEditor {
 		validCommands.put("list-classes", new String[]{"list all of the created classes"});
 	}
 	
+	/**
+	 * Get the list of valid commands
+	 * @return validCommands
+	 */
+	public String[] getValidCommands() {
+		String[] commands = new String[validCommands.size()];
+		
+		// Convert Dictionary keys to array
+		int count = 0;
+		for(Enumeration<String> keys = validCommands.keys(); keys.hasMoreElements();) {
+			commands[count++] = keys.nextElement();
+		}
+		
+		return commands;
+	}
+	
+	/**
+	 * Get the UMLConsole instance
+	 * @return console
+	 */
+	public UMLConsole getConsole() {
+		return console;
+	}
+	
 	public static void main(String[] args) {
-		new UMLEditor().beginConsole();
+		// Create editor instance
+		UMLEditor editor = new UMLEditor();
+		// Start console
+		editor.beginConsole();
 	}
 }
