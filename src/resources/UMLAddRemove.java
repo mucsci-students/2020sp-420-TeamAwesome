@@ -1,8 +1,6 @@
+package resources;
 //System imports
 import java.util.LinkedList;
-
-//Local imports
-import umlClass.UMLClass;
 
 /**
  * For adding and removing classes from the UML diagram

@@ -1,4 +1,4 @@
-package umlClass;
+package resources;
 
 // System imports
 import java.util.ArrayList;

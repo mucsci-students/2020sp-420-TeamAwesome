@@ -8,6 +8,7 @@ import java.util.Hashtable;
 
 // Local imports
 import console.UMLConsole;
+import resources.UMLAddRemove;
 
 /**
  *  Main environment for UML Editor
@@ -21,6 +22,9 @@ public class UMLEditor {
 	// All valid commands
 	private Dictionary<String, String[]> validCommands;
 	
+	// Class manipulation handler
+	private UMLAddRemove classHandler;
+	
 	/**
 	 * Constructor for the UML Editor where the console
 	 * and GUI will be initialized and run
@@ -29,10 +33,18 @@ public class UMLEditor {
 		// Initialize variables
 		console = new UMLConsole();
 		validCommands = new Hashtable<String, String[]>();
+		classHandler = new UMLAddRemove();
 		
 		// Fill the list of valid commands with names and descriptions
 		populateValidCommands();
-		
+	}
+	
+	/**
+	 * Actually begin reading from the console.
+	 * Separate from initialization so we can control when the console is started and
+	 * allows for testing of commands.
+	 */
+	public void beginConsole() {
 		// Continuously get console input until quit statement has been reached
 		while(true) {
 			// Get the input from console
@@ -47,11 +59,11 @@ public class UMLEditor {
 	}
 	
 	/**
-	 * Execute the given command
+	 * Execute the given command and report errors as necessary
 	 * 
 	 * @return boolean indicating if command was successfully executed
 	 */
-	private boolean execCommand(String command) {
+	public boolean execCommand(String command) {
 		// Split command on white space
 		// args[0] = name of the command
 		// args[1...] = any arguments for the command
@@ -66,22 +78,31 @@ public class UMLEditor {
 			System.exit(0);
 		}
 		else if(args[0].equals("add-class")) {
-			if(args.length > 1) {
-				String className = args[1];
-				System.out.println("if i could i would");
+			// Make sure there is an argument for the type and class name
+			if(args.length > 2) {
+				// Pull args
+				String type = args[1];
+				String className = args[2];
+				
+				classHandler.addClass(className, type);
+				System.out.println("Added class \'" + className + "\'.");
 			}
 			else {
 				System.out.println("you didn't give me a class bruh");
 			}
 		}
 		else if(args[0].equals("remove-class")) {
+			// Make sure there is an argument for the class name
 			if(args.length > 1) {
 				String className = args[1];
-				System.out.println("if i cant add how do you expect me to remove?");
+				classHandler.removeClass(className);
 			} 
 			else {
 				System.out.println("you didn't give me a class bruh 2: electric boogaloo");
 			}
+		}
+		else if(args[0].equals("save")) {
+			
 		}
 		else if(args[0].equals("list-classes")) {
 			System.out.println("no");
@@ -134,7 +155,7 @@ public class UMLEditor {
 	 */
 	private void populateValidCommands() {
 		validCommands.put("help", new String[]{"Prints out a list of valid commands with descriptions"});
-		validCommands.put("add-class <class_name>", new String[]{"add the given class name"});
+		validCommands.put("add-class <type> <class_name>", new String[]{"add the given class name with type"});
 		validCommands.put("remove-class <class_name>", new String[]{"add the given class name"});
 		validCommands.put("exit", new String[]{"quit the program"});
 		validCommands.put("quit", new String[]{"quit the program"});
@@ -142,6 +163,6 @@ public class UMLEditor {
 	}
 	
 	public static void main(String[] args) {
-		new UMLEditor();
+		new UMLEditor().beginConsole();
 	}
 }
