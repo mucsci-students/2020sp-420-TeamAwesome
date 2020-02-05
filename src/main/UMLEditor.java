@@ -51,7 +51,7 @@ public class UMLEditor {
 			String input = console.getConsoleCommand();
 			
 			// Check if command is empty or only whitespace
-			if(!input.isEmpty() || !input.replace(" ", "").isEmpty()) {
+			if(!input.isEmpty() && !input.replaceAll(" ", "").isEmpty()) {
 				if(!execCommand(input))
 					System.err.println("Failed to execute command.");
 			}
@@ -69,6 +69,11 @@ public class UMLEditor {
 		// args[1...] = any arguments for the command
 		String[] args = command.split(" ");
 		
+		// Make sure list of args is not empty and a command exists
+		if(args.length == 0 || args[0].trim().isEmpty()) {
+			return false;
+		}
+		
 		// Check command, if it is a valid command then perform associated action
 		//	Otherwise return false
 		if(args[0].equals("exit") || args[0].equals("quit")) {
@@ -85,12 +90,12 @@ public class UMLEditor {
 				String className = args[2];
 				
 				if(classHandler.addClass(className, type))
-					System.out.println("Added class \'" + className + "\'." + " of type " + type + ".");
+					System.out.println("Added class \'" + className + "\'" + " of type " + type + ".");
 				else
 					System.err.println("Error adding class.");
 			}
 			else {
-				System.out.println("you didn't give me a class bruh");
+				System.err.println("Did not get expected number of arguments.");
 			}
 		}
 		else if(args[0].equals("remove-class")) {
@@ -104,7 +109,7 @@ public class UMLEditor {
 					System.err.println("Error removing class.");
 			} 
 			else {
-				System.out.println("you didn't give me a class bruh 2: electric boogaloo");
+				System.err.println("Did not get expected number of arguments.");
 			}
 		}
 		else if(args[0].equals("save")) {
@@ -119,6 +124,9 @@ public class UMLEditor {
 		else {
 			System.err.println("Command \'" + command + "\' was not recognized.");
 		}
+		
+		System.out.flush();
+		System.err.flush();
 		
 		return true;
 	}

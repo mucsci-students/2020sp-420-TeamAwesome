@@ -48,6 +48,7 @@ public class EnvironmentTests {
 		
 		UMLEditor editor = new UMLEditor();
 		
+		// Invalid command checks
 		editor.execCommand("jibberish");
 		assertEquals("Unrecognized Command", "Command \'jibberish\' was not recognized.", scrubOut(newErr.toString()));
 		newErr.reset();
@@ -56,9 +57,45 @@ public class EnvironmentTests {
 		assertEquals("Unrecognized Command 2", "Command \'more junk\' was not recognized.", scrubOut(newErr.toString()));
 		newErr.reset();
 		
+		// Empty input checks
+		editor.execCommand("");
+		assertEquals("Blank input", "", scrubOut(newOut.toString()));
+		newOut.reset();
+		
+		editor.execCommand("           ");
+		assertEquals("Blank input 2", "", scrubOut(newOut.toString()));
+		newOut.reset();
+		
+		editor.execCommand("                     ");
+		assertEquals("Blank input 3", "", scrubOut(newOut.toString()));
+		newOut.reset();
+		
+		// Test add/remove class input
+		editor.execCommand("add-class");
+		assertEquals("add-class no args", "Did not get expected number of arguments.", scrubOut(newErr.toString()));
+		newErr.reset();
+		
+		editor.execCommand("add-class myclass");
+		assertEquals("add-class no type", "Did not get expected number of arguments.", scrubOut(newErr.toString()));
+		newErr.reset();
+		
+		// Only check to make sure there are no errors so that this test
+		//	is independent from whether add/remove is working or not
+		editor.execCommand("add-class int my_class");
+		assertEquals("add-class normal", "", scrubOut(newErr.toString()));
+		newErr.reset();
+		newOut.reset();
+		
+		editor.execCommand("remove-class");
+		assertEquals("remove-class no args", "Did not get expected number of arguments.", scrubOut(newErr.toString()));
+		newErr.reset();
+		
+		// Can't check remove-class with normal args in this test because
+		//	it relies on remove and add working which should be in a separate test
+		
 		// Reset the old output streams
 		System.setOut(oldOut);
-		System.setOut(oldErr);
+		System.setErr(oldErr);
 	}
 	
 	/**
