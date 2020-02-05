@@ -1,5 +1,5 @@
 # UMLEditor
-####TeamAwesome UML Editor
+#### TeamAwesome UML Editor
 
 With our awesome, innovative UML Editor you can
 
