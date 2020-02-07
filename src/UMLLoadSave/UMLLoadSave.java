@@ -10,6 +10,11 @@ import com.google.gson.stream.JsonReader;
 
 /**
 *  @author Dylan
-*
+*  Load and save a file containing a translatable linked list
 *
 */
+
+public class UMLLoadSave {
+    
+
+}
