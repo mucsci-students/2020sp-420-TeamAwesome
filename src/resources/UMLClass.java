@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 /**
  * Allows building of classes for use as something like a node
- * @author antho
- *
+ * @author antho and Dylan
+ * 
  */
 public class UMLClass {
 	public String name;
