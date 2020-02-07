@@ -7,24 +7,22 @@ import java.util.ArrayList;
 
 /**
  * Allows building of classes for use as something like a node
- * @author antho
- *
+ * @author antho and Dylan
+ * 
  */
 public class UMLClass {
 	public String name;
 	private String [] types = {"int", "double", "float", "short", "long", "boolean", "String"};
 	private ArrayList<String> fields;
 	private ArrayList<String> methods;
-	private String type;
 	
 	/**
 	 * Constructor for class objects
 	 * @param name the desied name of the class
 	 * @param type the desired type of the class
 	 */
-	public UMLClass(String name, String type) {
+	public UMLClass(String name) {
 		this.name = name;
-		this.type = type;
 		fields = new ArrayList<String>();
 		methods = new ArrayList<String>();
 	}
