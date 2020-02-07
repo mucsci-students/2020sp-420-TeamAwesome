@@ -7,11 +7,29 @@ import umlClass.UMLClass;
 /**
  * For adding and removing classes from the UML diagram
  * @author antho
- *
+ * @author Dylan
  */
 public class UMLAddRemove {
-	//List of classes-currently empty
-	LinkedList<UMLClass> list = new LinkedList<UMLClass>();
+
+
+	/**
+	 * Default constructor if we don't have a linked list make one
+	 */
+	public UMLAddRemove()
+	{
+		LinkedList<UMLClass> list = new LinkedList<UMLClass>();
+	}
+	/**
+	 * 
+	 * @param load -  constructor for loading a existing linked list
+	 */
+	public UMLAddRemove(LinkedList<UMLClass> load)
+	{
+		LinkedList<UMLClass> list = load;
+	}
+
+	
+	
 	
 	/**
 	 * Adds node of type UMLClass to list
