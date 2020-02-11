@@ -11,7 +11,6 @@ import java.util.Hashtable;
 import console.UMLConsole;
 import resources.UMLFileIO;
 import resources.UMLClassManager;
-import resources.UMLLoadSave;
 
 /**
  *  Main environment for UML Editor
@@ -29,7 +28,6 @@ public class UMLEditor {
 	private UMLClassManager classManager;
 	
 	// Saving and loading manager
-	private UMLLoadSave saveLoad;
 	private UMLFileIO fileIO;
 	
 	/**
@@ -42,7 +40,6 @@ public class UMLEditor {
 		validCommands = new Hashtable<String, String[]>();
 		classManager = new UMLClassManager();
 		fileIO = new UMLFileIO();
-		saveLoad = new UMLLoadSave();
 		
 		// Fill the list of valid commands with names and descriptions
 		populateValidCommands();
