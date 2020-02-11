@@ -204,6 +204,7 @@ public class UMLEditor {
 	 * Print out the a list of commands with descriptions
 	 */
 	private void printHelp() {
+		System.out.println();
 		System.out.println("VALID COMMANDS");
 		System.out.println("---------------------------------");
 		
@@ -217,9 +218,10 @@ public class UMLEditor {
 			System.out.printf("%-25s: %-40s\n", commName, desc[0]);
 			// Print rest of the command descriptions
 			for(int i = 1; i < desc.length; i++) {
-				System.out.printf("%-25s: %-40s\n", "", desc[i]);
+				System.out.printf("%-25s  %-40s\n", "", desc[i]);
 			}
 		}
+		System.out.println();
 	}
 	
 	/**
@@ -238,10 +240,12 @@ public class UMLEditor {
 	 */
 	private void populateValidCommands() {
 		validCommands.put("help", new String[]{"Prints out a list of valid commands with descriptions"});
-		validCommands.put("add-class <type> <class_name>", new String[]{"add the given class name with type"});
+		validCommands.put("add-class <class_name>", new String[]{"add the given class name"});
 		validCommands.put("remove-class <class_name>", new String[]{"add the given class name"});
 		validCommands.put("exit", new String[]{"quit the program"});
 		validCommands.put("quit", new String[]{"quit the program"});
+		validCommands.put("save", new String[]{"save the current state of the UML diagram", "if a file has not been set it will prompt the user."});
+		validCommands.put("load <file_path>", new String[] {"Load the given file into the UML editor"});
 		validCommands.put("list-classes", new String[]{"list all of the created classes"});
 	}
 	
