@@ -1,4 +1,4 @@
-package main;
+package resources;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class File_io {
+public class UMLFileIO {
 	
 	private File saveFile;
 	
-	public File_io() {}
+	public UMLFileIO() {}
 	
 	public void setFile (String filePath) throws IOException {
 		saveFile = new File (filePath); // creates a reference
@@ -38,5 +38,19 @@ public class File_io {
 
 	}
 	
-
+	/**
+	 * Check if the file to save to has been set
+	 * @return - True if the file is set
+	 */
+	public boolean fileSet() {
+		return saveFile != null;
+	}
+	
+	/**
+	 * Make sure set file exists
+	 * @return - True if file exists
+	 */
+	public boolean fileExists() {
+		return saveFile.exists();
+	}
 }
