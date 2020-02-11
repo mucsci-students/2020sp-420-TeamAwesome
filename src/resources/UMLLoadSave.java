@@ -1,3 +1,4 @@
+package resources;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,5 +17,4 @@ import com.google.gson.stream.JsonReader;
 
 public class UMLLoadSave {
     
-
 }

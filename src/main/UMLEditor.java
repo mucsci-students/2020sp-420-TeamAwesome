@@ -1,14 +1,17 @@
 // Package name
 package main;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 // System imports
-import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
 // Local imports
 import console.UMLConsole;
-import resources.UMLAddRemove;
+import resources.UMLFileIO;
+import resources.UMLClassManager;
+import resources.UMLLoadSave;
 
 /**
  *  Main environment for UML Editor
@@ -20,10 +23,14 @@ public class UMLEditor {
 	private static UMLConsole console;
 	
 	// All valid commands
-	private Dictionary<String, String[]> validCommands;
+	private Hashtable<String, String[]> validCommands;
 	
 	// Class manipulation handler
-	private UMLAddRemove classHandler;
+	private UMLClassManager classManager;
+	
+	// Saving and loading manager
+	private UMLLoadSave saveLoad;
+	private UMLFileIO fileIO;
 	
 	/**
 	 * Constructor for the UML Editor where the console
@@ -33,7 +40,9 @@ public class UMLEditor {
 		// Initialize variables
 		console = new UMLConsole();
 		validCommands = new Hashtable<String, String[]>();
-		classHandler = new UMLAddRemove();
+		classManager = new UMLClassManager();
+		fileIO = new UMLFileIO();
+		saveLoad = new UMLLoadSave();
 		
 		// Fill the list of valid commands with names and descriptions
 		populateValidCommands();
@@ -84,13 +93,12 @@ public class UMLEditor {
 		}
 		else if(args[0].equals("add-class")) {
 			// Make sure there is an argument for the type and class name
-			if(args.length > 2) {
+			if(args.length > 1) {
 				// Pull args
-				String type = args[1];
-				String className = args[2];
+				String className = args[1];
 				
-				if(classHandler.addClass(className, type))
-					System.out.println("Added class \'" + className + "\'" + " of type " + type + ".");
+				if(classManager.addClass(className))
+					System.out.println("Added class \'" + className + "\'.");
 				else
 					System.err.println("Error adding class.");
 			}
@@ -103,7 +111,7 @@ public class UMLEditor {
 			if(args.length > 1) {
 				String className = args[1];
 				
-				if(classHandler.removeClass(className))
+				if(classManager.removeClass(className))
 					System.out.println("Removed class \'" + className + "\'.");
 				else
 					System.err.println("Error removing class.");
@@ -113,10 +121,71 @@ public class UMLEditor {
 			}
 		}
 		else if(args[0].equals("save")) {
+			// Check if there is a save file. If not prompt for one
+			if(!fileIO.fileSet()) {
+				System.err.println("Save file not set.");
+				System.err.flush();
+				System.out.flush();
+				System.out.print("Save file: ");
+				String filePath = console.getScanner().nextLine();
+				
+				// Ensure file extension
+				if(!filePath.endsWith(".json")) {
+					filePath += ".json";
+				}
+				
+				// Set fileIO path
+				try {
+					fileIO.setFile(filePath);
+				} catch (IOException e) {
+					// Inform user of error and return true because the command worked, the file saving didn't.
+					System.err.println("Error setting file location. Please try again.");
+					return true;
+				}
+			}
 			
+			// Write JSON to file
+			try {
+				fileIO.writeToFile(classManager.convertToJSON());
+			} catch (IOException e) {
+				System.err.println("Could not save file. Please try again.");
+			}
+		}
+		else if(args[0].equals("load")) {
+			// Expects args[1] to be the path to the file to load.
+			// Make sure there is enough arguments
+			if(args.length > 1) {
+				// Grab file path
+				String filePath = args[1];
+				
+				// Set the file for FileIO
+				try {
+					fileIO.setFile(filePath);
+				} catch (IOException e) {
+					System.err.println("Could not set the file location. Please try again.");
+					return true;
+				}
+				
+				// Make sure the file exists
+				if(!fileIO.fileExists()) {
+					System.err.println("File does not exists.");
+					return true;
+				}
+				
+				// Read the file in and pass it to the classManager for parsing.
+				try {
+					classManager.parseJSON(fileIO.readFile());
+				} catch (FileNotFoundException e) {
+					System.err.println("Error parsing JSON.");
+					return true;
+				}
+			}
+			else {
+				System.err.println("Did not get expected number of arguments.");
+			}
 		}
 		else if(args[0].equals("list-classes")) {
-			System.out.println("no");
+			System.out.println("Classes: " + classManager.listClasses());
 		}
 		else if(args[0].equals("help")) {
 			printHelp();
