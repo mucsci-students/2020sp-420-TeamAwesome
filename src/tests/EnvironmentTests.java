@@ -75,13 +75,9 @@ public class EnvironmentTests {
 		assertEquals("add-class no args", "Did not get expected number of arguments.", scrubOut(newErr.toString()));
 		newErr.reset();
 		
-		editor.execCommand("add-class myclass");
-		assertEquals("add-class no type", "Did not get expected number of arguments.", scrubOut(newErr.toString()));
-		newErr.reset();
-		
 		// Only check to make sure there are no errors so that this test
 		//	is independent from whether add/remove is working or not
-		editor.execCommand("add-class int my_class");
+		editor.execCommand("add-class my_class");
 		assertEquals("add-class normal", "", scrubOut(newErr.toString()));
 		newErr.reset();
 		newOut.reset();
@@ -89,6 +85,9 @@ public class EnvironmentTests {
 		editor.execCommand("remove-class");
 		assertEquals("remove-class no args", "Did not get expected number of arguments.", scrubOut(newErr.toString()));
 		newErr.reset();
+		
+		editor.execCommand("remove-class my_class");
+		assertEquals("remove-class normal", "", scrubOut(newErr.toString()));
 		
 		// Can't check remove-class with normal args in this test because
 		//	it relies on remove and add working which should be in a separate test

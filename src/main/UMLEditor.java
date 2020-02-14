@@ -118,13 +118,35 @@ public class UMLEditor {
 			}
 		}
 		else if(args[0].equals("save")) {
-			// Check if there is a save file. If not prompt for one
+			String filePath = "";
+			
+			if(args.length == 2) {
+				// If user specified a file path, set the file to that path.
+				filePath = args[1];
+			}
+			else if(args.length < 2) {
+				// If the user did not specify a save file check to see if one is already saved.
+				// If there is no file saved, prompt for one.
+				if(!fileIO.fileSet()) {
+					System.err.println("Save file not set.");
+					System.err.flush();
+					System.out.flush();
+					System.out.print("Save file: ");
+					filePath = console.getScanner().nextLine();
+				}
+			}
+			else {
+				// If there are more than 2 arguments indicate an error for too many arguments.
+				System.err.println("Did not get expected number of arguments.");
+			}
+						
 			if(!fileIO.fileSet()) {
-				System.err.println("Save file not set.");
-				System.err.flush();
-				System.out.flush();
-				System.out.print("Save file: ");
-				String filePath = console.getScanner().nextLine();
+				// Check to see if the file is set, if not make sure that filePath is not empty
+				// Otherwise make sure the file ends with a .json and save
+				if(filePath.replaceAll(" ", "").isEmpty()) {
+					System.err.println("User did not specify a file.");
+					return true;
+				}
 				
 				// Ensure file extension
 				if(!filePath.endsWith(".json")) {
@@ -222,13 +244,6 @@ public class UMLEditor {
 	}
 	
 	/**
-	 * Perform any cleanup operations, like closing files, input readers, streams, etc.
-	 */
-	private void cleanup() {
-		console.closeScanner();
-	}
-	
-	/**
 	 * Fills validCommands with the command name and a description
 	 * Format is as follows
 	 * 		validCommands.put(name, list_of_description_lines);
@@ -268,6 +283,13 @@ public class UMLEditor {
 	 */
 	public UMLConsole getConsole() {
 		return console;
+	}
+	
+	/**
+	 * Perform any cleanup operations, like closing files, input readers, streams, etc.
+	 */
+	private void cleanup() {
+		console.closeScanner();
 	}
 	
 	public static void main(String[] args) {

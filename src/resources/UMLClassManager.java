@@ -37,7 +37,7 @@ public class UMLClassManager {
 	 * @param name: name of class
 	 * @param type: type of class
 	 */
-	public boolean addClass(String name){
+	public boolean addClass(String name) {
 		UMLClass newClass = new UMLClass(name);
 		classList.addLast(newClass);
 		return classList.contains(newClass);
@@ -45,7 +45,7 @@ public class UMLClassManager {
 	
 	public boolean removeClass(String className) {
 		int size = classList.size();
-		for(int i = 0; i < size - 1; ++i) {
+		for(int i = 0; i < size; ++i) {
 			UMLClass temp = classList.get(i);
 			if(temp.name.equals(className)) {
 				classList.remove(i);
