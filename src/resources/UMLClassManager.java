@@ -16,13 +16,12 @@ public class UMLClassManager {
 	/**
 	 * Default constructor if we don't have a linked list make one
 	 */
-	public UMLClassManager()
-	{
+	public UMLClassManager() {
 		classList = new LinkedList<UMLClass>();
 	}
-	
+  
 	public boolean empty() {
-		return classList.isEmpty();
+  	return classList.isEmpty();
 	}
 	/**
 	 * Adds node of type UMLClass to list
