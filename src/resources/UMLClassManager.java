@@ -16,33 +16,37 @@ public class UMLClassManager {
 	/**
 	 * Default constructor if we don't have a linked list make one
 	 */
-	public UMLClassManager()
-	{
+	public UMLClassManager() {
 		classList = new LinkedList<UMLClass>();
 	}
-	/**
-	 * 
-	 * @param load -  constructor for loading a existing linked list
-	 */
-	public UMLClassManager(LinkedList<UMLClass> load)
-	{
-		classList = load;
+  
+	public boolean empty() {
+  	return classList.isEmpty();
 	}
-
-	
-	
-	
 	/**
 	 * Adds node of type UMLClass to list
 	 * @param name: name of class
-	 * @param type: type of class
+	 * @return true if the new class was successfully added to the list
 	 */
 	public boolean addClass(String name) {
+		//Prevent duplicates
 		UMLClass newClass = new UMLClass(name);
+		int size = classList.size();
+		for(int i = 0; i < size; ++i) {
+			UMLClass temp = classList.get(i);
+			if(temp.name.equals(name)) {
+				return false;
+			}
+		}
 		classList.addLast(newClass);
 		return classList.contains(newClass);
 	}
 	
+	/**
+	 * Removes node of type UMLClass from list
+	 * @param className: name of class
+	 * @return true if the class was successfully removed from the list
+	 */
 	public boolean removeClass(String className) {
 		int size = classList.size();
 		for(int i = 0; i < size; ++i) {
