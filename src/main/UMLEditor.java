@@ -89,8 +89,8 @@ public class UMLEditor {
 			System.exit(0);
 		}
 		else if(args[0].equals("add-class")) {
-			// Make sure there is an argument for the type and class name
-			if(args.length > 1) {
+			// Make sure there is an argument for just the class name
+			if(args.length == 2) {
 				// Pull args
 				String className = args[1];
 				
@@ -104,8 +104,8 @@ public class UMLEditor {
 			}
 		}
 		else if(args[0].equals("remove-class")) {
-			// Make sure there is an argument for the class name
-			if(args.length > 1) {
+			// Make sure there is only an argument for the class name
+			if(args.length == 2) {
 				String className = args[1];
 				
 				if(classManager.removeClass(className))

@@ -1,17 +1,15 @@
 // Package name
 package tests;
 
+// System imports
+import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-// System imports
-import org.junit.Test;
-
 // Local imports
-import console.UMLConsole;
 import main.UMLEditor;
 
 /**
