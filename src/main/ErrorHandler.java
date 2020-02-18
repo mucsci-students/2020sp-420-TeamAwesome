@@ -19,8 +19,8 @@ public class ErrorHandler {
 		// Create temporary map
 		HashMap<Integer, String> tempMap = new HashMap<Integer, String>();
 		
-		// Add error codes
-		tempMap.put(1, "No commands we're passed to console.");
+		// Add error codes to map
+		tempMap.put(1, "Failure to close console scanner.");
 		tempMap.put(2, "No commands we're passed to console.");
 		tempMap.put(3, "Did not get expected number of arguments.");
 		tempMap.put(4, "User did not specify a file.");

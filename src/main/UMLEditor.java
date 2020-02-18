@@ -59,6 +59,8 @@ public class UMLEditor {
 			// Check if command is empty or only whitespace
 			if(!input.isEmpty() && !input.replaceAll(" ", "").isEmpty()) {
 				int result = execCommand(input);
+				
+				// If the result did not execute successfully, print error.
 				if(result != 0) {
 					System.err.println("Failed to execute command. Got error: ");
 					System.err.println(ErrorHandler.toString(result));

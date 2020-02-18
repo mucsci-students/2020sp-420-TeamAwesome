@@ -7,10 +7,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 
 // Local imports
 import main.UMLEditor;
+import resources.UMLFileIO;
 
 /**
  * Class to run JUnit tests on the Envioronment
@@ -28,7 +30,7 @@ public class EnvironmentTests {
 		assertTrue("Commands not null", editor.getValidCommands() != null);
 		assertTrue("Commands not empty", editor.getValidCommands().length != 0);
 		assertTrue("Scanner initialized", editor.getConsole().getScanner() != null);
-		assertTrue("Close console", editor.getConsole().closeScanner());
+		assertTrue("Close console", editor.getConsole().closeScanner() == 0);
 	}
 	
 	/*
@@ -93,6 +95,14 @@ public class EnvironmentTests {
 		// Reset the old output streams
 		System.setOut(oldOut);
 		System.setErr(oldErr);
+		
+		UMLFileIO fileio = new UMLFileIO();
+		try {
+			fileio.setFile("bullshit.txt");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
