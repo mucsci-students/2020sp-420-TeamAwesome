@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+
 /**
  * For adding and removing classes from the UML diagram
  * @author antho
@@ -16,47 +17,51 @@ public class UMLClassManager {
 	/**
 	 * Default constructor if we don't have a linked list make one
 	 */
-	public UMLClassManager() {
+	public UMLClassManager()
+	{
 		classList = new LinkedList<UMLClass>();
 	}
-  
-	public boolean empty() {
-  	return classList.isEmpty();
+	/**
+	 * 
+	 * @param load -  constructor for loading a existing linked list
+	 */
+	public UMLClassManager(LinkedList<UMLClass> load)
+	{
+		classList = load;
 	}
+
+	
+	
+	
 	/**
 	 * Adds node of type UMLClass to list
 	 * @param name: name of class
-	 * @return true if the new class was successfully added to the list
+	 * @param type: type of class
+	 * @return 0 on successful addition and 8 for failure
 	 */
-	public boolean addClass(String name) {
-		//Prevent duplicates
+	public int addClass(String name) {
 		UMLClass newClass = new UMLClass(name);
-		int size = classList.size();
-		for(int i = 0; i < size; ++i) {
-			UMLClass temp = classList.get(i);
-			if(temp.name.equals(name)) {
-				return false;
-			}
-		}
 		classList.addLast(newClass);
-		return classList.contains(newClass);
+		if  (classList.contains(newClass)) {
+			return 0;
+		}		
+		else return 8;
 	}
-	
 	/**
-	 * Removes node of type UMLClass from list
-	 * @param className: name of class
-	 * @return true if the class was successfully removed from the list
+	 * 
+	 * @param className - the class we want to remove 
+	 * @return 0 on successful removal and 9 for failure 
 	 */
-	public boolean removeClass(String className) {
+	public int removeClass(String className) {
 		int size = classList.size();
 		for(int i = 0; i < size; ++i) {
 			UMLClass temp = classList.get(i);
 			if(temp.name.equals(className)) {
 				classList.remove(i);
-				return true;
+				return 0;
 			}
 		}
-		return false;
+		return 9;
 	}
 	
 	/**
@@ -104,9 +109,9 @@ public class UMLClassManager {
 	
 	/**
 	 * Parse JSON into classList
-	 * @return true if parsed successfully
+	 * @return 0 if parsed successfully
 	 */
-	public boolean parseJSON(String json) {
+	public int parseJSON(String json) {
 		// JSON parser object
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		
@@ -118,6 +123,6 @@ public class UMLClassManager {
 			classList.add(c);
 		}
 		
-		return true;
+		return 0;
 	}
 }
