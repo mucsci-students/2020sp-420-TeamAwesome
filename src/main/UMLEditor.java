@@ -58,8 +58,11 @@ public class UMLEditor {
 			
 			// Check if command is empty or only whitespace
 			if(!input.isEmpty() && !input.replaceAll(" ", "").isEmpty()) {
-				if(!execCommand(input))
-					System.err.println("Failed to execute command.");
+				int result = execCommand(input);
+				if(result != 0) {
+					System.err.println("Failed to execute command. Got error: ");
+					System.err.println(ErrorHandler.toString(result));
+				}
 			}
 		}
 	}
@@ -69,15 +72,19 @@ public class UMLEditor {
 	 * 
 	 * @return boolean indicating if command was successfully executed
 	 */
-	public boolean execCommand(String command) {
+	public int execCommand(String command) {
 		// Split command on white space
 		// args[0] = name of the command
 		// args[1...] = any arguments for the command
 		String[] args = command.split(" ");
 		
+		// Result of given command
+		// Should be updated for each command
+		int result;
+		
 		// Make sure list of args is not empty and a command exists
 		if(args.length == 0 || args[0].trim().isEmpty()) {
-			return false;
+			return 1;
 		}
 		
 		// Check command, if it is a valid command then perform associated action
@@ -94,27 +101,26 @@ public class UMLEditor {
 				// Pull args
 				String className = args[1];
 				
-				if(classManager.addClass(className))
+				result = classManager.addClass(className);
+				if(result == 0)
 					System.out.println("Added class \'" + className + "\'.");
-				else
-					System.err.println("Error adding class.");
 			}
 			else {
-				System.err.println("Did not get expected number of arguments.");
+				return 3;
 			}
 		}
 		else if(args[0].equals("remove-class")) {
 			// Make sure there is only an argument for the class name
 			if(args.length == 2) {
+				// Pull args
 				String className = args[1];
 				
-				if(classManager.removeClass(className))
+				result = classManager.removeClass(className);
+				if(result == 0)
 					System.out.println("Removed class \'" + className + "\'.");
-				else
-					System.err.println("Error removing class.");
 			} 
 			else {
-				System.err.println("Did not get expected number of arguments.");
+				return 3;
 			}
 		}
 		else if(args[0].equals("save")) {
@@ -137,15 +143,14 @@ public class UMLEditor {
 			}
 			else {
 				// If there are more than 2 arguments indicate an error for too many arguments.
-				System.err.println("Did not get expected number of arguments.");
+				return 3;
 			}
 						
 			if(!fileIO.fileSet()) {
 				// Check to see if the file is set, if not make sure that filePath is not empty
 				// Otherwise make sure the file ends with a .json and save
 				if(filePath.replaceAll(" ", "").isEmpty()) {
-					System.err.println("User did not specify a file.");
-					return true;
+					return 4;
 				}
 				
 				// Ensure file extension
@@ -154,21 +159,14 @@ public class UMLEditor {
 				}
 				
 				// Set fileIO path
-				try {
-					fileIO.setFile(filePath);
-				} catch (IOException e) {
-					// Inform user of error and return true because the command worked, the file saving didn't.
-					System.err.println("Error setting file location. Please try again.");
-					return true;
-				}
+				result = fileIO.setFile(filePath);
+				// Force return to prevent execution of next function
+				if(result != 0)
+					return result;
 			}
 			
 			// Write JSON to file
-			try {
-				fileIO.writeToFile(classManager.convertToJSON());
-			} catch (IOException e) {
-				System.err.println("Could not save file. Please try again.");
-			}
+			result = fileIO.writeToFile(classManager.convertToJSON());
 		}
 		else if(args[0].equals("load")) {
 			// Expects args[1] to be the path to the file to load.
@@ -192,15 +190,10 @@ public class UMLEditor {
 				}
 				
 				// Read the file in and pass it to the classManager for parsing.
-				try {
-					classManager.parseJSON(fileIO.readFile());
-				} catch (FileNotFoundException e) {
-					System.err.println("Error parsing JSON.");
-					return true;
-				}
+				result = classManager.parseJSON(fileIO.readFile());
 			}
 			else {
-				System.err.println("Did not get expected number of arguments.");
+				return 3;
 			}
 		}
 		else if(args[0].equals("list-classes")) {
@@ -210,7 +203,7 @@ public class UMLEditor {
 			printHelp();
 		}
 		else {
-			System.err.println("Command \'" + command + "\' was not recognized.");
+			return 7;
 		}
 		
 		System.out.flush();
