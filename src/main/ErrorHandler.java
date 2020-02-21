@@ -20,13 +20,12 @@ public class ErrorHandler {
 		HashMap<Integer, String> tempMap = new HashMap<Integer, String>();
 		
 		// Add error codes to map
-		tempMap.put(1, "Failure to close console scanner.");
-		tempMap.put(2, "No commands we're passed to console.");
-		tempMap.put(3, "Did not get expected number of arguments.");
-		tempMap.put(4, "User did not specify a file.");
-		tempMap.put(5, "Error setting file location. Please try again.");
-		tempMap.put(6, "Could not save file. Please try again.");
-		tempMap.put(7, "Command was not recognized");
+		tempMap.put(100, "Failure to close console scanner.");
+		tempMap.put(101, "No commands we're passed to console.");
+		tempMap.put(102, "Did not get expected number of arguments.");
+		tempMap.put(103, "User did not specify a file.");
+		tempMap.put(104, "Command was not recognized");
+		tempMap.put(105, "File does not exist.");
 		
 		return tempMap;
 	}
