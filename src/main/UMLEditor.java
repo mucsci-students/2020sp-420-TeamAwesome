@@ -188,7 +188,7 @@ public class UMLEditor {
 				}
 				
 				// Read the file in and pass it to the classManager for parsing.
-				result = classManager.parseJSON(fileIO.readFile());
+				result = classManager.parseJSON((String)fileIO.readFile()[0]);
 			}
 			else {
 				return 102;
