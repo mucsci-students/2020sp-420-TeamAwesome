@@ -27,10 +27,9 @@ public class ErrorHandler {
 		tempMap.put(5, "Error setting file location. Please try again.");
 		tempMap.put(6, "Could not save file. Please try again.");
 		tempMap.put(7, "Command was not recognized");
-		tempMap.put(8, "Was unable to create file");
-		tempMap.put(9, "Was unable open file for writing");
-		tempMap.put(10, "Was unable read file");
-		tempMap.put(11, "File does not exist");
+		tempMap.put(301, "Was unable to create file");
+		tempMap.put(302, "Was unable open file for writing");
+		tempMap.put(303, "Was unable read file");
 		return tempMap;
 	}
 	

@@ -25,7 +25,7 @@ public class UMLFileIO {
 			try {
 				saveFile.createNewFile();
 			} catch (IOException e) {
-				return 8;
+				return 301;
 			}
 		}	
 		return 0;
@@ -40,7 +40,7 @@ public class UMLFileIO {
 		try {
 			writer = new FileWriter(saveFile);
 		} catch (IOException e) {
-			return 9;
+			return 302;
 		}
 		PrintWriter printer = new PrintWriter(writer);
 		printer.print(text); 
@@ -55,7 +55,7 @@ public class UMLFileIO {
 		try {
 			sc = new Scanner(saveFile);
 		} catch (FileNotFoundException e) {
-			return new Object[]{"", 10};
+			return new Object[]{"", 303};
 		}
 		String result = "";
 		while (sc.hasNextLine()) {

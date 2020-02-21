@@ -178,13 +178,17 @@ public class UMLEditor {
 				String filePath = args[1];
 				
 				// Set the file for FileIO
-				result = fileIO.setFile(filePath);
-				if(result != 0)
-					return result;
+				try {
+					fileIO.setFile(filePath);
+				} catch (IOException e) {
+					System.err.println("Could not set the file location. Please try again.");
+					return true;
+				}
 				
 				// Make sure the file exists
 				if(!fileIO.fileExists()) {
-					return 11;
+					System.err.println("File does not exists.");
+					return true;
 				}
 				
 				// Read the file in and pass it to the classManager for parsing.
@@ -207,7 +211,7 @@ public class UMLEditor {
 		System.out.flush();
 		System.err.flush();
 		
-		return 0;
+		return true;
 	}
 	
 	/**
