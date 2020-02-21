@@ -36,8 +36,8 @@ public class ClassManagerTests {
 		manager.addClass("n");
 		manager.addClass("t");
 		assertEquals("List is populated", manager.listClasses(), "[a, n, t]");
-		manager.addClass("t");
-		assertFalse("Class already exists", manager.addClass("t"));
+		int result = manager.addClass("t");
+		assertEquals("Class already exists", result, 200);
 	}
 	
 	/*
@@ -46,7 +46,8 @@ public class ClassManagerTests {
 	@Test
 	public void removeTest() {
 		UMLClassManager manager = new UMLClassManager();
-		assertFalse("There is no size", manager.removeClass("a"));
+		int result = manager.removeClass("a");
+		assertEquals("There is no size", result, 201);
 		manager.addClass("a");
 		manager.addClass("n");
 		manager.addClass("t");
@@ -54,10 +55,10 @@ public class ClassManagerTests {
 		manager.removeClass("n");
 		manager.removeClass("t");
 		assertEquals("List is empty", manager.listClasses(), "[]");
-		manager.removeClass("c");
-		assertFalse("Class does not exist", manager.removeClass("c"));
-		manager.addClass("c");
-		assertTrue("class removed", manager.removeClass("c"));
+		result = manager.removeClass("c");
+		assertEquals("Class does not exist", result, 201);
+		result = manager.addClass("c");
+		assertEquals("class removed", result, 0);
 	}
 	
 	/*
@@ -72,7 +73,7 @@ public class ClassManagerTests {
 		String j = manager.convertToJSON();
 		
 		UMLClassManager parse = new UMLClassManager();
-		parse.parseJSON(j);
-		assertTrue("List is the same as start", parse.parseJSON(j));
+		int result = parse.parseJSON(j);
+		assertEquals("List is the same as start", result, 0);
 	}
 }

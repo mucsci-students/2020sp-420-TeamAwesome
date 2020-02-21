@@ -21,25 +21,25 @@ public class UMLClassManager {
 	}
   
 	public boolean empty() {
-  	return classList.isEmpty();
+		return classList.isEmpty();
 	}
 	/**
 	 * Adds node of type UMLClass to list
 	 * @param name: name of class
 	 * @return true if the new class was successfully added to the list
 	 */
-	public boolean addClass(String name) {
+	public int addClass(String name) {
 		//Prevent duplicates
-		UMLClass newClass = new UMLClass(name);
 		int size = classList.size();
 		for(int i = 0; i < size; ++i) {
 			UMLClass temp = classList.get(i);
 			if(temp.name.equals(name)) {
-				return false;
+				return 200;
 			}
 		}
+		UMLClass newClass = new UMLClass(name);
 		classList.addLast(newClass);
-		return classList.contains(newClass);
+		return 0;
 	}
 	
 	/**
@@ -47,16 +47,16 @@ public class UMLClassManager {
 	 * @param className: name of class
 	 * @return true if the class was successfully removed from the list
 	 */
-	public boolean removeClass(String className) {
+	public int removeClass(String className) {
 		int size = classList.size();
 		for(int i = 0; i < size; ++i) {
 			UMLClass temp = classList.get(i);
 			if(temp.name.equals(className)) {
 				classList.remove(i);
-				return true;
+				return 0;
 			}
 		}
-		return false;
+		return 201;
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public class UMLClassManager {
 	 * Parse JSON into classList
 	 * @return true if parsed successfully
 	 */
-	public boolean parseJSON(String json) {
+	public int parseJSON(String json) {
 		// JSON parser object
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		
@@ -118,6 +118,6 @@ public class UMLClassManager {
 			classList.add(c);
 		}
 		
-		return true;
+		return 0;
 	}
 }
