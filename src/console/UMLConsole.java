@@ -53,7 +53,7 @@ public class UMLConsole {
 		try {
 			scanner.close();
 		} catch(IllegalStateException ise) {
-			return 1;
+			return 100;
 		}
 		
 		return 0;
