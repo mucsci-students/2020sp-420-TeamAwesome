@@ -17,21 +17,20 @@ public class FileTests {
 		assertTrue("Blank instance", fileIOTest.getFile() == null);
 		assertFalse("Varible created in fileIO is not set", fileIOTest.fileSet());
 		
-		try {
-			fileIOTest.setFile(getTempDir() + "test1.text");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		int result = fileIOTest.setFile(getTempDir() + "test1.text");
+		assertEquals("Made sure file exists.", result,0);
+		
 		assertTrue("File not Null", fileIOTest.getFile() != null);
 		assertTrue("Varible created in fileIO is set", fileIOTest.fileSet());
 		assertTrue("File exists", fileIOTest.fileExists());
 		String testString = "12ik	fafugh348 ";
-		try {
-			fileIOTest.writeToFile(testString);
-			assertEquals("Read file equals the test", fileIOTest.readFile(), testString);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
+		
+		
+		result = fileIOTest.writeToFile(testString);
+		assertEquals("Wrote to file successfully.", result,0);
+		Object[] readResult = fileIOTest.readFile();
+		assertEquals("Read file equals the test", readResult[0], testString);
+		assertEquals("Sucessfully executed", readResult[1], 0);
 		
 		// Clean up created file
 		fileIOTest.getFile().delete();

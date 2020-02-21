@@ -19,34 +19,50 @@ public class UMLFileIO {
 	 /**  
      * 
      */
-	public void setFile (String filePath) throws IOException {
+	public int setFile (String filePath)  {
 		saveFile = new File (filePath); // creates a reference
 		if(saveFile.exists() == false){
-			saveFile.createNewFile();
+			try {
+				saveFile.createNewFile();
+			} catch (IOException e) {
+				return 301;
+			}
 		}	
+		return 0;
 	}
 	 
 	/**
 	 * Writes text to file  
      * @param text text to write to file
      */
-	public void writeToFile (String text) throws IOException {
-		FileWriter writer = new FileWriter(saveFile);
+	public int writeToFile (String text)  {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(saveFile);
+		} catch (IOException e) {
+			return 302;
+		}
 		PrintWriter printer = new PrintWriter(writer);
 		printer.print(text); 
 		printer.close(); // Force close
+		return 0;
 	}
 	 /**  
-     *@return text of read file 
+     *@return - an Object array of the format [readMessage, return code]
      */
-	public String readFile() throws FileNotFoundException  {
-		Scanner sc = new Scanner(saveFile);
+	public Object[] readFile()  {
+		Scanner sc;
+		try {
+			sc = new Scanner(saveFile);
+		} catch (FileNotFoundException e) {
+			return new Object[]{"", 303};
+		}
 		String result = "";
 		while (sc.hasNextLine()) {
 			result += sc.nextLine();
 		}
 		sc.close();
-		return result;
+		return new Object[]{result, 0};
 
 	}
 	

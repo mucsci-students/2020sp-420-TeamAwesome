@@ -26,7 +26,10 @@ public class ErrorHandler {
 		tempMap.put(103, "User did not specify a file.");
 		tempMap.put(104, "Command was not recognized");
 		tempMap.put(105, "File does not exist.");
-		
+		tempMap.put(301, "Was unable to create file");
+		tempMap.put(302, "Was unable open file for writing");
+		tempMap.put(303, "Was unable read file");
+    
 		return tempMap;
 	}
 	
