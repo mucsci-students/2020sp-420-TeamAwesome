@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-
 /**
  * For adding and removing classes from the UML diagram
  * @author antho
@@ -17,40 +16,36 @@ public class UMLClassManager {
 	/**
 	 * Default constructor if we don't have a linked list make one
 	 */
-	public UMLClassManager()
-	{
+	public UMLClassManager() {
 		classList = new LinkedList<UMLClass>();
 	}
-	/**
-	 * 
-	 * @param load -  constructor for loading a existing linked list
-	 */
-	public UMLClassManager(LinkedList<UMLClass> load)
-	{
-		classList = load;
+  
+	public boolean empty() {
+		return classList.isEmpty();
 	}
-
-	
-	
-	
 	/**
 	 * Adds node of type UMLClass to list
 	 * @param name: name of class
-	 * @param type: type of class
-	 * @return 0 on successful addition and 8 for failure
+	 * @return true if the new class was successfully added to the list
 	 */
 	public int addClass(String name) {
+		//Prevent duplicates
+		int size = classList.size();
+		for(int i = 0; i < size; ++i) {
+			UMLClass temp = classList.get(i);
+			if(temp.name.equals(name)) {
+				return 200;
+			}
+		}
 		UMLClass newClass = new UMLClass(name);
-		if  (!classList.contains(newClass)) {
-			classList.addLast(newClass);
-			return 0;
-		}		
-		else return 200;
+		classList.addLast(newClass);
+		return 0;
 	}
+	
 	/**
-	 * 
-	 * @param className - the class we want to remove 
-	 * @return 0 on successful removal and 9 for failure 
+	 * Removes node of type UMLClass from list
+	 * @param className: name of class
+	 * @return true if the class was successfully removed from the list
 	 */
 	public int removeClass(String className) {
 		int size = classList.size();
@@ -109,7 +104,7 @@ public class UMLClassManager {
 	
 	/**
 	 * Parse JSON into classList
-	 * @return 0 if parsed successfully
+	 * @return true if parsed successfully
 	 */
 	public int parseJSON(String json) {
 		// JSON parser object
