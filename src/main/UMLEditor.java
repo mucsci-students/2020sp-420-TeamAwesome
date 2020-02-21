@@ -86,7 +86,7 @@ public class UMLEditor {
 		
 		// Make sure list of args is not empty and a command exists
 		if(args.length == 0 || args[0].trim().isEmpty()) {
-			return 1;
+			return 101;
 		}
 		
 		// Check command, if it is a valid command then perform associated action
@@ -108,7 +108,7 @@ public class UMLEditor {
 					System.out.println("Added class \'" + className + "\'.");
 			}
 			else {
-				return 3;
+				return 102;
 			}
 		}
 		else if(args[0].equals("remove-class")) {
@@ -122,7 +122,7 @@ public class UMLEditor {
 					System.out.println("Removed class \'" + className + "\'.");
 			} 
 			else {
-				return 3;
+				return 102;
 			}
 		}
 		else if(args[0].equals("save")) {
@@ -145,14 +145,14 @@ public class UMLEditor {
 			}
 			else {
 				// If there are more than 2 arguments indicate an error for too many arguments.
-				return 3;
+				return 102;
 			}
 						
 			if(!fileIO.fileSet()) {
 				// Check to see if the file is set, if not make sure that filePath is not empty
 				// Otherwise make sure the file ends with a .json and save
 				if(filePath.replaceAll(" ", "").isEmpty()) {
-					return 4;
+					return 103;
 				}
 				
 				// Ensure file extension
@@ -178,24 +178,20 @@ public class UMLEditor {
 				String filePath = args[1];
 				
 				// Set the file for FileIO
-				try {
-					fileIO.setFile(filePath);
-				} catch (IOException e) {
-					System.err.println("Could not set the file location. Please try again.");
-					return true;
-				}
+				result = fileIO.setFile(filePath);
+				if(result != 0)
+					return result;
 				
 				// Make sure the file exists
 				if(!fileIO.fileExists()) {
-					System.err.println("File does not exists.");
-					return true;
+					return 105;
 				}
 				
 				// Read the file in and pass it to the classManager for parsing.
 				result = classManager.parseJSON(fileIO.readFile());
 			}
 			else {
-				return 3;
+				return 102;
 			}
 		}
 		else if(args[0].equals("list-classes")) {
@@ -205,13 +201,13 @@ public class UMLEditor {
 			printHelp();
 		}
 		else {
-			return 7;
+			return 104;
 		}
 		
 		System.out.flush();
 		System.err.flush();
 		
-		return true;
+		return 0;
 	}
 	
 	/**
