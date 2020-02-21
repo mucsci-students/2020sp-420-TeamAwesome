@@ -41,11 +41,11 @@ public class UMLClassManager {
 	 */
 	public int addClass(String name) {
 		UMLClass newClass = new UMLClass(name);
-		classList.addLast(newClass);
-		if  (classList.contains(newClass)) {
+		if  (!classList.contains(newClass)) {
+			classList.addLast(newClass);
 			return 0;
 		}		
-		else return 8;
+		else return 200;
 	}
 	/**
 	 * 
@@ -61,7 +61,7 @@ public class UMLClassManager {
 				return 0;
 			}
 		}
-		return 9;
+		return 201;
 	}
 	
 	/**
