@@ -49,13 +49,13 @@ public class UMLConsole {
 	 * Close the scanner
 	 * @return true if closed successfully
 	 */
-	public boolean closeScanner() {
+	public int closeScanner() {
 		try {
 			scanner.close();
 		} catch(IllegalStateException ise) {
-			return false;
+			return 100;
 		}
 		
-		return true;
+		return 0;
 	}
 }
