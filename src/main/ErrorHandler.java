@@ -31,6 +31,11 @@ public class ErrorHandler {
 		tempMap.put(301, "Was unable to create file");
 		tempMap.put(302, "Was unable open file for writing");
 		tempMap.put(303, "Was unable read file");
+		tempMap.put(400, "NewName is exisiting class name");
+		tempMap.put(401, "Oldname is not an exisitng class");
+		tempMap.put(402, "MethodName already exists inside of class");
+		tempMap.put(403, "destination class does not exist");
+		tempMap.put(404, "fieldName already exists inside of class");
     
 		return tempMap;
 	}
