@@ -36,7 +36,8 @@ public class ErrorHandler {
 		tempMap.put(402, "MethodName already exists inside of class");
 		tempMap.put(403, "destination class does not exist");
 		tempMap.put(404, "fieldName already exists inside of class");
-    
+		tempMap.put(405, "Field does not exist in the given class");
+		tempMap.put(406, "Method does not exist in the given class");
 		return tempMap;
 	}
 	

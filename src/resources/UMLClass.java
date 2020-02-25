@@ -12,9 +12,9 @@ import java.util.ArrayList;
  */
 public class UMLClass {
 	public String name;
-	private String [] types = {"int", "double", "float", "short", "long", "boolean", "String"};
-	private ArrayList<String> fields;
-	private ArrayList<String> methods;
+	public String [] types = {"int", "double", "float", "short", "long", "boolean", "String"};
+	public ArrayList<String> fields;
+	public ArrayList<String> methods;
 	
 	/**
 	 * Constructor for class objects
@@ -28,7 +28,7 @@ public class UMLClass {
 	}
 	
 	/**
-	 * Adds a field to to ArrayList fiel
+	 * Adds a field to to ArrayList field
 	 * @param field name of field to be added
 	 */
 	public void addField(String field) {
