@@ -151,7 +151,10 @@ public class UMLClassManager {
 		}
 		if (classList.containsKey(oldName))
 		{
-			classList.get(oldName).name = newName;
+			UMLClass tempCopy = classList.get(oldName);
+			tempCopy.name = newName;
+			classList.remove(oldName);
+			classList.put(newName, tempCopy);
 			return 0;
 		}
 		return 401;
