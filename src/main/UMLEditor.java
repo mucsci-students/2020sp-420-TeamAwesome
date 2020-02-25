@@ -82,7 +82,7 @@ public class UMLEditor {
 		
 		// Result of given command
 		// Should be updated for each command
-		int result;
+		int result = 0;
 		
 		// Make sure list of args is not empty and a command exists
 		if(args.length == 0 || args[0].trim().isEmpty()) {
@@ -207,7 +207,7 @@ public class UMLEditor {
 		System.out.flush();
 		System.err.flush();
 		
-		return 0;
+		return result;
 	}
 	
 	/**
