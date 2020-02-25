@@ -1,6 +1,9 @@
 package resources;
 //System imports
 import java.util.LinkedList;
+import java.util.HashMap; 
+import java.util.Map;
+import java.util.jar.Attributes.Name;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,13 +14,13 @@ import com.google.gson.GsonBuilder;
  * @author Dylan
  */
 public class UMLClassManager {
-	private LinkedList<UMLClass> classList;
+	private HashMap<String, UMLClass> classList;
 
 	/**
 	 * Default constructor if we don't have a linked list make one
 	 */
 	public UMLClassManager() {
-		classList = new LinkedList<UMLClass>();
+		classList = new HashMap<String, UMLClass>();
 	}
   
 	public boolean empty() {
@@ -28,18 +31,185 @@ public class UMLClassManager {
 	 * @param name: name of class
 	 * @return true if the new class was successfully added to the list
 	 */
-	public int addClass(String name) {
+	public int addClass(String name) 
+		{
 		//Prevent duplicates
-		int size = classList.size();
-		for(int i = 0; i < size; ++i) {
-			UMLClass temp = classList.get(i);
-			if(temp.name.equals(name)) {
-				return 200;
-			}
+		if (classList.containsKey(name))
+		{
+			return 200;
 		}
 		UMLClass newClass = new UMLClass(name);
-		classList.addLast(newClass);
+		classList.put(name, newClass);
 		return 0;
+	}
+	/**
+	 * 
+	 * @param className - the class we want to add a method to
+	 * @param methodName - the name of the new method
+	 * @return 0 on success and corresponding error code else
+	 */
+	public int addMethods(String className, String methodName)
+	{
+
+		if (classList.containsKey(className))
+		{
+			if (classList.get(className).methods.contains(methodName)) 
+			{
+				return 402;
+			}
+			else 
+			{
+				classList.get(className).addMethod(methodName);
+				return 0;
+			}
+		}
+		else return 403;
+		
+	}
+
+		/**
+	 * 
+	 * @param className - the class we want to add a field to
+	 * @param fieldName - the name of the new field
+	 * @return 0 on success and corresponding error code else
+	 */
+	public int addFields(String className, String fieldName)
+	{
+		if (classList.containsKey(className))
+		{
+			if (classList.get(className).fields.contains(fieldName)) 
+			{
+				return 404;
+			}
+			else 
+			{
+				classList.get(className).addField(fieldName);
+				return 0;
+			}
+		}
+		else return 403;
+	}
+	/**
+	 * 
+	 * @param className - class to remove field from
+	 * @param fieldName - fieldname to remove
+	 * @return - returns 0 on successfull removal and corresponding error code in all other cases
+	 */
+	public int removeFields(String className, String fieldName)
+	{
+		if (classList.containsKey(className))
+		{
+			if (classList.get(className).fields.contains(fieldName)) 
+			{
+				classList.get(className).removeField(fieldName);
+				return 0;
+			}
+			else 
+			{
+				return 405;
+			}
+		}
+		else return 403;
+	}
+
+	/**
+	 * 
+	 * @param className - the class we want to remove a method from
+	 * @param methodName - the name of the method we want to remove
+	 * @return - returns 0 on success and corresponding error codes else
+	 */
+	public int removeMethods(String className, String methodName)
+	{
+
+		if (classList.containsKey(className))
+		{
+			if (classList.get(className).methods.contains(methodName)) 
+			{
+				classList.get(className).removeMethod(methodName);
+				return 0;
+			}
+			else 
+			{
+				return 406;
+			}
+		}
+		else return 403;
+		
+	}
+	/**
+	 * 
+	 * @param oldName; the class we want to edit 
+	 * @param newName; the name of the new class
+	 * @return 0 on succesful name change and error code on failure 
+	 */
+	public int editClass(String oldName, String newName)
+	{
+			//check if the new name doesn't already exist as a class name
+		if (classList.containsKey(newName))
+		{
+			return 400;
+		}
+		if (classList.containsKey(oldName))
+		{
+			UMLClass tempCopy = classList.get(oldName);
+			tempCopy.name = newName;
+			classList.remove(oldName);
+			classList.put(newName, tempCopy);
+			return 0;
+		}
+		return 401;
+	}
+		/**
+	 * @param className; the class holding the field we want to edit
+	 * @param oldField; the field we want to change 
+	 * @param newName; the name of the new field
+	 * @return 0 on succesful name change and error code on failure 
+	 */
+	public int editFields(String className, String oldField, String newName)
+	{
+			//check if the new name doesn't already exist as a class name
+		if (classList.containsKey(className)){
+			if (classList.get(className).fields.contains(newName))
+			{
+				return 404; 
+			}
+			if (classList.get(className).fields.contains(oldField))
+			{
+				//this is great code don't question it keep moving
+				classList.get(className).removeField(oldField);
+				classList.get(className).addField(newName);
+				return 0;
+			}
+			return 405;
+		}
+		return 403;
+	}
+
+	/**
+	 * 
+	 * @param className - the class containing the method to edit
+	 * @param oldMethod - the method name to edit
+	 * @param newName - the new method name
+	 * @return - 0 on successful 'name change' and corresponding error codes in all other cases
+	 */
+	public int editMethods(String className, String oldMethod, String newName)
+	{
+			//check if the new name doesn't already exist as a class name
+		if (classList.containsKey(className)){
+			if (classList.get(className).methods.contains(newName))
+			{
+				return 402; 
+			}
+			if (classList.get(className).methods.contains(oldMethod))
+			{
+				//this is great code don't question it keep moving
+				classList.get(className).removeMethod(oldMethod);
+				classList.get(className).addMethod(newName);
+				return 0;
+			}
+			return 406;
+		}
+		return 403;
 	}
 	
 	/**
@@ -48,13 +218,10 @@ public class UMLClassManager {
 	 * @return true if the class was successfully removed from the list
 	 */
 	public int removeClass(String className) {
-		int size = classList.size();
-		for(int i = 0; i < size; ++i) {
-			UMLClass temp = classList.get(i);
-			if(temp.name.equals(className)) {
-				classList.remove(i);
-				return 0;
-			}
+		if (classList.containsKey(className))
+		{
+			classList.remove(className);
+			return 0;
 		}
 		return 201;
 	}
@@ -67,11 +234,12 @@ public class UMLClassManager {
 		String result = "[";
 		
 		// Iterate through classList
-		int size = classList.size();
-		for(int i = 0; i < size; i++) {
-			result += classList.get(i).name;
+		int count = 0;
+		for(Map.Entry<String, UMLClass> entry : classList.entrySet()) {
+			result += entry.getKey();
 			// Only add comma if not the last element
-			if(i != size-1) {
+			if(count++ != classList.size() -1) {
+				
 				result += ", ";
 			}
 		}
@@ -91,9 +259,10 @@ public class UMLClassManager {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		
 		// Convert LinkedList to standard array for serialization
+		int count = 0;
 		UMLClass[] classArray = new UMLClass[classList.size()];
-		for(int i = 0; i < classArray.length; i++) {
-			classArray[i] = (UMLClass) classList.get(i);
+		for(Map.Entry<String, UMLClass> entry : classList.entrySet()) {
+			classArray[count] = (UMLClass) entry.getValue();
 		}
 		
 		// Convert array to JSON
@@ -115,7 +284,7 @@ public class UMLClassManager {
 		
 		// Load array into LinkedList
 		for(UMLClass c : classArray) {
-			classList.add(c);
+			classList.put(c.name, c);
 		}
 		
 		return 0;
