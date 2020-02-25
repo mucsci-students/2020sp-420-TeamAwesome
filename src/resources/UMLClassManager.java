@@ -162,7 +162,7 @@ public class UMLClassManager {
 	 * @param newName; the name of the new field
 	 * @return 0 on succesful name change and error code on failure 
 	 */
-	public int editFields(Sting className, String oldField, String newName)
+	public int editFields(String className, String oldField, String newName)
 	{
 			//check if the new name doesn't already exist as a class name
 		if (classList.containsKey(className)){
@@ -215,9 +215,9 @@ public class UMLClassManager {
 	 * @return true if the class was successfully removed from the list
 	 */
 	public int removeClass(String className) {
-		if (classList.containsKey(name))
+		if (classList.containsKey(className))
 		{
-			classList.remove(Name);
+			classList.remove(className);
 			return 0;
 		}
 		return 201;
@@ -259,7 +259,7 @@ public class UMLClassManager {
 		int count = 0;
 		UMLClass[] classArray = new UMLClass[classList.size()];
 		for(Map.Entry<String, UMLClass> entry : classList.entrySet()) {
-			classArray[i] = (UMLClass) entry.getValue();
+			classArray[count] = (UMLClass) entry.getValue();
 		}
 		
 		// Convert array to JSON
