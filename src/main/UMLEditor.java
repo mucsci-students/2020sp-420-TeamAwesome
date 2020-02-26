@@ -1,8 +1,6 @@
 // Package name
 package main;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 // System imports
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -193,6 +191,99 @@ public class UMLEditor {
 			else {
 				return 102;
 			}
+		}
+		else if(args[0].equals("add-field")) {
+			// Expects args[1]=className and args[2]=fieldName
+			if(args.length == 3) {
+				result = classManager.addFields(args[1], args[2]);
+			}
+			else {
+				return 102;
+			}
+		}
+		else if(args[0].equals("add-method")) {
+			// Expects args[1]=className and args[2]=methodName
+			if(args.length == 3) {
+				result = classManager.addMethods(args[1], args[2]);
+			}
+			else {
+				return 102;
+			}
+		}
+		else if(args[0].equals("remove-field")) {
+			// Expects args[1]=className and args[2]=fieldName
+			if(args.length == 3) {
+				result = classManager.removeFields(args[1], args[2]);
+			}
+			else {
+				return 102;
+			}
+		}
+		else if(args[0].equals("remove-method")) {
+			// Expects args[1]=className and args[2]=methodName
+			if(args.length == 3) {
+				result = classManager.removeMethods(args[1], args[2]);
+			}
+			else {
+				return 102;
+			}
+		}
+		else if(args[0].equals("add-relationship")) {
+			// Expects args[1]=className1 and args[2]=className2
+			if(args.length == 3) {
+				result = classManager.addRelationship(args[1], args[2]);
+			}
+			else {
+				return 102;
+			}
+		}
+		else if(args[0].equals("remove-relationship")) {
+			// Expects args[1]=className1 and args[2]=className2
+			if(args.length == 3) {
+				result = classManager.removeRelationship(args[1], args[2]);
+			}
+			else {
+				return 102;
+			}
+		}
+		else if(args[0].equals("list-fields")) {
+			// Expects args[1]=className
+			if(args.length == 2) {
+				String className = args[1];
+				
+				Object[] objResult = classManager.listFields(className);
+				result = (int)objResult[1];
+				
+				if(result == 0)
+					System.out.println(className + ": " + objResult[0]);
+			} else
+				return 102;
+		}
+		else if(args[0].equals("list-methods")) {
+			// Expects args[1]=className
+			if(args.length == 2) {
+				String className = args[1];
+				
+				Object[] objResult = classManager.listMethods(className);
+				result = (int)objResult[1];
+				
+				if(result == 0)
+					System.out.println(className + ": " + objResult[0]);
+			} else
+				return 102;
+		}
+		else if(args[0].equals("list-relationships")) {
+			// Expects args[1]=className
+			if(args.length == 2) {
+				String className = args[1];
+				
+				Object[] objResult = classManager.listRelationships(className);
+				result = (int)objResult[1];
+				
+				if(result == 0)
+					System.out.println(className + ": " + objResult[0]);
+			} else
+				return 102;
 		}
 		else if(args[0].equals("list-classes")) {
 			System.out.println("Classes: " + classManager.listClasses());

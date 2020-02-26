@@ -19,14 +19,14 @@ public class UMLClassManager implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private HashMap<String, UMLClass> classList;
-	private HashMap<UMLClass, UMLClass> relationships;
+	private HashMap<String, UMLRelationship> relationships;
 
 	/**
 	 * Default constructor if we don't have a linked list make one
 	 */
 	public UMLClassManager() {
 		classList = new HashMap<String, UMLClass>();
-		relationships = new HashMap<UMLClass, UMLClass>();
+		relationships = new HashMap<String, UMLRelationship>();
 	}
   
 	public boolean empty() {
@@ -255,6 +255,32 @@ public class UMLClassManager implements Serializable {
 	}
 	
 	/**
+	 * List the fields of the given class
+	 * @param className
+	 * @return 'tuple' of [string of fields, return code];
+	 */
+	public Object[] listFields(String className) {
+		// Make sure class exists
+		if(!classList.containsKey(className))
+			return new Object[]{"", 109};
+		
+		return new Object[]{classList.get(className).getFields(), 0};
+	}
+	
+	/**
+	 * List the methods of the given class
+	 * @param className
+	 * @return 'tuple' of [string of methods, return code];
+	 */
+	public Object[] listMethods(String className) {
+		// Make sure class exists
+		if(!classList.containsKey(className))
+			return new Object[]{"", 109};
+		
+		return new Object[]{classList.get(className).getMethods(), 0};
+	}
+	
+	/**
 	 * Create a relationship between the two given classes
 	 * @param srcClass - the first class's name
 	 * @param destClass - the second class's name
@@ -271,7 +297,9 @@ public class UMLClassManager implements Serializable {
 		
 		// If both classes exist and do not have a pre-existing relationship, then
 		//		create a new relationship between them
-		relationships.put(classList.get(srcClass), classList.get(destClass));
+		String key = UMLRelationship.GENERATE_STRING(srcClass, destClass);
+		UMLRelationship relation = new UMLRelationship(classList.get(srcClass), classList.get(destClass));
+		relationships.put(key, relation);
 		
 		// Indicate success
 		return 0;
@@ -293,14 +321,44 @@ public class UMLClassManager implements Serializable {
 			return 108;
 		
 		// Determine which class is the key in the relationships map
-		String key = srcClass;
-		if(!relationships.containsKey(classList.get(srcClass)))
-			key = destClass;
+		String key = UMLRelationship.GENERATE_STRING(srcClass, destClass);
+		if(!relationships.containsKey(key))
+			key = UMLRelationship.GENERATE_STRING(destClass, srcClass);
 		
 		// Remove the relationship from the map
-		relationships.remove(classList.get(key));
+		relationships.remove(key);
 		
 		return 0;
+	}
+	
+	/**
+	 * List the relationships the given class has
+	 * @param className
+	 * @return 'tuple' of [string of relationships, return code];
+	 */
+	public Object[] listRelationships(String className) {
+		// Make sure class exists
+		if(!classList.containsKey(className))
+			return new Object[]{"", 107};
+		
+		// Find all relationships with className involved
+		String result = "[";
+		
+		// Loop through all relationships checking if className is in each relationship, if
+		//		it is then add the key to the output
+		for(Map.Entry<String, UMLRelationship> relation : relationships.entrySet()) {
+			// Check if className is in the relationship
+			if(relation.getValue().hasClass(className))
+				result += relation.getKey() +", ";
+		}
+		
+		// Remove last ', ' if it exists
+		if(result.endsWith(", "))
+			result = result.substring(0, result.lastIndexOf(", "));
+		
+		result += "]";
+		
+		return new Object[]{result, 0};
 	}
 	
 	/**
@@ -311,18 +369,10 @@ public class UMLClassManager implements Serializable {
 	 */
 	private boolean relationshipExists(String class1, String class2) {
 		// Iterate through relationship checking both directions (class1 -> class2) and (class1 <- class2)
-		for(Map.Entry<UMLClass, UMLClass> relationship : relationships.entrySet()) {
-			String class1Name = relationship.getKey().getName();
-			String class2Name = relationship.getValue().getName();
-			// Check class1 -> class2
-			if(class1Name == class1 && class2Name == class2)
-				return true;
-			// Check class2 -> class1
-			if(class1Name == class2 && class2Name == class1)
-				return true;
-		}
+		String direct1 = UMLRelationship.GENERATE_STRING(class1, class2);  
+		String direct2 = UMLRelationship.GENERATE_STRING(class2, class1);  
 		
-		return false;
+		return relationships.containsKey(direct1) || relationships.containsKey(direct2);
 	}
 	
 	/**
@@ -372,7 +422,7 @@ public class UMLClassManager implements Serializable {
 	 * Get the map of relationships
 	 * @return - relationships
 	 */
-	protected HashMap<UMLClass, UMLClass> getRelationships() {
+	protected HashMap<String, UMLRelationship> getRelationships() {
 		return relationships;
 	}
 	
