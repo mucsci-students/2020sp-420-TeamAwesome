@@ -2,6 +2,7 @@ package resources;
 
 // System imports
 import java.util.ArrayList;
+import java.io.Serializable;
 
 // Local imports
 
@@ -10,15 +11,18 @@ import java.util.ArrayList;
  * @author antho and Dylan
  * 
  */
-public class UMLClass {
-	public String name;
-	public String [] types = {"int", "double", "float", "short", "long", "boolean", "String"};
-	public ArrayList<String> fields;
-	public ArrayList<String> methods;
+public class UMLClass implements Serializable {
+	// Version ID for serialization
+	private static final long serialVersionUID = 1L;
+	
+	private String name;
+	public static final String [] types = {"int", "double", "float", "short", "long", "boolean", "String"};
+	private ArrayList<String> fields;
+	private ArrayList<String> methods;
 	
 	/**
 	 * Constructor for class objects
-	 * @param name the desied name of the class
+	 * @param name the desired name of the class
 	 * @param type the desired type of the class
 	 */
 	public UMLClass(String name) {
@@ -57,5 +61,37 @@ public class UMLClass {
 	 */
 	public void removeMethod(String method) {
 		methods.remove(methods.indexOf(method));
+	}
+	
+	/**
+	 * Gets the name of the UMLClass
+	 * @return - name
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Set the name of the class
+	 * @param name - the new class name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Get the fields that are in the class
+	 * @return - fields
+	 */
+	public ArrayList<String> getFields() {
+		return fields;
+	}
+
+	/**
+	 * Get the methods that are in the class
+	 * @return - methods
+	 */
+	public ArrayList<String> getMethods() {
+		return methods;
 	}
 }
