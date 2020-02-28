@@ -7,6 +7,7 @@ import java.util.Hashtable;
 
 // Local imports
 import console.UMLConsole;
+import gui.GUIEnvironment;
 import resources.UMLFileIO;
 import resources.UMLClassManager;
 
@@ -48,7 +49,7 @@ public class UMLEditor {
 	 * Separate from initialization so we can control when the console is started and
 	 * allows for testing of commands.
 	 */
-	public void beginConsole() {
+	protected void beginConsole() {
 		// Continuously get console input until quit statement has been reached
 		while(true) {
 			// Get the input from console
@@ -65,6 +66,13 @@ public class UMLEditor {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Start the GUI
+	 */
+	protected void beginGUI() {
+		new GUIEnvironment(this);
 	}
 	
 	/**
@@ -368,6 +376,14 @@ public class UMLEditor {
 	}
 	
 	/**
+	 * Get the UMLClassManager instance
+	 * @return classManager
+	 */
+	public UMLClassManager getClassManager() {
+		return classManager;
+	}
+	
+	/**
 	 * Perform any cleanup operations, like closing files, input readers, streams, etc.
 	 */
 	private void cleanup() {
@@ -378,6 +394,7 @@ public class UMLEditor {
 		// Create editor instance
 		UMLEditor editor = new UMLEditor();
 		// Start console
-		editor.beginConsole();
+		//editor.beginConsole();
+		editor.beginGUI();
 	}
 }
