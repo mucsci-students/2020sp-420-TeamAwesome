@@ -24,7 +24,7 @@ Steps
 Prompted to select console view or GUI view after startup 
 
 ### How to Use
-Once UMLeditor is running type "help" and hit enter to print out a list of valid commands and their descriptions.
+Once UMLeditor is running type "help" and hit enter to print out a list of valid commands and their descriptions
 
 
 #### Contributors
