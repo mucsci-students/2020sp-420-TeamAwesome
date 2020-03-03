@@ -70,13 +70,20 @@ public class UMLContainer extends JPanel implements MouseListener, MouseMotionLi
 	 * @param umlClass
 	 */
 	public void removeClass(GUIClass guiClass) {
+		// Remove the class from the GUI
 		remove(guiClass);
+		
+		// Remove the class from the list of GUIClasses
 		guiClasses.remove(guiClass);
+		
+		// Remove the class from the classManager
 		int result = classManager.removeClass(guiClass.getUMLClass().getName());
 		if(result != 0)
 			guiEnvironment.alertError(result);
 		
-		revalidate();
+		// Repaint the container to remove the left over panel drawing
+		// 		from the screen.
+		repaint();
 	}
 	
 	@Override
