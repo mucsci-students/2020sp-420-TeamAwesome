@@ -1,14 +1,13 @@
 // Package name
 package main;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 // System imports
 import java.util.Enumeration;
 import java.util.Hashtable;
 
 // Local imports
 import console.UMLConsole;
+import gui.GUIEnvironment;
 import resources.UMLFileIO;
 import resources.UMLClassManager;
 
@@ -50,7 +49,7 @@ public class UMLEditor {
 	 * Separate from initialization so we can control when the console is started and
 	 * allows for testing of commands.
 	 */
-	public void beginConsole() {
+	protected void beginConsole() {
 		// Continuously get console input until quit statement has been reached
 		while(true) {
 			// Get the input from console
@@ -70,6 +69,13 @@ public class UMLEditor {
 	}
 	
 	/**
+	 * Start the GUI
+	 */
+	protected void beginGUI() {
+		new GUIEnvironment(this);
+	}
+	
+	/**
 	 * Execute the given command and report errors as necessary
 	 * 
 	 * @return boolean indicating if command was successfully executed
@@ -82,7 +88,7 @@ public class UMLEditor {
 		
 		// Result of given command
 		// Should be updated for each command
-		int result;
+		int result = 0;
 		
 		// Make sure list of args is not empty and a command exists
 		if(args.length == 0 || args[0].trim().isEmpty()) {
@@ -194,6 +200,99 @@ public class UMLEditor {
 				return 102;
 			}
 		}
+		else if(args[0].equals("add-field")) {
+			// Expects args[1]=className and args[2]=fieldName
+			if(args.length == 3) {
+				result = classManager.addFields(args[1], args[2]);
+			}
+			else {
+				return 102;
+			}
+		}
+		else if(args[0].equals("add-method")) {
+			// Expects args[1]=className and args[2]=methodName
+			if(args.length == 3) {
+				result = classManager.addMethods(args[1], args[2]);
+			}
+			else {
+				return 102;
+			}
+		}
+		else if(args[0].equals("remove-field")) {
+			// Expects args[1]=className and args[2]=fieldName
+			if(args.length == 3) {
+				result = classManager.removeFields(args[1], args[2]);
+			}
+			else {
+				return 102;
+			}
+		}
+		else if(args[0].equals("remove-method")) {
+			// Expects args[1]=className and args[2]=methodName
+			if(args.length == 3) {
+				result = classManager.removeMethods(args[1], args[2]);
+			}
+			else {
+				return 102;
+			}
+		}
+		else if(args[0].equals("add-relationship")) {
+			// Expects args[1]=className1 and args[2]=className2
+			if(args.length == 3) {
+				result = classManager.addRelationship(args[1], args[2]);
+			}
+			else {
+				return 102;
+			}
+		}
+		else if(args[0].equals("remove-relationship")) {
+			// Expects args[1]=className1 and args[2]=className2
+			if(args.length == 3) {
+				result = classManager.removeRelationship(args[1], args[2]);
+			}
+			else {
+				return 102;
+			}
+		}
+		else if(args[0].equals("list-fields")) {
+			// Expects args[1]=className
+			if(args.length == 2) {
+				String className = args[1];
+				
+				Object[] objResult = classManager.listFields(className);
+				result = (int)objResult[1];
+				
+				if(result == 0)
+					System.out.println(className + ": " + objResult[0]);
+			} else
+				return 102;
+		}
+		else if(args[0].equals("list-methods")) {
+			// Expects args[1]=className
+			if(args.length == 2) {
+				String className = args[1];
+				
+				Object[] objResult = classManager.listMethods(className);
+				result = (int)objResult[1];
+				
+				if(result == 0)
+					System.out.println(className + ": " + objResult[0]);
+			} else
+				return 102;
+		}
+		else if(args[0].equals("list-relationships")) {
+			// Expects args[1]=className
+			if(args.length == 2) {
+				String className = args[1];
+				
+				Object[] objResult = classManager.listRelationships(className);
+				result = (int)objResult[1];
+				
+				if(result == 0)
+					System.out.println(className + ": " + objResult[0]);
+			} else
+				return 102;
+		}
 		else if(args[0].equals("list-classes")) {
 			System.out.println("Classes: " + classManager.listClasses());
 		}
@@ -207,7 +306,7 @@ public class UMLEditor {
 		System.out.flush();
 		System.err.flush();
 		
-		return 0;
+		return result;
 	}
 	
 	/**
@@ -277,6 +376,14 @@ public class UMLEditor {
 	}
 	
 	/**
+	 * Get the UMLClassManager instance
+	 * @return classManager
+	 */
+	public UMLClassManager getClassManager() {
+		return classManager;
+	}
+	
+	/**
 	 * Perform any cleanup operations, like closing files, input readers, streams, etc.
 	 */
 	private void cleanup() {
@@ -288,5 +395,6 @@ public class UMLEditor {
 		UMLEditor editor = new UMLEditor();
 		// Start console
 		editor.beginConsole();
+		//editor.beginGUI();
 	}
 }
