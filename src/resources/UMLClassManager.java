@@ -1,10 +1,10 @@
 package resources;
-import java.io.Serializable;
-import java.lang.reflect.Type;
+
 //System imports
 import java.util.HashMap; 
 import java.util.Map;
-
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -226,7 +226,12 @@ public class UMLClassManager implements Serializable {
 	public int removeClass(String className) {
 		if (classList.containsKey(className))
 		{
+			// Remove the class from the list of classes
 			classList.remove(className);
+			
+			// Remove any relationship involving the class
+			relationships.entrySet().removeIf(e -> e.getValue().hasClass(className));
+			
 			return 0;
 		}
 		return 201;
@@ -245,7 +250,6 @@ public class UMLClassManager implements Serializable {
 			result += entry.getKey();
 			// Only add comma if not the last element
 			if(count++ != classList.size() -1) {
-				
 				result += ", ";
 			}
 		}
