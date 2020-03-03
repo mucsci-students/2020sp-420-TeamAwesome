@@ -1,28 +1,35 @@
 package resources;
+
 //System imports
-import java.util.LinkedList;
 import java.util.HashMap; 
 import java.util.Map;
 import java.util.jar.Attributes.Name;
 import java.util.regex.Matcher; 
 import java.util.regex.Pattern;
-
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * For adding and removing classes from the UML diagram
  * @author antho
  * @author Dylan
  */
-public class UMLClassManager {
+public class UMLClassManager implements Serializable {
+	// Version ID for serialization
+	private static final long serialVersionUID = 1L;
+	
 	private HashMap<String, UMLClass> classList;
+	private HashMap<String, UMLRelationship> relationships;
 
 	/**
 	 * Default constructor if we don't have a linked list make one
 	 */
 	public UMLClassManager() {
 		classList = new HashMap<String, UMLClass>();
+		relationships = new HashMap<String, UMLRelationship>();
 	}
   
 	public boolean empty() {
@@ -31,7 +38,7 @@ public class UMLClassManager {
 	/**
 	 * Adds node of type UMLClass to list
 	 * @param name: name of class
-	 * @return true if the new class was successfully added to the list
+	 * @return 0 if the new class was successfully added to the list
 	 */
 	public int addClass(String name) 
 	{
@@ -60,7 +67,7 @@ public class UMLClassManager {
 
 		if (classList.containsKey(className))
 		{
-			if (classList.get(className).methods.contains(methodName)) 
+			if (classList.get(className).getMethods().contains(methodName)) 
 			{
 				return 402;
 			}
@@ -84,7 +91,7 @@ public class UMLClassManager {
 	{
 		if (classList.containsKey(className))
 		{
-			if (classList.get(className).fields.contains(fieldName)) 
+			if (classList.get(className).getFields().contains(fieldName)) 
 			{
 				return 404;
 			}
@@ -106,7 +113,7 @@ public class UMLClassManager {
 	{
 		if (classList.containsKey(className))
 		{
-			if (classList.get(className).fields.contains(fieldName)) 
+			if (classList.get(className).getFields().contains(fieldName)) 
 			{
 				classList.get(className).removeField(fieldName);
 				return 0;
@@ -130,7 +137,7 @@ public class UMLClassManager {
 
 		if (classList.containsKey(className))
 		{
-			if (classList.get(className).methods.contains(methodName)) 
+			if (classList.get(className).getMethods().contains(methodName)) 
 			{
 				classList.get(className).removeMethod(methodName);
 				return 0;
@@ -159,7 +166,7 @@ public class UMLClassManager {
 		if (classList.containsKey(oldName))
 		{
 			UMLClass tempCopy = classList.get(oldName);
-			tempCopy.name = newName;
+			tempCopy.setName(newName);
 			classList.remove(oldName);
 			classList.put(newName, tempCopy);
 			return 0;
@@ -170,17 +177,17 @@ public class UMLClassManager {
 	 * @param className; the class holding the field we want to edit
 	 * @param oldField; the field we want to change 
 	 * @param newName; the name of the new field
-	 * @return 0 on succesful name change and error code on failure 
+	 * @return 0 on successful name change and error code on failure 
 	 */
 	public int editFields(String className, String oldField, String newName)
 	{
 			//check if the new name doesn't already exist as a class name
 		if (classList.containsKey(className)){
-			if (classList.get(className).fields.contains(newName))
+			if (classList.get(className).getFields().contains(newName))
 			{
 				return 404; 
 			}
-			if (classList.get(className).fields.contains(oldField))
+			if (classList.get(className).getFields().contains(oldField))
 			{
 				//this is great code don't question it keep moving
 				classList.get(className).removeField(oldField);
@@ -203,11 +210,11 @@ public class UMLClassManager {
 	{
 			//check if the new name doesn't already exist as a class name
 		if (classList.containsKey(className)){
-			if (classList.get(className).methods.contains(newName))
+			if (classList.get(className).getMethods().contains(newName))
 			{
 				return 402; 
 			}
-			if (classList.get(className).methods.contains(oldMethod))
+			if (classList.get(className).getMethods().contains(oldMethod))
 			{
 				//this is great code don't question it keep moving
 				classList.get(className).removeMethod(oldMethod);
@@ -222,12 +229,17 @@ public class UMLClassManager {
 	/**
 	 * Removes node of type UMLClass from list
 	 * @param className: name of class
-	 * @return true if the class was successfully removed from the list
+	 * @return 0 if the class was successfully removed from the list
 	 */
 	public int removeClass(String className) {
 		if (classList.containsKey(className))
 		{
+			// Remove the class from the list of classes
 			classList.remove(className);
+			
+			// Remove any relationship involving the class
+			relationships.entrySet().removeIf(e -> e.getValue().hasClass(className));
+			
 			return 0;
 		}
 		return 201;
@@ -246,7 +258,6 @@ public class UMLClassManager {
 			result += entry.getKey();
 			// Only add comma if not the last element
 			if(count++ != classList.size() -1) {
-				
 				result += ", ";
 			}
 		}
@@ -273,6 +284,127 @@ public class UMLClassManager {
 	}
 	
 	/**
+	 * List the fields of the given class
+	 * @param className
+	 * @return 'tuple' of [string of fields, return code];
+	 */
+	public Object[] listFields(String className) {
+		// Make sure class exists
+		if(!classList.containsKey(className))
+			return new Object[]{"", 109};
+		
+		return new Object[]{classList.get(className).getFields(), 0};
+	}
+	
+	/**
+	 * List the methods of the given class
+	 * @param className
+	 * @return 'tuple' of [string of methods, return code];
+	 */
+	public Object[] listMethods(String className) {
+		// Make sure class exists
+		if(!classList.containsKey(className))
+			return new Object[]{"", 109};
+		
+		return new Object[]{classList.get(className).getMethods(), 0};
+	}
+	
+	/**
+	 * Create a relationship between the two given classes
+	 * @param srcClass - the first class's name
+	 * @param destClass - the second class's name
+	 * @return 0 if successfully added relationship, error code otherwise
+	 */
+	public int addRelationship(String srcClass, String destClass) {
+		// Make sure both class names exist
+		if(!classList.containsKey(srcClass) || !classList.containsKey(destClass))
+			return 107;
+		
+		// Make sure a relationship between both classes does not exist
+		if(relationshipExists(srcClass, destClass))
+			return 106;
+		
+		// If both classes exist and do not have a pre-existing relationship, then
+		//		create a new relationship between them
+		String key = UMLRelationship.GENERATE_STRING(srcClass, destClass);
+		UMLRelationship relation = new UMLRelationship(classList.get(srcClass), classList.get(destClass));
+		relationships.put(key, relation);
+		
+		// Indicate success
+		return 0;
+	}
+	
+	/**
+	 * Remove the relationship between the two given classes
+	 * @param srcClass - the first class's name
+	 * @param destClass - the second class's name
+	 * @return 0 if successfully removed the relationship, error code if otherwise
+	 */
+	public int removeRelationship(String srcClass, String destClass) {
+		// Make sure both class name exist
+		if(!classList.containsKey(srcClass) || !classList.containsKey(destClass))
+			return 107;
+		
+		// Make sure there is a pre-existing relationship
+		if(!relationshipExists(srcClass, destClass))
+			return 108;
+		
+		// Determine which class is the key in the relationships map
+		String key = UMLRelationship.GENERATE_STRING(srcClass, destClass);
+		if(!relationships.containsKey(key))
+			key = UMLRelationship.GENERATE_STRING(destClass, srcClass);
+		
+		// Remove the relationship from the map
+		relationships.remove(key);
+		
+		return 0;
+	}
+	
+	/**
+	 * List the relationships the given class has
+	 * @param className
+	 * @return 'tuple' of [string of relationships, return code];
+	 */
+	public Object[] listRelationships(String className) {
+		// Make sure class exists
+		if(!classList.containsKey(className))
+			return new Object[]{"", 107};
+		
+		// Find all relationships with className involved
+		String result = "[";
+		
+		// Loop through all relationships checking if className is in each relationship, if
+		//		it is then add the key to the output
+		for(Map.Entry<String, UMLRelationship> relation : relationships.entrySet()) {
+			// Check if className is in the relationship
+			if(relation.getValue().hasClass(className))
+				result += relation.getKey() +", ";
+		}
+		
+		// Remove last ', ' if it exists
+		if(result.endsWith(", "))
+			result = result.substring(0, result.lastIndexOf(", "));
+		
+		result += "]";
+		
+		return new Object[]{result, 0};
+	}
+	
+	/**
+	 * Method to determine if there is already a relationship between the two classes
+	 * @param class1
+	 * @param class2
+	 * @return true if a relationship exists, false if not
+	 */
+	private boolean relationshipExists(String class1, String class2) {
+		// Iterate through relationship checking both directions (class1 -> class2) and (class1 <- class2)
+		String direct1 = UMLRelationship.GENERATE_STRING(class1, class2);  
+		String direct2 = UMLRelationship.GENERATE_STRING(class2, class1);  
+		
+		return relationships.containsKey(direct1) || relationships.containsKey(direct2);
+	}
+	
+	/**
 	 * Convert the class list to a JSON string
 	 * @return - JSON string
 	 */
@@ -282,15 +414,8 @@ public class UMLClassManager {
 		// Create JSON builder and enable 'pretty printing' for multiple lines
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		
-		// Convert LinkedList to standard array for serialization
-		int count = 0;
-		UMLClass[] classArray = new UMLClass[classList.size()];
-		for(Map.Entry<String, UMLClass> entry : classList.entrySet()) {
-			classArray[count] = (UMLClass) entry.getValue();
-		}
-		
-		// Convert array to JSON
-		jsonString += gson.toJson(classArray);
+		// Convert manager to JSON
+		jsonString += gson.toJson(this);
 		
 		return jsonString;
 	}
@@ -303,14 +428,32 @@ public class UMLClassManager {
 		// JSON parser object
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		
-		// Parse JSON to array of classes
-		UMLClass[] classArray = gson.fromJson(json, UMLClass[].class);
+		// Deep clone the manager
+		Type type = new TypeToken<UMLClassManager>(){}.getType();
+		UMLClassManager clonedManager = gson.fromJson(json, type);
 		
-		// Load array into LinkedList
-		for(UMLClass c : classArray) {
-			classList.put(c.name, c);
-		}
+		// Set classList and relationships
+		classList = clonedManager.getClassList();
+		relationships = clonedManager.getRelationships();
 		
 		return 0;
 	}
+
+	/**
+	 * Get the map of classes
+	 * @return - classList
+	 */
+	protected HashMap<String, UMLClass> getClassList() {
+		return classList;
+	}
+
+	/**
+	 * Get the map of relationships
+	 * @return - relationships
+	 */
+	protected HashMap<String, UMLRelationship> getRelationships() {
+		return relationships;
+	}
+	
+	
 }

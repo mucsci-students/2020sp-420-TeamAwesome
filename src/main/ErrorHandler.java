@@ -26,6 +26,10 @@ public class ErrorHandler {
 		tempMap.put(103, "User did not specify a file.");
 		tempMap.put(104, "Command was not recognized");
 		tempMap.put(105, "File does not exist.");
+		tempMap.put(106, "Relationship already exists.");
+		tempMap.put(107, "One or more specified classes do not exist.");
+		tempMap.put(108, "Relationship between specified classes does not exist.");
+		tempMap.put(109, "Class does not exists");
 		tempMap.put(200, "Class not added. Duplicate class.");
 		tempMap.put(201, "Class not removed. Class does not exist.");
 		tempMap.put(301, "Was unable to create file");
@@ -34,7 +38,7 @@ public class ErrorHandler {
 		tempMap.put(400, "NewName is exisiting class name");
 		tempMap.put(401, "Oldname is not an exisitng class");
 		tempMap.put(402, "MethodName already exists inside of class");
-		tempMap.put(403, "destination class does not exist");
+		tempMap.put(403, "Destination class does not exist");
 		tempMap.put(404, "fieldName already exists inside of class");
 		tempMap.put(405, "Field does not exist in the given class");
 		tempMap.put(406, "Method does not exist in the given class");
