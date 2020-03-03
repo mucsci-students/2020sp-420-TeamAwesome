@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.HashMap; 
 import java.util.Map;
 import java.util.jar.Attributes.Name;
+import java.util.regex.Matcher; 
+import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,7 +34,12 @@ public class UMLClassManager {
 	 * @return true if the new class was successfully added to the list
 	 */
 	public int addClass(String name) 
+	{
+		//check if name is valid
+		if (!validName(name))
 		{
+			return 407;
+		}
 		//Prevent duplicates
 		if (classList.containsKey(name))
 		{
@@ -246,6 +253,23 @@ public class UMLClassManager {
 		
 		result += "]";
 		return result;
+	}
+
+	public boolean validName(String name)
+	{
+		Pattern specialSearch = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+		Matcher m = specialSearch.matcher("string");
+		boolean specialChar = m.find();
+		if (specialChar){
+			return false;
+		}
+		if (name == null || name.isEmpty()){
+			return false;
+		}
+		if (Character.isLetter(name.charAt(0)) && !name.contains(" ")){
+			return true;
+		}
+		return false;
 	}
 	
 	/**
