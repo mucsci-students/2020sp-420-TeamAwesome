@@ -257,13 +257,14 @@ public class UMLClassManager {
 
 	public boolean validName(String name)
 	{
-		Pattern specialSearch = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
-		Matcher m = specialSearch.matcher("string");
-		boolean specialChar = m.find();
-		if (specialChar){
+		
+		if (name == null || name.isEmpty()){
 			return false;
 		}
-		if (name == null || name.isEmpty()){
+		Pattern specialSearch = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+		Matcher m = specialSearch.matcher(name);
+		boolean specialChar = m.find();
+		if (specialChar){
 			return false;
 		}
 		if (Character.isLetter(name.charAt(0)) && !name.contains(" ")){
