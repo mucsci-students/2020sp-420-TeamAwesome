@@ -12,7 +12,7 @@ Using our UMLEditor tool you can
 
 #### How to Run
 Steps  
-1. Install Mavan  
+1. Install Maven  
 	a. Link: https://mkyong.com/maven/how-to-install-maven-in-windows/  
 2. Install Bash  
 	a. Link: https://itsfoss.com/install-bash-on-windows/ 
@@ -21,7 +21,7 @@ Steps
 5. Type "./run-uml.sh" and hit enter
 
 #### View Options
-Prompted to select console view or GUI view after startup 
+Prompted to select console view or GUI view after startup. 
 
 ### How to Use
 Once UMLeditor is running type "help" and hit enter to print out a list of valid commands and their descriptions.
@@ -29,9 +29,9 @@ Once UMLeditor is running type "help" and hit enter to print out a list of valid
 
 #### Contributors
 TeamAwesome
-- Ryan Hass
+- Ryan Haas
 - Anythony Mason
-- Dylan Ragner
+- Dylan Wagner
 - Benjamin Mullins
 
 #### MIT License
