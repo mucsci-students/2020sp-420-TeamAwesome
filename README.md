@@ -20,7 +20,7 @@ Steps
 4. Type "bash" and hit enter
 5. Type "./run-uml.sh" and hit enter
 
-#### View Options
+### View Options
 Prompted to select console view or GUI view after startup.
 
 ### How to Use
