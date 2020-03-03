@@ -1,59 +1,37 @@
-// Package name
-package main;
+package views;
 
-// System imports
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Scanner;
 
-// Local imports
-import console.UMLConsole;
-import gui.GUIEnvironment;
-import resources.UMLFileIO;
-import resources.UMLClassManager;
+import controller.CommandController;
+import controller.UMLController;
+import main.ErrorHandler;
+import main.UMLFileIO;
+import model.UMLClassManager;
+import observe.Observable;
 
-/**
- *  Main environment for UML Editor
- * @author Ryan
- *
- */
-public class UMLEditor {
-	// UML Console
-	private static UMLConsole console;
+public class ConsoleView extends View {
+	private Scanner scanner;
+	private UMLController controller;
+	private UMLFileIO fileIO;
 	
 	// All valid commands
 	private Hashtable<String, String[]> validCommands;
 	
-	// Class manipulation handler
-	private UMLClassManager classManager;
-	
-	// Saving and loading manager
-	private UMLFileIO fileIO;
-	
-	/**
-	 * Constructor for the UML Editor where the console
-	 * and GUI will be initialized and run
-	 */
-	public UMLEditor() {
-		// Initialize variables
-		console = new UMLConsole();
-		validCommands = new Hashtable<String, String[]>();
-		classManager = new UMLClassManager();
+	public ConsoleView() {
+		scanner = new Scanner(System.in);
+		
 		fileIO = new UMLFileIO();
 		
-		// Fill the list of valid commands with names and descriptions
+		controller = new CommandController(new UMLClassManager());
+		controller.addObserver(this);
+		
+		validCommands = new Hashtable<String, String[]>();
 		populateValidCommands();
-	}
-	
-	/**
-	 * Actually begin reading from the console.
-	 * Separate from initialization so we can control when the console is started and
-	 * allows for testing of commands.
-	 */
-	protected void beginConsole() {
-		// Continuously get console input until quit statement has been reached
+		
 		while(true) {
-			// Get the input from console
-			String input = console.getConsoleCommand();
+			String input = getCommand();
 			
 			// Check if command is empty or only whitespace
 			if(!input.isEmpty() && !input.replaceAll(" ", "").isEmpty()) {
@@ -66,13 +44,6 @@ public class UMLEditor {
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Start the GUI
-	 */
-	protected void beginGUI() {
-		new GUIEnvironment(this);
 	}
 	
 	/**
@@ -99,7 +70,6 @@ public class UMLEditor {
 		//	Otherwise return false
 		if(args[0].equals("exit") || args[0].equals("quit")) {
 			System.out.println("Force quitting...");
-			cleanup();
 			System.out.println("Goodbye :)");
 			System.exit(0);
 		}
@@ -109,7 +79,7 @@ public class UMLEditor {
 				// Pull args
 				String className = args[1];
 				
-				result = classManager.addClass(className);
+				result = controller.addClass(className);
 				if(result == 0)
 					System.out.println("Added class \'" + className + "\'.");
 			}
@@ -123,7 +93,7 @@ public class UMLEditor {
 				// Pull args
 				String className = args[1];
 				
-				result = classManager.removeClass(className);
+				result = controller.removeClass(className);
 				if(result == 0)
 					System.out.println("Removed class \'" + className + "\'.");
 			} 
@@ -146,7 +116,7 @@ public class UMLEditor {
 					System.err.flush();
 					System.out.flush();
 					System.out.print("Save file: ");
-					filePath = console.getScanner().nextLine();
+					filePath = scanner.nextLine();
 				}
 			}
 			else {
@@ -174,7 +144,7 @@ public class UMLEditor {
 			}
 			
 			// Write JSON to file
-			result = fileIO.writeToFile(classManager.convertToJSON());
+			result = fileIO.writeToFile(controller.getModel().convertToJSON());
 		}
 		else if(args[0].equals("load")) {
 			// Expects args[1] to be the path to the file to load.
@@ -194,7 +164,7 @@ public class UMLEditor {
 				}
 				
 				// Read the file in and pass it to the classManager for parsing.
-				result = classManager.parseJSON((String)fileIO.readFile()[0]);
+				result = controller.getModel().parseJSON((String)fileIO.readFile()[0]);
 			}
 			else {
 				return 102;
@@ -203,7 +173,7 @@ public class UMLEditor {
 		else if(args[0].equals("add-field")) {
 			// Expects args[1]=className and args[2]=fieldName
 			if(args.length == 3) {
-				result = classManager.addFields(args[1], args[2]);
+				result = controller.addField(args[1], args[2]);
 			}
 			else {
 				return 102;
@@ -212,7 +182,7 @@ public class UMLEditor {
 		else if(args[0].equals("add-method")) {
 			// Expects args[1]=className and args[2]=methodName
 			if(args.length == 3) {
-				result = classManager.addMethods(args[1], args[2]);
+				result = controller.addMethod(args[1], args[2]);
 			}
 			else {
 				return 102;
@@ -221,7 +191,7 @@ public class UMLEditor {
 		else if(args[0].equals("remove-field")) {
 			// Expects args[1]=className and args[2]=fieldName
 			if(args.length == 3) {
-				result = classManager.removeFields(args[1], args[2]);
+				result = controller.removeField(args[1], args[2]);
 			}
 			else {
 				return 102;
@@ -230,7 +200,7 @@ public class UMLEditor {
 		else if(args[0].equals("remove-method")) {
 			// Expects args[1]=className and args[2]=methodName
 			if(args.length == 3) {
-				result = classManager.removeMethods(args[1], args[2]);
+				result = controller.removeMethod(args[1], args[2]);
 			}
 			else {
 				return 102;
@@ -239,7 +209,7 @@ public class UMLEditor {
 		else if(args[0].equals("add-relationship")) {
 			// Expects args[1]=className1 and args[2]=className2
 			if(args.length == 3) {
-				result = classManager.addRelationship(args[1], args[2]);
+				result = controller.addRelationship(args[1], args[2]);
 			}
 			else {
 				return 102;
@@ -248,7 +218,7 @@ public class UMLEditor {
 		else if(args[0].equals("remove-relationship")) {
 			// Expects args[1]=className1 and args[2]=className2
 			if(args.length == 3) {
-				result = classManager.removeRelationship(args[1], args[2]);
+				result = controller.removeRelationship(args[1], args[2]);
 			}
 			else {
 				return 102;
@@ -259,7 +229,7 @@ public class UMLEditor {
 			if(args.length == 2) {
 				String className = args[1];
 				
-				Object[] objResult = classManager.listFields(className);
+				Object[] objResult = controller.getModel().listFields(className);
 				result = (int)objResult[1];
 				
 				if(result == 0)
@@ -272,7 +242,7 @@ public class UMLEditor {
 			if(args.length == 2) {
 				String className = args[1];
 				
-				Object[] objResult = classManager.listMethods(className);
+				Object[] objResult = controller.getModel().listMethods(className);
 				result = (int)objResult[1];
 				
 				if(result == 0)
@@ -285,7 +255,7 @@ public class UMLEditor {
 			if(args.length == 2) {
 				String className = args[1];
 				
-				Object[] objResult = classManager.listRelationships(className);
+				Object[] objResult = controller.getModel().listRelationships(className);
 				result = (int)objResult[1];
 				
 				if(result == 0)
@@ -294,7 +264,7 @@ public class UMLEditor {
 				return 102;
 		}
 		else if(args[0].equals("list-classes")) {
-			System.out.println("Classes: " + classManager.listClasses());
+			System.out.println("Classes: " + controller.getModel().listClasses());
 		}
 		else if(args[0].equals("help")) {
 			printHelp();
@@ -309,28 +279,13 @@ public class UMLEditor {
 		return result;
 	}
 	
-	/**
-	 * Print out the a list of commands with descriptions
-	 */
-	private void printHelp() {
-		System.out.println();
-		System.out.println("VALID COMMANDS");
-		System.out.println("---------------------------------");
-		
-		// For every key in dictionary print corresponding description
-		for(Enumeration<String> keys = validCommands.keys(); keys.hasMoreElements();) {
-			// Get the name of the command
-			String commName = (String)keys.nextElement();
-			// Get the list of description lines
-			String[] desc = validCommands.get(commName);
-			// Print first line with command name
-			System.out.printf("%-25s: %-40s\n", commName, desc[0]);
-			// Print rest of the command descriptions
-			for(int i = 1; i < desc.length; i++) {
-				System.out.printf("%-25s  %-40s\n", "", desc[i]);
-			}
-		}
-		System.out.println();
+	private String getCommand() {
+		// Preface to indicate waiting for input
+		System.out.print("editor> ");
+		// Get input from user
+		String str = scanner.nextLine();
+		// Return user-entered string
+		return str;
 	}
 	
 	/**
@@ -368,33 +323,29 @@ public class UMLEditor {
 	}
 	
 	/**
-	 * Get the UMLConsole instance
-	 * @return console
+	 * Print out the a list of commands with descriptions
 	 */
-	public UMLConsole getConsole() {
-		return console;
+	private void printHelp() {
+		System.out.println();
+		System.out.println("VALID COMMANDS");
+		System.out.println("---------------------------------");
+		
+		// For every key in dictionary print corresponding description
+		for(Enumeration<String> keys = validCommands.keys(); keys.hasMoreElements();) {
+			// Get the name of the command
+			String commName = (String)keys.nextElement();
+			// Get the list of description lines
+			String[] desc = validCommands.get(commName);
+			// Print first line with command name
+			System.out.printf("%-25s: %-40s\n", commName, desc[0]);
+			// Print rest of the command descriptions
+			for(int i = 1; i < desc.length; i++) {
+				System.out.printf("%-25s  %-40s\n", "", desc[i]);
+			}
+		}
+		System.out.println();
 	}
-	
-	/**
-	 * Get the UMLClassManager instance
-	 * @return classManager
-	 */
-	public UMLClassManager getClassManager() {
-		return classManager;
-	}
-	
-	/**
-	 * Perform any cleanup operations, like closing files, input readers, streams, etc.
-	 */
-	private void cleanup() {
-		console.closeScanner();
-	}
-	
-	public static void main(String[] args) {
-		// Create editor instance
-		UMLEditor editor = new UMLEditor();
-		// Start console
-		editor.beginConsole();
-		//editor.beginGUI();
-	}
+
+	@Override
+	public void updated(Observable src, String tag, Object data) {}
 }
