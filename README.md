@@ -1,6 +1,6 @@
 # UMLEditor
 ## Version 1.5.0
-#### Motivation
+### Motivation
 This UML Editor was created as per the course requirements of 420 Software Engineering at Millersville University during the Spring of 2020. 
 
 ### Functionality
@@ -10,7 +10,7 @@ Using our UMLEditor tool you can
 * Add/remove/rename methods
 * Add/remove relationships between classes
 
-#### How to Run
+### How to Run
 Steps  
 1. Install Maven  
 	a. Link: https://mkyong.com/maven/how-to-install-maven-in-windows/  
@@ -20,21 +20,21 @@ Steps
 4. Type "bash" and hit enter
 5. Type "./run-uml.sh" and hit enter
 
-#### View Options
-Prompted to select console view or GUI view after startup. 
+### View Options
+Prompted to select console view or GUI view after startup.
 
 ### How to Use
 Once UMLeditor is running type "help" and hit enter to print out a list of valid commands and their descriptions.
 
 
-#### Contributors
+### Contributors
 TeamAwesome
 - Ryan Haas
 - Anythony Mason
 - Dylan Wagner
 - Benjamin Mullins
 
-#### MIT License
+### MIT License
 Copyright (c) [2020] Ryan Hass, Anythony Mason Dylan Ragner, Benjamin Mullins
 
 
