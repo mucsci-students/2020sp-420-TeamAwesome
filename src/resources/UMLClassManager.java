@@ -439,6 +439,10 @@ public class UMLClassManager implements Serializable {
 		
 		return 0;
 	}
+	
+	public UMLClass getClass(String className) {
+		return classList.get(className);
+	}
 
 	/**
 	 * Get the map of classes

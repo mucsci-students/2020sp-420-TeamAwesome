@@ -394,7 +394,7 @@ public class UMLEditor {
 		// Create editor instance
 		UMLEditor editor = new UMLEditor();
 		// Start console
-		editor.beginConsole();
-		//editor.beginGUI();
+		//editor.beginConsole();
+		editor.beginGUI();
 	}
 }

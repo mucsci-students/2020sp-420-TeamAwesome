@@ -30,6 +30,7 @@ public class ErrorHandler {
 		tempMap.put(107, "One or more specified classes do not exist.");
 		tempMap.put(108, "Relationship between specified classes does not exist.");
 		tempMap.put(109, "Class does not exists");
+		tempMap.put(110, "Unable to set UI look and feel.");
 		tempMap.put(200, "Class not added. Duplicate class.");
 		tempMap.put(201, "Class not removed. Class does not exist.");
 		tempMap.put(301, "Was unable to create file");
@@ -42,6 +43,7 @@ public class ErrorHandler {
 		tempMap.put(404, "fieldName already exists inside of class");
 		tempMap.put(405, "Field does not exist in the given class");
 		tempMap.put(406, "Method does not exist in the given class");
+		tempMap.put(407, "Class name entered is invalid.");
 		return tempMap;
 	}
 	

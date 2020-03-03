@@ -9,12 +9,16 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import resources.UMLClass;
+import resources.UMLClassManager;
 
 /**
  * JPanel where the representations of the classes and relationships will be displayed
  * @author Ryan
  */
 public class UMLContainer extends JPanel implements MouseListener, MouseMotionListener {
+	private GUIEnvironment guiEnvironment;
+	private UMLClassManager classManager;
+	
 	// List of GUI classes
 	private ArrayList<GUIClass> guiClasses;
 	
@@ -25,7 +29,10 @@ public class UMLContainer extends JPanel implements MouseListener, MouseMotionLi
 	/**
 	 * Setup the drag area and drawing area
 	 */
-	public UMLContainer() {
+	public UMLContainer(GUIEnvironment guiEnvironment, UMLClassManager classManager) {
+		this.guiEnvironment = guiEnvironment;
+		this.classManager = classManager;
+		
 		// Set the layout to null so we can drag
 		setLayout(null);
 		
@@ -38,11 +45,38 @@ public class UMLContainer extends JPanel implements MouseListener, MouseMotionLi
 	 * @param umlClass - Reference UMLClass
 	 */
 	public void addClass(UMLClass umlClass) {
-		GUIClass temp = new GUIClass(umlClass);
+		addClass(umlClass, 0, 0);
+	}
+	
+	/**
+	 * Add a class at the given location
+	 * @param umlClass - Reference UMLClass
+	 * @param x - x coord
+	 * @param y - y coord
+	 */
+	public void addClass(UMLClass umlClass, int x, int y) {
+		GUIClass temp = new GUIClass(umlClass, this);
 		temp.addMouseListener(this);
 		temp.addMouseMotionListener(this);
 		add(temp);
+		revalidate();
+		temp.updateBounds();
+		temp.setLocation(x, y);
 		guiClasses.add(temp);
+	}
+
+	/**
+	 * Remove the class from class manager and GUI classes
+	 * @param umlClass
+	 */
+	public void removeClass(GUIClass guiClass) {
+		remove(guiClass);
+		guiClasses.remove(guiClass);
+		int result = classManager.removeClass(guiClass.getUMLClass().getName());
+		if(result != 0)
+			guiEnvironment.alertError(result);
+		
+		revalidate();
 	}
 	
 	@Override
