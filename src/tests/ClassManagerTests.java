@@ -7,9 +7,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
-import main.UMLEditor;
 // Local imports
-import resources.UML;
+import model.UMLClassManager;
 
 /**
  * Class for running JUnit tests on ClassManager
@@ -22,7 +21,7 @@ public class ClassManagerTests {
 	 */
 	@Test
 	public void baseInstance() {
-	UML manager = new UML();
+	UMLClassManager manager = new UMLClassManager();
 	assertTrue("List is empty", manager.empty());
 	}
 	
@@ -31,7 +30,7 @@ public class ClassManagerTests {
 	 */
 	@Test
 	public void addTest() {
-		UML manager = new UML();
+		UMLClassManager manager = new UMLClassManager();
 		manager.addClass("a");
 		manager.addClass("n");
 		manager.addClass("t");
@@ -45,7 +44,7 @@ public class ClassManagerTests {
 	 */
 	@Test
 	public void removeTest() {
-		UML manager = new UML();
+		UMLClassManager manager = new UMLClassManager();
 		int result = manager.removeClass("a");
 		assertEquals("There is no size", result, 201);
 		manager.addClass("a");
@@ -66,13 +65,13 @@ public class ClassManagerTests {
 	 */
 	@Test
 	public void convertParseTest() {
-		UML manager = new UML();
+		UMLClassManager manager = new UMLClassManager();
 		manager.addClass("b");
 		manager.addClass("i");
 		manager.addClass("g");
 		String j = manager.convertToJSON();
 		
-		UML parse = new UML();
+		UMLClassManager parse = new UMLClassManager();
 		int result = parse.parseJSON(j);
 		assertEquals("List is the same as start", result, 0);
 	}

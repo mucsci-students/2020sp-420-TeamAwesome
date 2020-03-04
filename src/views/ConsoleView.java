@@ -1,9 +1,11 @@
 package views;
 
+// System imports
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Scanner;
 
+// Local imports
 import controller.CommandController;
 import controller.UMLController;
 import main.ErrorHandler;

@@ -1,7 +1,6 @@
 package controller;
 
 import model.UMLClassManager;
-import observe.Observable;
 
 public class CommandController extends UMLController {
 	public CommandController(UMLClassManager model) {

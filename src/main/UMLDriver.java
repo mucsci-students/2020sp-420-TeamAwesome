@@ -1,12 +1,11 @@
 // Package name
 package main;
 
-import views.ConsoleView;
-import views.GUIView;
-
 // System imports
 
 // Local imports
+import views.ConsoleView;
+import views.GUIView;
 
 /**
  * Driver program that will start the UMLEditor
