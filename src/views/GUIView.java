@@ -3,17 +3,9 @@ package views;
 
 // System imports
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 //Local imports
@@ -38,14 +30,6 @@ public class GUIView extends View {
 	private JFrame window;
 	private DiagramPanel umlDiagram;
 	
-	// Menus
-	private JPopupMenu mouseMenu;
-	private JMenuItem itemAddClass;
-	
-	// Mouse coordinates of the last time a right click was detected
-	private int mouseX;
-	private int mouseY;
-	
 	public GUIView() {
 		// Setup look and feel
 		if(setLook() != 0);
@@ -59,8 +43,6 @@ public class GUIView extends View {
 		
 		setupWindow();
 		setupDiagram();
-		setupMenus();
-		setupActions();
 		
 		window.pack();
 		window.setVisible(true);
@@ -85,56 +67,13 @@ public class GUIView extends View {
 	 */
 	private void setupDiagram() {
 		// Setup a JPanel to display the classes and relationships
-		umlDiagram = new DiagramPanel();
+		umlDiagram = new DiagramPanel(this);
 		
 		// Add the umlDiagram to the list of listeners for model changes
 		controller.addObserver(umlDiagram);
 		
 		// Add the diagram to the frame
 		window.add(umlDiagram);
-	}
-	
-	/**
-	 * Setup the mouse and window menus and their items
-	 */
-	private void setupMenus() {
-		// Create the popup menu for when a user right clicks
-		mouseMenu = new JPopupMenu();
-		
-		// Initialize the menu items
-		itemAddClass = new JMenuItem("Add Class");
-		
-		// Add the mouse listener for right click, and then show the menu
-		umlDiagram.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// Only display and save coordinates if a right click is detected
-				if(SwingUtilities.isRightMouseButton(e)) {
-					mouseX = e.getX();
-					mouseY = e.getY();
-					mouseMenu.show(umlDiagram, mouseX, mouseY);
-				}
-			}
-		});
-		
-		// Add menu items to menu
-		mouseMenu.add(itemAddClass);
-	}
-	
-	/**
-	 * Setup the actions for buttons
-	 */
-	private void setupActions() {
-		itemAddClass.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Prompt the user for a class name
-				String className = promptInput("Enter class name:");
-				int result = controller.addClass(className, mouseX, mouseY);
-				if(result != 0)
-					showError(umlDiagram, result);
-			}
-		});
 	}
 	
 	/**
@@ -152,9 +91,17 @@ public class GUIView extends View {
 	 * @param parent - Parent component, can be null
 	 * @param errorCode
 	 */
-	public static void showError(JComponent parent, int errorCode) {
+	public void showError(JComponent parent, int errorCode) {
 		// Create error message
 		JOptionPane.showMessageDialog(parent, ErrorHandler.toString(errorCode), "Error", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	/**
+	 * Get the instance of the controller
+	 * @return
+	 */
+	public UMLController getController() {
+		return controller;
 	}
 	
 	/**
