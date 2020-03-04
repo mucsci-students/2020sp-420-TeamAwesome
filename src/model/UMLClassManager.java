@@ -405,6 +405,21 @@ public class UMLClassManager implements Serializable {
 	}
 	
 	/**
+	 * Set the location of a class
+	 * @param className - the class to set location
+	 * @param x - new x coordinate
+	 * @param y - new y coordinate
+	 */
+	public int setClassLocation(String className, int x, int y) {
+		if(classList.containsKey(className)) {
+			classList.get(className).setLocation(x, y);
+			return 0;
+		}
+		
+		return 109;
+	}
+	
+	/**
 	 * Convert the class list to a JSON string
 	 * @return - JSON string
 	 */
@@ -437,6 +452,17 @@ public class UMLClassManager implements Serializable {
 		relationships = clonedManager.getRelationships();
 		
 		return 0;
+	}
+	
+	/**
+	 * Get the UMLClass with className
+	 * @param className - name of class
+	 * @return - UMLClass instance
+	 */
+	public UMLClass getClass(String className) {
+		if(classList.containsKey(className))
+			return classList.get(className);
+		return null;
 	}
 
 	/**

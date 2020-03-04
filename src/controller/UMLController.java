@@ -15,6 +15,7 @@ public abstract class UMLController extends Observable {
 	}
 	
 	public abstract int addClass(String className);
+	public abstract int addClass(String className, int x, int y);
 	public abstract int removeClass(String className);
 	
 	public abstract int addField(String className, String fieldName);

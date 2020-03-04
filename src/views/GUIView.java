@@ -130,7 +130,7 @@ public class GUIView extends View {
 			public void actionPerformed(ActionEvent e) {
 				// Prompt the user for a class name
 				String className = promptInput("Enter class name:");
-				int result = controller.addClass(className);
+				int result = controller.addClass(className, mouseX, mouseY);
 				if(result != 0)
 					showError(umlDiagram, result);
 			}

@@ -20,6 +20,10 @@ public class UMLClass implements Serializable {
 	private ArrayList<String> fields;
 	private ArrayList<String> methods;
 	
+	// Coordinates of class, for GUI use only
+	private int x;
+	private int y;
+	
 	/**
 	 * Constructor for class objects
 	 * @param name the desired name of the class
@@ -77,6 +81,48 @@ public class UMLClass implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	/**
+	 * Get the X coordinate of class
+	 * @return - x
+	 */
+	public int getX() {
+		return x;
+	}
+	
+	/**
+	 * Get the Y coordinate of class
+	 * @return - y
+	 */
+	public int getY() {
+		return y;
+	}
+	
+	/**
+	 * Set the X coordinate of class
+	 * @param x - new x coordinate
+	 */
+	public void setX(int x) {
+		this.x = x;
+	}
+	
+	/**
+	 * Set the Y coordinate of class
+	 * @param y - new y coordinate
+	 */
+	public void setY(int y) {
+		this.y = y;
+	}
+	
+	/**
+	 * Set the class to a new location
+	 * @param x - new x coordinate
+	 * @param y - new y coordinate
+	 */
+	public void setLocation(int x, int y) {
+		setX(x);
+		setY(y);
 	}
 
 	/**

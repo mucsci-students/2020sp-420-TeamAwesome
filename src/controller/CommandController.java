@@ -10,13 +10,21 @@ public class CommandController extends UMLController {
 	public UMLClassManager getModel() {
 		return model;
 	}
-
-	public int addClass(String className) {
+	
+	@Override
+	public int addClass(String className, int x, int y) {
 		int result = getModel().addClass(className);
-		if(result == 0)
+		if(result == 0) {
+			result = getModel().setClassLocation(className, x, y);
+			
 			notify("addClass", getModel());
+		}
 		return result;
 	}
+
+	public int addClass(String className) {
+		return addClass(className, 0, 0);
+	}	
 
 	public int removeClass(String className) {
 		int result = getModel().removeClass(className);

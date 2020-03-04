@@ -8,24 +8,26 @@ import model.UMLClassManager;
 import views.components.DiagramPanel;
 
 public class GUIController extends UMLController {
-	private DiagramPanel diagram;
-
 	public GUIController(UMLClassManager model) {
 		super(model);
 	}
 	
-	/**
-	 * Set the diagram to add visual classes to
-	 * @param diagram - DiagramPanel instance
-	 */
-	public void setDiagram(DiagramPanel diagram) {
-		
+	// Add class with specified location
+	public int addClass(String className, int x, int y) {
+		int result = model.addClass(className);
+		if(result == 0) {
+			// Set classes x and y location
+			result = model.setClassLocation(className, x, y);
+			
+			// Notify observers of change
+			notify("addClass", getModel().getClass(className));
+		}
+		return result;
 	}
 
 	@Override
 	public int addClass(String className) {
-		// TODO Auto-generated method stub
-		return 0;
+		return addClass(className, 0, 0);
 	}
 
 	@Override
