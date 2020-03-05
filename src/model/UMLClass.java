@@ -84,6 +84,24 @@ public class UMLClass implements Serializable {
 	}
 	
 	/**
+	 * Check if the class has a given method
+	 * @param methodName
+	 * @return - true if class has method
+	 */
+	public boolean hasMethod(String methodName) {
+		return methods.contains(methodName);
+	}
+	
+	/**
+	 * Check if the class has a given field
+	 * @param fieldName
+	 * @return - true if class has field
+	 */
+	public boolean hasField(String fieldName) {
+		return fields.contains(fieldName);
+	}
+	
+	/**
 	 * Get the X coordinate of class
 	 * @return - x
 	 */

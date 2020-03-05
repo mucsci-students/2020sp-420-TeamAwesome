@@ -2,11 +2,19 @@
 package views.components;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 // System imports
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 import model.UMLClass;
@@ -19,7 +27,20 @@ import model.UMLClass;
  *
  */
 public class GUIClass extends JPanel {
+	// Instance of UMLClass
 	private UMLClass umlClass;
+	
+	// Title of class
+	private JLabel className;
+
+	// Class Properties
+	//		- Maps name to the corresponding label
+	private HashMap<String, JLabel> fieldLabels;
+	private HashMap<String, JLabel> methodLabels;
+	
+	// Regions
+	private JPanel fieldRegion;
+	private JPanel methodRegion;
 	
 	/**
 	 * Initialize a graphical view of a given UMLClass
@@ -28,15 +49,36 @@ public class GUIClass extends JPanel {
 	public GUIClass(UMLClass umlClass) {
 		this.umlClass = umlClass;
 		
+		// Initialize label maps
+		fieldLabels = new HashMap<String, JLabel>();
+		methodLabels = new HashMap<String, JLabel>();
+		
+		// Set layout to be a vertical box layout
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		
+		// Initialize region panels, with a vertical BoxLayout
+		fieldRegion = new JPanel();
+		fieldRegion.setLayout(new BoxLayout(fieldRegion, BoxLayout.Y_AXIS));
+		methodRegion = new JPanel();
+		methodRegion.setLayout(new BoxLayout(methodRegion, BoxLayout.Y_AXIS));
+		
 		// Add a label of the class name
-		add(new JLabel(umlClass.getName()));
+		className = generateLabel(umlClass.getName());
+		className.setFont(className.getFont().deriveFont(Font.BOLD));
+		add(className);
+		
+		// Add separators and regions
+		add(generateSeparator(Color.BLACK));
+		add(fieldRegion);
+		add(generateSeparator(Color.BLACK));
+		add(methodRegion);
 		
 		// Set the location given the classes location
 		setLocation(umlClass.getX(), umlClass.getY());
 		
 		// Add padding and a border
 		Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-		Border outline = BorderFactory.createLineBorder(Color.BLACK);
+		Border outline = BorderFactory.createLineBorder(Color.BLACK, 2);
 		setBorder(BorderFactory.createCompoundBorder(outline, padding));
 		
 		// Update the box bounds
@@ -58,6 +100,122 @@ public class GUIClass extends JPanel {
 		super.setLocation(x, y);
 		updateBounds();
 		umlClass.setLocation(x, y);
+	}
+	
+	/**
+	 * Generate a centered JLabel
+	 * @param text - The label text
+	 * @return - JLabel instance
+	 */
+	private JLabel generateLabel(String text) {
+		JLabel temp = new JLabel(text);
+		temp.setAlignmentX(Component.CENTER_ALIGNMENT);
+		temp.setAlignmentY(Component.TOP_ALIGNMENT);
+		return temp;
+	}
+	
+	/**
+	 * Generate a horizontal separator
+	 * @return - JSeparator instance
+	 */
+	private JSeparator generateSeparator(Color c) {
+		JSeparator mySep = new JSeparator(SwingConstants.HORIZONTAL);
+		mySep.setAlignmentY(TOP_ALIGNMENT);
+		mySep.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, c));
+		return mySep;
+	}
+	
+	/**
+	 * Check to make sure the method labels match the class representation.
+	 * This should be called every time the DiagramPanel is notified of a class change
+	 */
+	public void updateMethods() {
+		// Loop through list of class methods
+		
+		// Check to see if there is a method in the class that is not a label
+		//		If so then add it to the panel
+		for(String methodName : umlClass.getMethods()) {
+			if(!methodLabels.containsKey(methodName)) {
+				JLabel temp = generateLabel(methodName);
+				methodLabels.put(methodName, temp);
+				
+				// Add label to display
+				methodRegion.add(temp);
+			}
+		}
+		
+		// Check to see if there is a label that is not in the class
+		//		If so then remove it from the panel
+		// Map iterator
+		Iterator<Map.Entry<String, JLabel>> entryIt = methodLabels.entrySet().iterator();
+		
+		// Iterate over elements
+		while(entryIt.hasNext()) {
+			// Get entry
+			Map.Entry<String, JLabel> entry = entryIt.next();
+			
+			// Get the label name
+			String name = entry.getKey();
+			// Check if label is not in class list
+			if(!umlClass.hasMethod(name)) {
+				// Remove label from display
+				remove(entry.getValue());
+				
+				// Remove method
+				entryIt.remove();
+			}
+		}
+		
+		validate();
+		repaint();
+		updateBounds();
+	}
+	
+	/**
+	 * Check to make sure the field labels match the class representation.
+	 * This should be called every time the DiagramPanel is notified of a class change
+	 */
+	public void updateFields() {
+		// Loop through list of class methods
+		
+		// Check to see if there is a field in the class that is not a label
+		//		If so then add it to the panel
+		for(String fieldName : umlClass.getFields()) {
+			if(!fieldLabels.containsKey(fieldName)) {
+				JLabel temp = generateLabel(fieldName);
+				System.out.println("Putting: " + fieldName);
+				fieldLabels.put(fieldName, temp);
+				
+				// Add label to display
+				fieldRegion.add(temp);
+			}
+		}
+		
+		// Check to see if there is a label that is not in the class
+		//		If so then remove it from the panel
+		// Map iterator
+		Iterator<Map.Entry<String, JLabel>> entryIt = fieldLabels.entrySet().iterator();
+		
+		// Iterate over elements
+		while(entryIt.hasNext()) {
+			// Get entry
+			Map.Entry<String, JLabel> entry = entryIt.next();
+			
+			// Get the label name
+			String name = entry.getKey();
+			// Check if label is not in class list
+			if(!umlClass.hasField(name)) {
+				// Remove label from display
+				fieldRegion.remove(entry.getValue());
+				
+				// Remove field
+				entryIt.remove();
+			}
+		}
+		
+		validate();
+		repaint();
+		updateBounds();
 	}
 	
 	/**

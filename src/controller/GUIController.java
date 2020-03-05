@@ -58,14 +58,22 @@ public class GUIController extends UMLController {
 
 	@Override
 	public int addField(String className, String fieldName) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = model.addFields(className, fieldName);
+		if(result == 0) {
+			// Notify observer of change
+			notify("fieldChange", model.getClass(className));
+		}
+		return result;
 	}
 
 	@Override
 	public int removeField(String className, String fieldName) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = model.removeFields(className, fieldName);
+		if(result == 0) {
+			// Notify observer of change
+			notify("fieldChange", model.getClass(className));
+		}
+		return result;
 	}
 
 	@Override

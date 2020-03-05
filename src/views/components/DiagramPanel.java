@@ -109,9 +109,13 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Initialize class menu options
 		classRemoveClass = new JMenuItem("Remove Class");
+		classAddField = new JMenuItem("Add Field");
+		classRemoveField = new JMenuItem("Remove Field");
 		
 		// Add items to class menu
 		classMenu.add(classRemoveClass);
+		classMenu.add(classAddField);
+		classMenu.add(classRemoveField);
 	}
 	
 	/**
@@ -123,6 +127,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Setup actions for class menu items
 		classRemoveClass.addActionListener(removeClassAction());
+		classAddField.addActionListener(addFieldAction());
+		classRemoveField.addActionListener(removeFieldAction());
 	}
 	
 	/**
@@ -138,13 +144,16 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				int result = view.getController().addClass(className, mouseX, mouseY);
 				if(result != 0)
 					view.showError(DiagramPanel.this, result);
+				
+				// Reset prev
+				prev = null;
 			}
 		};
 	}
 	
 	/**
 	 * Get an action listener that will remove a class
-	 * @return - ActionListener with definition for adding a class
+	 * @return - ActionListener with definition for removing a class
 	 */
 	private ActionListener removeClassAction() {
 		return new ActionListener() {
@@ -155,6 +164,51 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					int result = view.getController().removeClass(prev.getName());
 					if(result != 0)
 						view.showError(DiagramPanel.this, result);
+					
+					// Reset prev
+					prev = null;
+				}
+			}
+		};
+	}
+	
+	/**
+	 * Get an action listener that will add a field to a given class
+	 * @return - ActionListener with definition for adding a field
+	 */
+	private ActionListener addFieldAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Make sure a selected class exists
+				if(prev != null) {
+					String fieldName = view.promptInput("Enter field name:");
+					int result = view.getController().addField(prev.getName(), fieldName);
+					if(result != 0)
+						view.showError(DiagramPanel.this, result);
+					
+					prev = null;
+				}
+			}
+		};
+	}
+	
+	/**
+	 * Get an action listener that will add a field to a given class
+	 * @return - ActionListener with definition for adding a field
+	 */
+	private ActionListener removeFieldAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Make sure a selected class exists
+				if(prev != null) {
+					String fieldName = view.promptInput("Enter field name:");
+					int result = view.getController().removeField(prev.getName(), fieldName);
+					if(result != 0)
+						view.showError(DiagramPanel.this, result);
+					
+					prev = null;
 				}
 			}
 		};
@@ -185,6 +239,20 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			UMLClass removed = (UMLClass)data;
 			remove(guiClasses.get(removed.getName()));
 			guiClasses.remove(removed.getName());
+		}
+		else if(tag.equals("fieldChange")) {
+			// Cast data as UMLClass
+			UMLClass umlClass = (UMLClass)data;
+			
+			// Update associated GUIClass data
+			guiClasses.get(umlClass.getName()).updateFields();
+		}
+		else if(tag.equals("methodChange")) {
+			// Cast data as UMLClass
+			UMLClass umlClass = (UMLClass)data;
+			
+			// Update associated GUIClass data
+			guiClasses.get(umlClass.getName()).updateMethods();
 		}
 		
 		// Update display
