@@ -59,4 +59,12 @@ public class GUIClass extends JPanel {
 		updateBounds();
 		umlClass.setLocation(x, y);
 	}
+	
+	/**
+	 * Get the name of the represented class
+	 * @return - UMLClass name
+	 */
+	public String getName() {
+		return umlClass.getName();
+	}
 }

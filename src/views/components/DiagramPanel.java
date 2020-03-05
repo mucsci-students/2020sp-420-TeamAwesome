@@ -51,9 +51,20 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	// MenuItems for generic mouse menu
 	private JMenuItem mouseAddClass;
 	
+	// MenuItems for class mouse menu
+	private JMenuItem classRemoveClass;
+	private JMenuItem classAddField;
+	private JMenuItem classRemoveField;
+	private JMenuItem classAddMethod;
+	private JMenuItem classRemoveMethod;
+	private JMenuItem classAddRelationship;
+	private JMenuItem classRemoveRelationship;
+	
 	// Mouse coordinates of the last time a right click was detected
+	// 		as well as the last GUIClass that was selected, if one exists
 	private int mouseX;
 	private int mouseY;
+	private GUIClass prev;
 	
 	public DiagramPanel(GUIView view) {
 		this.view = view;
@@ -95,13 +106,23 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		// Create the popup menu for when a user right clicks a class
 		// 		NOTE: Displaying this is handled in the GUIView's mouse listeners
 		classMenu = new JPopupMenu();
+		
+		// Initialize class menu options
+		classRemoveClass = new JMenuItem("Remove Class");
+		
+		// Add items to class menu
+		classMenu.add(classRemoveClass);
 	}
 	
 	/**
 	 * Setup the actions for buttons
 	 */
 	private void setupActions() {
+		// Setup actions for generic mouse menu items
 		mouseAddClass.addActionListener(addClassAction());
+		
+		// Setup actions for class menu items
+		classRemoveClass.addActionListener(removeClassAction());
 	}
 	
 	/**
@@ -117,6 +138,24 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				int result = view.getController().addClass(className, mouseX, mouseY);
 				if(result != 0)
 					view.showError(DiagramPanel.this, result);
+			}
+		};
+	}
+	
+	/**
+	 * Get an action listener that will remove a class
+	 * @return - ActionListener with definition for adding a class
+	 */
+	private ActionListener removeClassAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Make sure a selected class exists
+				if(prev != null) {
+					int result = view.getController().removeClass(prev.getName());
+					if(result != 0)
+						view.showError(DiagramPanel.this, result);
+				}
 			}
 		};
 	}
@@ -140,14 +179,24 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			
 			// Add GUIClass to panel
 			add(temp);
-			
-			validate();
-			repaint();
 		}
+		else if(tag.equals("removeClass")) {
+			// Find the GUIClass that correlates to the removed object and delete it
+			UMLClass removed = (UMLClass)data;
+			remove(guiClasses.get(removed.getName()));
+			guiClasses.remove(removed.getName());
+		}
+		
+		// Update display
+		validate();
+		repaint();
 	}
 	
 	@Override
 	public void mousePressed(MouseEvent e) {
+		// Destroy last saved guiClass;
+		prev = null;
+		
 		// Get the source of the mouse event
 		Object source = e.getSource();
 		
@@ -177,6 +226,10 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			else if(source instanceof GUIClass) {
 				// Cast mouse source to GUIClass
 				GUIClass guiClass = (GUIClass)e.getSource();
+				mouseX = e.getX();
+				mouseY = e.getY();
+				prev = guiClass;
+				classMenu.show(guiClass, mouseX, mouseY);
 			}
 		}
 	}

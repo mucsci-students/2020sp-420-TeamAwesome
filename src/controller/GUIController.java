@@ -3,16 +3,24 @@ package controller;
 
 // System imports
 
-// Local imports
-import model.UMLClassManager;
-import views.components.DiagramPanel;
 
+// Local imports
+import model.UMLClass;
+import model.UMLClassManager;
+
+/**
+ * Controller for the GUIView
+ * @author ryan
+ *
+ */
 public class GUIController extends UMLController {
 	public GUIController(UMLClassManager model) {
 		super(model);
 	}
 	
-	// Add class with specified location
+	/**
+	 *  Add class with specified location
+	 */
 	public int addClass(String className, int x, int y) {
 		int result = model.addClass(className);
 		if(result == 0) {
@@ -25,15 +33,27 @@ public class GUIController extends UMLController {
 		return result;
 	}
 
+	/**
+	 * Add class with default location at 0, 0
+	 */
 	@Override
 	public int addClass(String className) {
 		return addClass(className, 0, 0);
 	}
 
+	/**
+	 * Remove specified class
+	 */
 	@Override
 	public int removeClass(String className) {
-		// TODO Auto-generated method stub
-		return 0;
+		// Save instance of class
+		UMLClass temp = model.getClass(className);
+		int result = model.removeClass(className);
+		if(result == 0) {
+			// Notify observer of change
+			notify("removeClass", temp);
+		}
+		return result;
 	}
 
 	@Override
