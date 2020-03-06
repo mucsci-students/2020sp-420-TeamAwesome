@@ -38,6 +38,10 @@ public class GUIClass extends JPanel {
 	private HashMap<String, JLabel> fieldLabels;
 	private HashMap<String, JLabel> methodLabels;
 	
+	// Store separators to toggle visibility
+	private JSeparator fieldSeparator;
+	private JSeparator methodSeparator;
+	
 	// Regions
 	private JPanel fieldRegion;
 	private JPanel methodRegion;
@@ -67,11 +71,19 @@ public class GUIClass extends JPanel {
 		className.setFont(className.getFont().deriveFont(Font.BOLD));
 		add(className);
 		
+		// Initialize separators
+		fieldSeparator = generateSeparator(Color.BLACK);
+		methodSeparator = generateSeparator(Color.BLACK);
+		
 		// Add separators and regions
-		add(generateSeparator(Color.BLACK));
+		add(fieldSeparator);
 		add(fieldRegion);
-		add(generateSeparator(Color.BLACK));
+		add(methodSeparator);
 		add(methodRegion);
+		
+		// Set visibility of separators
+		fieldSeparator.setVisible(false);
+		methodSeparator.setVisible(false);
 		
 		// Set the location given the classes location
 		setLocation(umlClass.getX(), umlClass.getY());
@@ -159,12 +171,18 @@ public class GUIClass extends JPanel {
 			// Check if label is not in class list
 			if(!umlClass.hasMethod(name)) {
 				// Remove label from display
-				remove(entry.getValue());
+				methodRegion.remove(entry.getValue());
 				
 				// Remove method
 				entryIt.remove();
 			}
 		}
+		
+		// Check if need to change field separator visibility
+		if(methodLabels.size() > 0 && !methodSeparator.isVisible())
+			methodSeparator.setVisible(true);
+		else if(methodLabels.size() == 0 && methodSeparator.isVisible())
+			methodSeparator.setVisible(false);
 		
 		validate();
 		repaint();
@@ -212,6 +230,12 @@ public class GUIClass extends JPanel {
 				entryIt.remove();
 			}
 		}
+		
+		// Check if need to change field separator visibility
+		if(fieldLabels.size() > 0 && !fieldSeparator.isVisible())
+			fieldSeparator.setVisible(true);
+		else if(fieldLabels.size() == 0 && fieldSeparator.isVisible())
+			fieldSeparator.setVisible(false);
 		
 		validate();
 		repaint();
