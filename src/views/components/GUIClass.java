@@ -201,7 +201,6 @@ public class GUIClass extends JPanel {
 		for(String fieldName : umlClass.getFields()) {
 			if(!fieldLabels.containsKey(fieldName)) {
 				JLabel temp = generateLabel(fieldName);
-				System.out.println("Putting: " + fieldName);
 				fieldLabels.put(fieldName, temp);
 				
 				// Add label to display
