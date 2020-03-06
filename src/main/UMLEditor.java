@@ -296,8 +296,12 @@ public class UMLEditor {
 		else if(args[0].equals("list-classes")) {
 			System.out.println("Classes: " + classManager.listClasses());
 		}
-		else if(args[0].equals("help")) {
+		else if(args[0].equals("help") && args[1].isEmpty()) {
 			printHelp();
+		}
+		else if (args[0].equals("help") && !args[1].isEmpty())
+		{
+			commandHelp(args[1]);
 		}
 		else {
 			return 104;
@@ -333,6 +337,16 @@ public class UMLEditor {
 		System.out.println();
 	}
 	
+	private void commandHelp(String command) {
+		if (!validCommands.contains(command)){
+			System.out.println("Command does not exist, try \"help\" for a list of avaliable commands");
+		}
+		else {
+			System.out.println();
+			String desc = validCommands.get(command);
+			System.out.printf("%25s: %-40s\n", command, desc);
+		}
+	}
 	/**
 	 * Fills validCommands with the command name and a description
 	 * Format is as follows
@@ -349,6 +363,15 @@ public class UMLEditor {
 		validCommands.put("save", new String[]{"save the current state of the UML diagram", "if a file has not been set it will prompt the user."});
 		validCommands.put("load <file_path>", new String[] {"Load the given file into the UML editor"});
 		validCommands.put("list-classes", new String[]{"list all of the created classes"});
+		validCommands.put("add-field", new String[]{"Takes a exisiting className and new fieldName to add the field into the class"});
+		validCommands.put("add-method", new String[]{"Takes a exisiting className and new methodName to add the method into the class"});
+		validCommands.put("remove-field", new String[]{"Takes a exisiting className and existing fieldName to remove the field from the class"});
+		validCommands.put("remove-method", new String[]{"Takes a exisiting className and existing methodName to remove the method from the class"});
+		validCommands.put("add-relationship", new String[]{"Takes two exisiting classNames and creates a relationship between the two"});
+		validCommands.put("remove-relationship", new String[]{"Takes two exisiting classNames and removes an exisiting relationship between the two"});
+		validCommands.put("list-fields", new String[]{"takes an exisiting class and lists all fields assoicatied with the class"});
+		validCommands.put("list-methods", new String[]{"takes an exisiting class and lists all methods assoicatied with the class"});
+		validCommands.put("list-relationships", new String[]{"takes an exisiting class and lists all relationships assoicatied with the class"});
 	}
 	
 	/**
