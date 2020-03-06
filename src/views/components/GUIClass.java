@@ -107,7 +107,7 @@ public class GUIClass extends JPanel {
 	 * @param text - The label text
 	 * @return - JLabel instance
 	 */
-	private JLabel generateLabel(String text) {
+	public static JLabel generateLabel(String text) {
 		JLabel temp = new JLabel(text);
 		temp.setAlignmentX(Component.CENTER_ALIGNMENT);
 		temp.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -118,7 +118,7 @@ public class GUIClass extends JPanel {
 	 * Generate a horizontal separator
 	 * @return - JSeparator instance
 	 */
-	private JSeparator generateSeparator(Color c) {
+	public static JSeparator generateSeparator(Color c) {
 		JSeparator mySep = new JSeparator(SwingConstants.HORIZONTAL);
 		mySep.setAlignmentY(TOP_ALIGNMENT);
 		mySep.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, c));
