@@ -1,4 +1,4 @@
-package resources;
+package model;
 
 // System imports
 import java.util.ArrayList;
@@ -19,6 +19,10 @@ public class UMLClass implements Serializable {
 	public static final String [] types = {"int", "double", "float", "short", "long", "boolean", "String"};
 	private ArrayList<String> fields;
 	private ArrayList<String> methods;
+	
+	// Coordinates of class, for GUI use only
+	private int x;
+	private int y;
 	
 	/**
 	 * Constructor for class objects
@@ -77,6 +81,66 @@ public class UMLClass implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	/**
+	 * Check if the class has a given method
+	 * @param methodName
+	 * @return - true if class has method
+	 */
+	public boolean hasMethod(String methodName) {
+		return methods.contains(methodName);
+	}
+	
+	/**
+	 * Check if the class has a given field
+	 * @param fieldName
+	 * @return - true if class has field
+	 */
+	public boolean hasField(String fieldName) {
+		return fields.contains(fieldName);
+	}
+	
+	/**
+	 * Get the X coordinate of class
+	 * @return - x
+	 */
+	public int getX() {
+		return x;
+	}
+	
+	/**
+	 * Get the Y coordinate of class
+	 * @return - y
+	 */
+	public int getY() {
+		return y;
+	}
+	
+	/**
+	 * Set the X coordinate of class
+	 * @param x - new x coordinate
+	 */
+	public void setX(int x) {
+		this.x = x;
+	}
+	
+	/**
+	 * Set the Y coordinate of class
+	 * @param y - new y coordinate
+	 */
+	public void setY(int y) {
+		this.y = y;
+	}
+	
+	/**
+	 * Set the class to a new location
+	 * @param x - new x coordinate
+	 * @param y - new y coordinate
+	 */
+	public void setLocation(int x, int y) {
+		setX(x);
+		setY(y);
 	}
 
 	/**

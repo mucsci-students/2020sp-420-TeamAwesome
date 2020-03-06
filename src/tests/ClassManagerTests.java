@@ -7,9 +7,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
-import main.UMLEditor;
 // Local imports
-import resources.UMLClassManager;
+import model.UMLClassManager;
 
 /**
  * Class for running JUnit tests on ClassManager
@@ -35,7 +34,7 @@ public class ClassManagerTests {
 		manager.addClass("a");
 		manager.addClass("n");
 		manager.addClass("t");
-		assertEquals("List is populated", manager.listClasses(), "[a, n, t]");
+		assertEquals("List is populated", manager.toString(), "[a, n, t]");
 		int result = manager.addClass("t");
 		assertEquals("Class already exists", result, 200);
 	}
@@ -54,7 +53,7 @@ public class ClassManagerTests {
 		manager.removeClass("a");
 		manager.removeClass("n");
 		manager.removeClass("t");
-		assertEquals("List is empty", manager.listClasses(), "[]");
+		assertEquals("List is empty", manager.toString(), "[]");
 		result = manager.removeClass("c");
 		assertEquals("Class does not exist", result, 201);
 		result = manager.addClass("c");
