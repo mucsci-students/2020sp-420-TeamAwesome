@@ -4,6 +4,7 @@ package views;
 // System imports
 import java.awt.Dimension;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -81,9 +82,19 @@ public class GUIView extends View {
 	 * @param message - The message directing the user what to enter
 	 * @return - User entered String
 	 */
-	public String promptInput(String message) {
+	public Object promptInput(String message) {
 		// Prompt the user for input and return the input
 		return JOptionPane.showInputDialog(window, message);
+	}
+	
+	/**
+	 * Prompt the user for input given selection
+	 * @param message - The message directing the user what to enter
+	 * @return - User entered String
+	 */
+	public Object promptSelection(String message, Object[] options) {
+		// Prompt the user for input with a list of selections and return the input
+		return JOptionPane.showInputDialog(window, message, "Selection", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 	}
 	
 	/**

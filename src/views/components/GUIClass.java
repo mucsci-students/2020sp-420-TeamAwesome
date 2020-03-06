@@ -38,6 +38,10 @@ public class GUIClass extends JPanel {
 	private HashMap<String, JLabel> fieldLabels;
 	private HashMap<String, JLabel> methodLabels;
 	
+	// Store separators to toggle visibility
+	private JSeparator fieldSeparator;
+	private JSeparator methodSeparator;
+	
 	// Regions
 	private JPanel fieldRegion;
 	private JPanel methodRegion;
@@ -67,11 +71,19 @@ public class GUIClass extends JPanel {
 		className.setFont(className.getFont().deriveFont(Font.BOLD));
 		add(className);
 		
+		// Initialize separators
+		fieldSeparator = generateSeparator(Color.BLACK);
+		methodSeparator = generateSeparator(Color.BLACK);
+		
 		// Add separators and regions
-		add(generateSeparator(Color.BLACK));
+		add(fieldSeparator);
 		add(fieldRegion);
-		add(generateSeparator(Color.BLACK));
+		add(methodSeparator);
 		add(methodRegion);
+		
+		// Set visibility of separators
+		fieldSeparator.setVisible(false);
+		methodSeparator.setVisible(false);
 		
 		// Set the location given the classes location
 		setLocation(umlClass.getX(), umlClass.getY());
@@ -107,7 +119,7 @@ public class GUIClass extends JPanel {
 	 * @param text - The label text
 	 * @return - JLabel instance
 	 */
-	private JLabel generateLabel(String text) {
+	public static JLabel generateLabel(String text) {
 		JLabel temp = new JLabel(text);
 		temp.setAlignmentX(Component.CENTER_ALIGNMENT);
 		temp.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -118,7 +130,7 @@ public class GUIClass extends JPanel {
 	 * Generate a horizontal separator
 	 * @return - JSeparator instance
 	 */
-	private JSeparator generateSeparator(Color c) {
+	public static JSeparator generateSeparator(Color c) {
 		JSeparator mySep = new JSeparator(SwingConstants.HORIZONTAL);
 		mySep.setAlignmentY(TOP_ALIGNMENT);
 		mySep.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, c));
@@ -159,12 +171,18 @@ public class GUIClass extends JPanel {
 			// Check if label is not in class list
 			if(!umlClass.hasMethod(name)) {
 				// Remove label from display
-				remove(entry.getValue());
+				methodRegion.remove(entry.getValue());
 				
 				// Remove method
 				entryIt.remove();
 			}
 		}
+		
+		// Check if need to change field separator visibility
+		if(methodLabels.size() > 0 && !methodSeparator.isVisible())
+			methodSeparator.setVisible(true);
+		else if(methodLabels.size() == 0 && methodSeparator.isVisible())
+			methodSeparator.setVisible(false);
 		
 		validate();
 		repaint();
@@ -183,7 +201,6 @@ public class GUIClass extends JPanel {
 		for(String fieldName : umlClass.getFields()) {
 			if(!fieldLabels.containsKey(fieldName)) {
 				JLabel temp = generateLabel(fieldName);
-				System.out.println("Putting: " + fieldName);
 				fieldLabels.put(fieldName, temp);
 				
 				// Add label to display
@@ -212,6 +229,12 @@ public class GUIClass extends JPanel {
 				entryIt.remove();
 			}
 		}
+		
+		// Check if need to change field separator visibility
+		if(fieldLabels.size() > 0 && !fieldSeparator.isVisible())
+			fieldSeparator.setVisible(true);
+		else if(fieldLabels.size() == 0 && fieldSeparator.isVisible())
+			fieldSeparator.setVisible(false);
 		
 		validate();
 		repaint();

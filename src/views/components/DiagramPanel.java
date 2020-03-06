@@ -109,13 +109,21 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Initialize class menu options
 		classRemoveClass = new JMenuItem("Remove Class");
+		
 		classAddField = new JMenuItem("Add Field");
 		classRemoveField = new JMenuItem("Remove Field");
+
+		classAddMethod = new JMenuItem("Add Method");
+		classRemoveMethod = new JMenuItem("Remove Method");
 		
 		// Add items to class menu
 		classMenu.add(classRemoveClass);
+		classMenu.addSeparator();
 		classMenu.add(classAddField);
 		classMenu.add(classRemoveField);
+		classMenu.addSeparator();
+		classMenu.add(classAddMethod);
+		classMenu.add(classRemoveMethod);
 	}
 	
 	/**
@@ -129,6 +137,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		classRemoveClass.addActionListener(removeClassAction());
 		classAddField.addActionListener(addFieldAction());
 		classRemoveField.addActionListener(removeFieldAction());
+		classAddMethod.addActionListener(addMethodAction());
+		classRemoveMethod.addActionListener(removeMethodAction());
 	}
 	
 	/**
@@ -140,10 +150,14 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Prompt the user for a class name
-				String className = view.promptInput("Enter class name:");
-				int result = view.getController().addClass(className, mouseX, mouseY);
-				if(result != 0)
-					view.showError(DiagramPanel.this, result);
+				Object className = view.promptInput("Enter class name:");
+				
+				// Make sure user did not cancel input
+				if(className != null) {
+					int result = view.getController().addClass(className.toString(), mouseX, mouseY);
+					if(result != 0)
+						view.showError(DiagramPanel.this, result);
+				}
 				
 				// Reset prev
 				prev = null;
@@ -182,10 +196,15 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			public void actionPerformed(ActionEvent e) {
 				// Make sure a selected class exists
 				if(prev != null) {
-					String fieldName = view.promptInput("Enter field name:");
-					int result = view.getController().addField(prev.getName(), fieldName);
-					if(result != 0)
-						view.showError(DiagramPanel.this, result);
+					// Prompt user for field name
+					Object fieldName = view.promptInput("Enter field name:");
+					
+					// Make sure user did not cancel input
+					if(fieldName != null) {
+						int result = view.getController().addField(prev.getName(), fieldName.toString());
+						if(result != 0)
+							view.showError(DiagramPanel.this, result);
+					}
 					
 					prev = null;
 				}
@@ -194,8 +213,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	}
 	
 	/**
-	 * Get an action listener that will add a field to a given class
-	 * @return - ActionListener with definition for adding a field
+	 * Get an action listener that will remove a field from a given class
+	 * @return - ActionListener with definition for removing a field
 	 */
 	private ActionListener removeFieldAction() {
 		return new ActionListener() {
@@ -203,10 +222,75 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			public void actionPerformed(ActionEvent e) {
 				// Make sure a selected class exists
 				if(prev != null) {
-					String fieldName = view.promptInput("Enter field name:");
-					int result = view.getController().removeField(prev.getName(), fieldName);
-					if(result != 0)
-						view.showError(DiagramPanel.this, result);
+					// Get a list of the available field names to remove
+					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getFields().toArray();
+					
+					// Make sure there is at least one field
+					if(availableOptions.length > 0) {
+						Object fieldName = view.promptSelection("Choose field name:", availableOptions);
+						// Make sure user didn't cancel input
+						if(fieldName != null) {
+							int result = view.getController().removeField(prev.getName(), fieldName.toString());
+							if(result != 0)
+								view.showError(DiagramPanel.this, result);
+						}
+					}
+					
+					prev = null;
+				}
+			}
+		};
+	}
+	
+	/**
+	 * Get an action listener that will add a method to a given class
+	 * @return - ActionListener with definition for adding a method
+	 */
+	private ActionListener addMethodAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Make sure a selected class exists
+				if(prev != null) {
+					// Prompt user for field name
+					Object methodName = view.promptInput("Enter field name:");
+					
+					// Make sure user did not cancel input
+					if(methodName != null) {
+						int result = view.getController().addMethod(prev.getName(), methodName.toString());
+						if(result != 0)
+							view.showError(DiagramPanel.this, result);
+					}
+					
+					prev = null;
+				}
+			}
+		};
+	}
+	
+	/**
+	 * Get an action listener that will remove a method from a given class
+	 * @return - ActionListener with definition for removing a method
+	 */
+	private ActionListener removeMethodAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Make sure a selected class exists
+				if(prev != null) {
+					// Get a list of the available field names to remove
+					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getMethods().toArray();
+					
+					// Make sure there is at least one field
+					if(availableOptions.length > 0) {
+						Object methodName = view.promptSelection("Choose method name:", availableOptions);
+						// Make sure user didn't cancel input
+						if(methodName != null) {
+							int result = view.getController().removeMethod(prev.getName(), methodName.toString());
+							if(result != 0)
+								view.showError(DiagramPanel.this, result);
+						}
+					}
 					
 					prev = null;
 				}

@@ -78,14 +78,22 @@ public class GUIController extends UMLController {
 
 	@Override
 	public int addMethod(String className, String methodName) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = model.addMethods(className, methodName);
+		if(result == 0) {
+			// Notify observer of change
+			notify("methodChange", model.getClass(className));
+		}
+		return result;
 	}
 
 	@Override
 	public int removeMethod(String className, String methodName) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = model.removeMethods(className, methodName);
+		if(result == 0) {
+			// Notify observer of change
+			notify("methodChange", model.getClass(className));
+		}
+		return result;
 	}
 
 	@Override
