@@ -1,6 +1,7 @@
 // Package Name
 package views.components;
 
+//System imports
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -11,15 +12,13 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
-// System imports
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
-import model.UMLClass;
-
 //Local imports
+import model.UMLClass;
 
 /**
  * A GUI representation of a UML Class
@@ -247,5 +246,15 @@ public class GUIClass extends JPanel {
 	 */
 	public String getName() {
 		return umlClass.getName();
+	}
+	
+	/**
+	 * Refresh the class name
+	 */
+	public void updateName() {
+		className.setText(umlClass.getName());
+		validate();
+		repaint();
+		updateBounds();
 	}
 }

@@ -11,7 +11,6 @@ import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -19,13 +18,13 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import main.UMLFileIO;
 // Local imports
 import model.UMLClass;
 import model.UMLRelationship;
 import observe.Observable;
 import observe.Observer;
 import views.GUIView;
+import main.UMLFileIO;
 
 /**
  * A JPanel to display the UMLClasses and relationships
@@ -56,10 +55,13 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	
 	// MenuItems for class mouse menu
 	private JMenuItem classRemoveClass;
+	private JMenuItem classEditClass;
 	private JMenuItem classAddField;
 	private JMenuItem classRemoveField;
+	private JMenuItem classEditField;
 	private JMenuItem classAddMethod;
 	private JMenuItem classRemoveMethod;
+	private JMenuItem classEditMethod;
 	private JMenuItem classAddRelationship;
 	private JMenuItem classRemoveRelationship;
 	
@@ -170,6 +172,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Initialize class menu options
 		classRemoveClass = new JMenuItem("Remove Class");
+		classEditClass = new JMenuItem("Edit Class Name");
 		
 		classAddField = new JMenuItem("Add Field");
 		classRemoveField = new JMenuItem("Remove Field");
@@ -182,6 +185,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Add items to class menu
 		classMenu.add(classRemoveClass);
+		classMenu.add(classEditClass);
 		classMenu.addSeparator();
 		classMenu.add(classAddField);
 		classMenu.add(classRemoveField);
@@ -204,6 +208,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Setup actions for class menu items
 		classRemoveClass.addActionListener(removeClassAction());
+		classEditClass.addActionListener(editClassAction());
 		
 		classAddField.addActionListener(addFieldAction());
 		classRemoveField.addActionListener(removeFieldAction());
@@ -253,6 +258,33 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					if(result != 0)
 						view.showError(DiagramPanel.this, result);
 					
+					// Reset prev
+					prev = null;
+				}
+			}
+		};
+	}
+	
+	/**
+	 * Get an action listener that will edit a class's name
+	 * @return - ActionListener with definition for editing a class name
+	 */
+	private ActionListener editClassAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {	
+				// Make sure a selected class exists
+				if(prev != null) {
+					// Prompt the user for a new class name
+					Object className = view.promptInput("Enter new class name:");
+					
+					// Make sure user did not cancel input
+					if(className != null) {
+						int result = view.getController().editClass(prev.getName(), className.toString());
+						if(result != 0)
+							view.showError(DiagramPanel.this, result);
+					}
+						
 					// Reset prev
 					prev = null;
 				}
@@ -581,6 +613,14 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		}
 		else if(tag.equals("relationshipChange")) {
 			// Nothing to do
+		}
+		else if(tag.equals("classChange")) {
+			// Update names
+			// Have to loop through all since the name changed
+			for(Map.Entry<String, GUIClass> entry : guiClasses.entrySet()) {
+				GUIClass temp = entry.getValue();
+				temp.updateName();
+			}
 		}
 		
 		// Update display
