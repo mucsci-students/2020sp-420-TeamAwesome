@@ -21,6 +21,27 @@ public class CommandController extends UMLController {
 		}
 		return result;
 	}
+	
+	public int editClass(String className, String newName) {
+		int result = getModel().editClass(className, newName);
+		if(result == 0)
+			notify("editClass", getModel());
+		return result;
+	}
+	
+	public int editField(String className, String oldName, String newName) {
+		int result = getModel().editFields(className, oldName, newName);
+		if(result == 0)
+			notify("editField", getModel());
+		return result;
+	}
+	
+	public int editMethod(String className, String oldName, String newName) {
+		int result = getModel().editMethods(className, oldName, newName);
+		if(result == 0)
+			notify("editClass", getModel());
+		return result;
+	}
 
 	public int addClass(String className) {
 		return addClass(className, 0, 0);
