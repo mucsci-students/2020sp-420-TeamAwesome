@@ -21,6 +21,9 @@ public class ConsoleView extends View {
 	// All valid commands
 	private Hashtable<String, String[]> validCommands;
 	
+	/**
+	 * Initialize required variables for console
+	 */
 	public ConsoleView() {
 		scanner = new Scanner(System.in);
 		
@@ -31,7 +34,12 @@ public class ConsoleView extends View {
 		
 		validCommands = new Hashtable<String, String[]>();
 		populateValidCommands();
-		
+	}
+	
+	/**
+	 * Start input loop
+	 */
+	public void start() {
 		while(true) {
 			String input = getCommand();
 			
@@ -73,6 +81,10 @@ public class ConsoleView extends View {
 		if(args[0].equals("exit") || args[0].equals("quit")) {
 			System.out.println("Force quitting...");
 			System.out.println("Goodbye :)");
+			
+			// Close the scanner
+			closeConsole();
+			
 			System.exit(0);
 		}
 		else if(args[0].equals("add-class")) {
@@ -300,7 +312,7 @@ public class ConsoleView extends View {
 		}
 		else {
 			System.out.println();
-			String desc = validCommands.get(command);
+			String desc = validCommands.get(command)[0];
 			System.out.printf("%25s: %-40s\n", command, desc);
 		}
 	}
@@ -373,4 +385,28 @@ public class ConsoleView extends View {
 
 	@Override
 	public void updated(Observable src, String tag, Object data) {}
+	
+	/**
+	 * Get scanner instance
+	 * @return - scanner
+	 */
+	public Scanner getScanner() {
+		return scanner;
+	}
+	
+	/**
+	 * Close the input scanner
+	 * @return - return code
+	 */
+	public int closeConsole() {
+		scanner.close();
+		
+		// If scanner has been successfully closed an error should be thrown
+		try {
+			scanner.nextLine();
+			return 100;
+		} catch(IllegalStateException ise) {
+			return 0;
+		}
+	}
 }

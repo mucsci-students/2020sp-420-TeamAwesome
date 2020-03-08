@@ -3,34 +3,32 @@ package tests;
 
 // System imports
 import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 
 // Local imports
-import main.UMLEditor;
-import resources.UMLFileIO;
+import views.ConsoleView;
 
 /**
- * Class to run JUnit tests on the Envioronment
+ * Class to run JUnit tests on the Console
  * 
  * @author Ryan
  */
-public class EnvironmentTests {
+public class ConsoleTests {
 	/*
 	 * Create environment and don't do anything to it
 	 */
 	@Test
 	public void baseInstance() {
-		UMLEditor editor = new UMLEditor();
-		assertTrue("Console not null", editor.getConsole() != null);
-		assertTrue("Commands not null", editor.getValidCommands() != null);
-		assertTrue("Commands not empty", editor.getValidCommands().length != 0);
-		assertTrue("Scanner initialized", editor.getConsole().getScanner() != null);
-		assertTrue("Close console", editor.getConsole().closeScanner() == 0);
+		ConsoleView console = new ConsoleView();
+		assertTrue("Console not null", console.getScanner() != null);
+		assertTrue("Commands not null", console.getValidCommands() != null);
+		assertTrue("Commands not empty", console.getValidCommands().length != 0);
+		assertTrue("Close console", console.closeConsole() == 0);
 	}
 	
 	/*
@@ -46,45 +44,45 @@ public class EnvironmentTests {
 		System.setOut(new PrintStream(newOut));
 		System.setErr(new PrintStream(newErr));
 		
-		UMLEditor editor = new UMLEditor();
+		ConsoleView editor = new ConsoleView();
 		
 		// Invalid command checks
 		int result = editor.execCommand("jibberish");
-		assertEquals("Unrecognized Command", result, 104);
+		assertEquals("Unrecognized Command", 104, result);
 		newErr.reset();
 		
 		result = editor.execCommand("more junk");
-		assertEquals("Unrecognized Command 2", result, 104);
+		assertEquals("Unrecognized Command 2", 104, result);
 		newErr.reset();
 		
 		// Empty input checks
 		result = editor.execCommand("");
-		assertEquals("Blank input", "", 101);
+		assertEquals("Blank input", 101, result);
 		newOut.reset();
 		
 		result = editor.execCommand("           ");
-		assertEquals("Blank input 2", "", 101);
+		assertEquals("Blank input 2", 101, result);
 		newOut.reset();
 		
 		result = editor.execCommand("                     ");
-		assertEquals("Blank input 3", "", 101);
+		assertEquals("Blank input 3", 101, result);
 		newOut.reset();
 		
 		// Test add/remove class input
 		result = editor.execCommand("add-class");
-		assertEquals("add-class no args", "Did not get expected number of arguments.", 102);
+		assertEquals("add-class no args", 102, result);
 		newErr.reset();
 		
 		// Only check to make sure there are no errors so that this test
 		//	is independent from whether add/remove is working or not
 		result = editor.execCommand("add-class my_class");
 		assertEquals("add-class normal", "", scrubOut(newErr.toString()));
-		assertEquals("add-class normal return code", result, 0);
+		assertEquals("add-class normal return code", 0, result);
 		newErr.reset();
 		newOut.reset();
 		
 		result = editor.execCommand("remove-class");
-		assertEquals("remove-class no args", result, 102);
+		assertEquals("remove-class no args", 102, result);
 		newErr.reset();
 		
 		result = editor.execCommand("remove-class my_class");

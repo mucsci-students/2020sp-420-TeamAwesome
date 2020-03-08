@@ -477,9 +477,15 @@ public class UMLClassManager implements Serializable {
 	 * Get the map of relationships
 	 * @return - relationships
 	 */
-	protected HashMap<String, UMLRelationship> getRelationships() {
+	public HashMap<String, UMLRelationship> getRelationships() {
 		return relationships;
 	}
 	
-	
+	/**
+	 * Get an object array of class names
+	 * @return - classList names
+	 */
+	public Object[] getClassNames() {
+		return classList.keySet().toArray();
+	}
 }

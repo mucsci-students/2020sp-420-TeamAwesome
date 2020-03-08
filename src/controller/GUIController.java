@@ -98,14 +98,22 @@ public class GUIController extends UMLController {
 
 	@Override
 	public int addRelationship(String class1, String class2) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = model.addRelationship(class1, class2);
+		if(result == 0) {
+			// Notify observer of change
+			notify("relationshipChange", model);
+		}
+		return result;
 	}
 
 	@Override
 	public int removeRelationship(String class1, String class2) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = model.removeRelationship(class1, class2);
+		if(result == 0) {
+			// Notify observer of change
+			notify("relationshipChange", model);
+		}
+		return result;
 	}
 
 }
