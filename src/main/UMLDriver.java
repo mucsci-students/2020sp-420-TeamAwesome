@@ -20,6 +20,6 @@ public class UMLDriver {
 		if(gui)
 			new GUIView();
 		else
-			new ConsoleView();
+			new ConsoleView().start();
 	}
 }

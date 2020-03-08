@@ -1,11 +1,10 @@
 // Package name
 package views.components;
 
-import java.awt.Color;
+//System imports
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -17,16 +16,12 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
-import controller.GUIController;
-
-// System imports
-
+// Local imports
 import model.UMLClass;
+import model.UMLRelationship;
 import observe.Observable;
 import observe.Observer;
 import views.GUIView;
-
-// Local imports
 
 /**
  * A JPanel to display the UMLClasses and relationships
@@ -34,6 +29,8 @@ import views.GUIView;
  *
  */
 public class DiagramPanel extends JPanel implements Observer, MouseListener, MouseMotionListener {
+	private static final long serialVersionUID = 1L;
+
 	// Instance of the Controller
 	private GUIView view;
 	
@@ -88,6 +85,59 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
+		// Get the relationships and draw the relationship between the two classes
+		HashMap<String, UMLRelationship> relations = view.getController().getModel().getRelationships();
+		
+		// Loop through relationships and draw the lines
+		for(Map.Entry<String, UMLRelationship> entry : relations.entrySet()) {
+			// Get the relationship
+			UMLRelationship relation = entry.getValue();
+			
+			// Get each GUIClass
+			GUIClass c1 = guiClasses.get(relation.getClass1().getName());
+			GUIClass c2 = guiClasses.get(relation.getClass2().getName());
+			
+			// Check to see if the relationship is recursive or not
+			//		Handle drawing differently
+			
+			// If not recursive then draw lines from midpoints of classes
+			if(c1 != c2) {
+				// Get center points of views
+				int c1centerX = c1.getX() + c1.getWidth()/2;
+				int c1centerY = c1.getY() + c1.getHeight()/2;
+				int c2centerX = c2.getX() + c2.getWidth()/2;
+				int c2centerY = c2.getY() + c2.getHeight()/2;
+				
+				// Draw horizontal line
+				g.drawLine(c1centerX, c1centerY, c2centerX, c1centerY);
+				
+				// Draw vertical line
+				g.drawLine(c2centerX, c1centerY, c2centerX, c2centerY);
+			}
+			// Otherwise do a loop in the shape of approximately:
+			//     ------|
+			//   __|__   |
+			//   |    |  |
+			//   |____|--|
+			//   
+			else {
+				// How far loop is away from class border
+				int offset = 10;
+				
+				int farX = c1.getX() + c1.getWidth() + offset;
+				int farY = c1.getY() - offset;
+				
+				// Center points of view
+				int centerX = c1.getX() + c1.getWidth()/2;
+				int centerY = c1.getY() + c1.getHeight()/2;
+				
+				g.drawLine(centerX, centerY, centerX, farY);
+				g.drawLine(centerX, farY, farX, farY);
+				g.drawLine(farX, farY, farX, centerY);
+				g.drawLine(farX, centerY, centerX, centerY);
+			}
+		}
 	}
 	
 	/**
@@ -116,6 +166,9 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		classAddMethod = new JMenuItem("Add Method");
 		classRemoveMethod = new JMenuItem("Remove Method");
 		
+		classAddRelationship = new JMenuItem("Add Relationship");
+		classRemoveRelationship = new JMenuItem("Remove Relationship");
+		
 		// Add items to class menu
 		classMenu.add(classRemoveClass);
 		classMenu.addSeparator();
@@ -124,6 +177,9 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		classMenu.addSeparator();
 		classMenu.add(classAddMethod);
 		classMenu.add(classRemoveMethod);
+		classMenu.addSeparator();
+		classMenu.add(classAddRelationship);
+		classMenu.add(classRemoveRelationship);
 	}
 	
 	/**
@@ -135,10 +191,15 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Setup actions for class menu items
 		classRemoveClass.addActionListener(removeClassAction());
+		
 		classAddField.addActionListener(addFieldAction());
 		classRemoveField.addActionListener(removeFieldAction());
+		
 		classAddMethod.addActionListener(addMethodAction());
 		classRemoveMethod.addActionListener(removeMethodAction());
+		
+		classAddRelationship.addActionListener(addRelationshipAction());
+		classRemoveRelationship.addActionListener(removeRelationshipAction());
 	}
 	
 	/**
@@ -297,6 +358,68 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			}
 		};
 	}
+	
+	/**
+	 * Get an action listener that will add a relationship between two classes
+	 * @return
+	 */
+	private ActionListener addRelationshipAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Make sure a selected class exists
+				if(prev != null) {
+					// Get a list of available second classes
+					Object[] availableClasses = view.getController().getModel().getClassNames();
+					
+					// Make sure there is at least one field
+					if(availableClasses.length > 0) {
+						// Get the destination class
+						Object destClass = view.promptSelection("Destination class: ", availableClasses);
+						// Make sure user didn't cancel input
+						if(destClass != null) {
+							int result = view.getController().addRelationship(prev.getName(), destClass.toString());
+							if(result != 0)
+								view.showError(DiagramPanel.this, result);
+						}
+					}
+					
+					prev = null;
+				}
+			}
+		};
+	}
+	
+	/**
+	 * Get an action listener that will remove a relationship between two classes
+	 * @return
+	 */
+	private ActionListener removeRelationshipAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Make sure a selected class exists
+				if(prev != null) {
+					// Get a list of available second classes
+					Object[] availableClasses = view.getController().getModel().getClassNames();
+					
+					// Make sure there is at least one field
+					if(availableClasses.length > 0) {
+						// Get the destination class
+						Object destClass = view.promptSelection("Destination class: ", availableClasses);
+						// Make sure user didn't cancel input
+						if(destClass != null) {
+							int result = view.getController().removeRelationship(prev.getName(), destClass.toString());
+							if(result != 0)
+								view.showError(DiagramPanel.this, result);
+						}
+					}
+					
+					prev = null;
+				}
+			}
+		};
+	}
 
 	/**
 	 * Listen for changes from the model
@@ -337,6 +460,9 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			
 			// Update associated GUIClass data
 			guiClasses.get(umlClass.getName()).updateMethods();
+		}
+		else if(tag.equals("relationshipChange")) {
+			// Nothing to do
 		}
 		
 		// Update display
@@ -405,6 +531,9 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					
 					lastX = e.getLocationOnScreen().x - guiClass.getX();
 					lastY = e.getLocationOnScreen().y - guiClass.getY();
+					
+					// If the user is dragging a class then repaint in case the class has a relationship
+					repaint();
 				
 					break;
 				}
