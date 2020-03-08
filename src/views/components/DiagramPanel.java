@@ -8,14 +8,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import main.UMLFileIO;
 // Local imports
 import model.UMLClass;
 import model.UMLRelationship;
@@ -47,6 +51,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	
 	// MenuItems for generic mouse menu
 	private JMenuItem mouseAddClass;
+	private JMenuItem mouseSaveFile;
+	private JMenuItem mouseLoadFile;
 	
 	// MenuItems for class mouse menu
 	private JMenuItem classRemoveClass;
@@ -149,9 +155,14 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Initialize the menu items
 		mouseAddClass = new JMenuItem("Add Class");
+		mouseSaveFile = new JMenuItem("Save to File");
+		mouseLoadFile = new JMenuItem("Load File");
 		
 		// Add menu items to mouse menu
 		mouseMenu.add(mouseAddClass);
+		mouseMenu.addSeparator();
+		mouseMenu.add(mouseSaveFile);
+		mouseMenu.add(mouseLoadFile);
 		
 		// Create the popup menu for when a user right clicks a class
 		// 		NOTE: Displaying this is handled in the GUIView's mouse listeners
@@ -188,6 +199,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	private void setupActions() {
 		// Setup actions for generic mouse menu items
 		mouseAddClass.addActionListener(addClassAction());
+		mouseSaveFile.addActionListener(saveFileAction());
+		mouseLoadFile.addActionListener(loadFileAction());
 		
 		// Setup actions for class menu items
 		classRemoveClass.addActionListener(removeClassAction());
@@ -416,6 +429,111 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					}
 					
 					prev = null;
+				}
+			}
+		};
+	}
+
+	/**
+	 * Get an action listener that will open a save dialog box to save the file too
+	 * @return
+	 */
+	private ActionListener saveFileAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Create save dialog instance
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setDialogTitle("Save UML");
+				
+				// Choose file
+				int result = fileChooser.showSaveDialog(DiagramPanel.this);
+				
+				// Make sure user didn't close the console
+				if(result == JFileChooser.APPROVE_OPTION) {
+					File saveFile = fileChooser.getSelectedFile();
+					
+					// Check if file name ends with '.json' and if not add it manually
+					if(!saveFile.getPath().endsWith(".json"))
+						saveFile = new File(saveFile.getAbsolutePath() + ".json");
+					
+					// Save the file
+					UMLFileIO fileIO = new UMLFileIO();
+					
+					// Set the path
+					result = fileIO.setFile(saveFile.getAbsolutePath());
+					if(result != 0) {
+						view.showError(DiagramPanel.this, result);
+						return;
+					}
+					
+					// Write to file
+					String json = view.getController().getModel().convertToJSON();
+					result = fileIO.writeToFile(json);
+					if(result != 0) {
+						view.showError(DiagramPanel.this, result);
+						return;
+					}
+				}
+			}
+		};
+	}
+	
+	/**
+	 * Get an action listener that will open a load dialog box to load the file from
+	 * @return
+	 */
+	private ActionListener loadFileAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Create load dialog instance
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setDialogTitle("Save UML");
+				
+				// Set extension filter to only allow JSON files
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files", "json");
+				fileChooser.setFileFilter(filter);
+				
+				// Choose file
+				int result = fileChooser.showOpenDialog(DiagramPanel.this);
+				
+				// Make sure user didn't close the console
+				if(result == JFileChooser.APPROVE_OPTION) {
+					File loadFile = fileChooser.getSelectedFile();
+					
+					// Open the file
+					UMLFileIO fileIO = new UMLFileIO();
+					
+					// Set the path
+					result = fileIO.setFile(loadFile.getAbsolutePath());
+					if(result != 0) {
+						view.showError(DiagramPanel.this, result);
+						return;
+					}
+					
+					// Read from file
+					Object[] res = fileIO.readFile();
+					if((int)res[1] != 0) {
+						view.showError(DiagramPanel.this, result);
+						return;
+					}
+					
+					// Load file
+					result = view.getController().getModel().parseJSON((String)res[0]);
+					if(result != 0) {
+						view.showError(DiagramPanel.this, result);
+						return;
+					}
+				
+					// Manually add all classes to the GUI
+					for(Object classNameObj : view.getController().getModel().getClassNames()) {
+						String className = (String)classNameObj;
+						// Forcefully call updated
+						updated(null, "addClass", (Object)view.getController().getModel().getClass(className));
+					}
+					
+					validate();
 				}
 			}
 		};
