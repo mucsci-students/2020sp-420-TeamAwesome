@@ -17,8 +17,7 @@ Steps
 2. Install Bash  
 	a. Link: https://itsfoss.com/install-bash-on-windows/ 
 3. Open console window capable of running bash
-4. Type "bash" and hit enter
-5. Type "./run-uml.sh" and hit enter
+4. Type "./run-uml-console.sh" for a console view or "./run-uml-gui.sh" for a GUI view and hit enter
 
 ### View Options
 Prompted to select console view or GUI view after startup.
@@ -30,7 +29,7 @@ Once UMLeditor is running type "help" and hit enter to print out a list of valid
 ### Contributors
 TeamAwesome
 - Ryan Haas
-- Anythony Mason
+- Anthony Mason
 - Dylan Wagner
 - Benjamin Mullins
 
