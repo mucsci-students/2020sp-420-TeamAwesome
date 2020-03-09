@@ -324,10 +324,10 @@ public class ConsoleView extends View {
 		else if(args[0].equals("list-classes")) {
 			System.out.println("Classes: " + controller.getModel().listClasses());
 		}
-		else if(args[0].equals("help") && args[1].isEmpty()) {
+		else if(args[0].equals("help") && args.length == 1) {
 			printHelp();
 		}
-		else if (args[0].equals("help") && !args[1].isEmpty())
+		else if (args[0].equals("help") && args.length == 2 && !args[1].isEmpty())
 		{
 			commandHelp(args[1]);
 		}
