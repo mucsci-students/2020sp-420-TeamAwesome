@@ -180,6 +180,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 
 		classAddMethod = new JMenuItem("Add Method");
 		classRemoveMethod = new JMenuItem("Remove Method");
+		classEditMethod = new JMenuItem("Edit Method Name");
 		
 		classAddRelationship = new JMenuItem("Add Relationship");
 		classRemoveRelationship = new JMenuItem("Remove Relationship");
@@ -194,6 +195,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		classMenu.addSeparator();
 		classMenu.add(classAddMethod);
 		classMenu.add(classRemoveMethod);
+		classMenu.add(classEditMethod);
 		classMenu.addSeparator();
 		classMenu.add(classAddRelationship);
 		classMenu.add(classRemoveRelationship);
@@ -218,6 +220,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		classAddMethod.addActionListener(addMethodAction());
 		classRemoveMethod.addActionListener(removeMethodAction());
+		classEditMethod.addActionListener(editMethodAction());
 		
 		classAddRelationship.addActionListener(addRelationshipAction());
 		classRemoveRelationship.addActionListener(removeRelationshipAction());
@@ -352,7 +355,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	}
 	
 	/**
-	 * Get an action listener that will edit a fieldname from a given class
+	 * Get an action listener that will edit a field name from a given class
 	 * @return - ActionListener with definition for editing the name of a field
 	 */
 	private ActionListener editFieldAction() {
@@ -434,6 +437,43 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 							int result = view.getController().removeMethod(prev.getName(), methodName.toString());
 							if(result != 0)
 								view.showError(DiagramPanel.this, result);
+						}
+					}
+					
+					prev = null;
+				}
+			}
+		};
+	}
+	
+	
+	/**
+	 * Get an action listener that will edit a method name from a given class
+	 * @return - ActionListener with definition for editing the name of a method
+	 */
+	private ActionListener editMethodAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Make sure a selected class exists
+				if(prev != null) {
+					// Get a list of the available method names to edit
+					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getMethods().toArray();
+					
+					// Make sure there is at least one method
+					if(availableOptions.length > 0) {
+						Object methodName = view.promptSelection("Choose method name:", availableOptions);
+						// Make sure user didn't cancel input
+						if(methodName != null) {
+							// Prompt for the new name
+							Object newMethodName = view.promptInput("Enter the new name of the method");
+							
+							// Make sure user didn't cancel
+							if(newMethodName != null) {
+								int result = view.getController().editMethod(prev.getName(), methodName.toString(), newMethodName.toString());
+								if(result != 0)
+									view.showError(DiagramPanel.this, result);
+							}
 						}
 					}
 					

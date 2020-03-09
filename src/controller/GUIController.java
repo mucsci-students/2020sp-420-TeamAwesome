@@ -138,7 +138,7 @@ public class GUIController extends UMLController {
 
 	@Override
 	public int editMethod(String className, String oldMethod, String newMethod) {
-		int result = model.editFields(className, oldMethod, newMethod);
+		int result = model.editMethods(className, oldMethod, newMethod);
 		if(result == 0) {
 			// Notify observer of change
 			notify("methodChange", model.getClass(className));
