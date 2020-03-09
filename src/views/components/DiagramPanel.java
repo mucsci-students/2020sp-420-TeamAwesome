@@ -18,6 +18,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import main.UMLFileIO;
 // Local imports
 import model.UMLClass;
 import model.UMLRelationship;
