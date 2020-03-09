@@ -176,6 +176,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		classAddField = new JMenuItem("Add Field");
 		classRemoveField = new JMenuItem("Remove Field");
+		classEditField = new JMenuItem("Edit Field Name");
 
 		classAddMethod = new JMenuItem("Add Method");
 		classRemoveMethod = new JMenuItem("Remove Method");
@@ -189,6 +190,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		classMenu.addSeparator();
 		classMenu.add(classAddField);
 		classMenu.add(classRemoveField);
+		classMenu.add(classEditField);
 		classMenu.addSeparator();
 		classMenu.add(classAddMethod);
 		classMenu.add(classRemoveMethod);
@@ -212,6 +214,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		classAddField.addActionListener(addFieldAction());
 		classRemoveField.addActionListener(removeFieldAction());
+		classEditField.addActionListener(editFieldAction());
 		
 		classAddMethod.addActionListener(addMethodAction());
 		classRemoveMethod.addActionListener(removeMethodAction());
@@ -339,6 +342,42 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 							int result = view.getController().removeField(prev.getName(), fieldName.toString());
 							if(result != 0)
 								view.showError(DiagramPanel.this, result);
+						}
+					}
+					
+					prev = null;
+				}
+			}
+		};
+	}
+	
+	/**
+	 * Get an action listener that will edit a fieldname from a given class
+	 * @return - ActionListener with definition for editing the name of a field
+	 */
+	private ActionListener editFieldAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Make sure a selected class exists
+				if(prev != null) {
+					// Get a list of the available field names to edit
+					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getFields().toArray();
+					
+					// Make sure there is at least one field
+					if(availableOptions.length > 0) {
+						Object fieldName = view.promptSelection("Choose field name:", availableOptions);
+						// Make sure user didn't cancel input
+						if(fieldName != null) {
+							// Prompt for the new name
+							Object newFieldName = view.promptInput("Enter the new name of the field");
+							
+							// Make sure user didn't cancel
+							if(newFieldName != null) {
+								int result = view.getController().editField(prev.getName(), fieldName.toString(), newFieldName.toString());
+								if(result != 0)
+									view.showError(DiagramPanel.this, result);
+							}
 						}
 					}
 					
