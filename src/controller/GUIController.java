@@ -116,4 +116,34 @@ public class GUIController extends UMLController {
 		return result;
 	}
 
+	@Override
+	public int editClass(String oldClass, String newClass) {
+		int result = model.editClass(oldClass, newClass);
+		if(result == 0) {
+			// Notify observer of change
+			notify("classChange", model.getClass(newClass));
+		}
+		return result;
+	}
+
+	@Override
+	public int editField(String className, String oldField, String newField) {
+		int result = model.editFields(className, oldField, newField);
+		if(result == 0) {
+			// Notify observer of change
+			notify("fieldChange", model.getClass(className));
+		}
+		return result;
+	}
+
+	@Override
+	public int editMethod(String className, String oldMethod, String newMethod) {
+		int result = model.editMethods(className, oldMethod, newMethod);
+		if(result == 0) {
+			// Notify observer of change
+			notify("methodChange", model.getClass(className));
+		}
+		return result;
+	}
+
 }

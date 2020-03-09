@@ -11,7 +11,6 @@ import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -26,6 +25,7 @@ import model.UMLRelationship;
 import observe.Observable;
 import observe.Observer;
 import views.GUIView;
+import main.UMLFileIO;
 
 /**
  * A JPanel to display the UMLClasses and relationships
@@ -56,10 +56,13 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	
 	// MenuItems for class mouse menu
 	private JMenuItem classRemoveClass;
+	private JMenuItem classEditClass;
 	private JMenuItem classAddField;
 	private JMenuItem classRemoveField;
+	private JMenuItem classEditField;
 	private JMenuItem classAddMethod;
 	private JMenuItem classRemoveMethod;
+	private JMenuItem classEditMethod;
 	private JMenuItem classAddRelationship;
 	private JMenuItem classRemoveRelationship;
 	
@@ -170,24 +173,30 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Initialize class menu options
 		classRemoveClass = new JMenuItem("Remove Class");
+		classEditClass = new JMenuItem("Edit Class Name");
 		
 		classAddField = new JMenuItem("Add Field");
 		classRemoveField = new JMenuItem("Remove Field");
+		classEditField = new JMenuItem("Edit Field Name");
 
 		classAddMethod = new JMenuItem("Add Method");
 		classRemoveMethod = new JMenuItem("Remove Method");
+		classEditMethod = new JMenuItem("Edit Method Name");
 		
 		classAddRelationship = new JMenuItem("Add Relationship");
 		classRemoveRelationship = new JMenuItem("Remove Relationship");
 		
 		// Add items to class menu
 		classMenu.add(classRemoveClass);
+		classMenu.add(classEditClass);
 		classMenu.addSeparator();
 		classMenu.add(classAddField);
 		classMenu.add(classRemoveField);
+		classMenu.add(classEditField);
 		classMenu.addSeparator();
 		classMenu.add(classAddMethod);
 		classMenu.add(classRemoveMethod);
+		classMenu.add(classEditMethod);
 		classMenu.addSeparator();
 		classMenu.add(classAddRelationship);
 		classMenu.add(classRemoveRelationship);
@@ -204,12 +213,15 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Setup actions for class menu items
 		classRemoveClass.addActionListener(removeClassAction());
+		classEditClass.addActionListener(editClassAction());
 		
 		classAddField.addActionListener(addFieldAction());
 		classRemoveField.addActionListener(removeFieldAction());
+		classEditField.addActionListener(editFieldAction());
 		
 		classAddMethod.addActionListener(addMethodAction());
 		classRemoveMethod.addActionListener(removeMethodAction());
+		classEditMethod.addActionListener(editMethodAction());
 		
 		classAddRelationship.addActionListener(addRelationshipAction());
 		classRemoveRelationship.addActionListener(removeRelationshipAction());
@@ -253,6 +265,33 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					if(result != 0)
 						view.showError(DiagramPanel.this, result);
 					
+					// Reset prev
+					prev = null;
+				}
+			}
+		};
+	}
+	
+	/**
+	 * Get an action listener that will edit a class's name
+	 * @return - ActionListener with definition for editing a class name
+	 */
+	private ActionListener editClassAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {	
+				// Make sure a selected class exists
+				if(prev != null) {
+					// Prompt the user for a new class name
+					Object className = view.promptInput("Enter new class name:");
+					
+					// Make sure user did not cancel input
+					if(className != null) {
+						int result = view.getController().editClass(prev.getName(), className.toString());
+						if(result != 0)
+							view.showError(DiagramPanel.this, result);
+					}
+						
 					// Reset prev
 					prev = null;
 				}
@@ -317,6 +356,42 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	}
 	
 	/**
+	 * Get an action listener that will edit a field name from a given class
+	 * @return - ActionListener with definition for editing the name of a field
+	 */
+	private ActionListener editFieldAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Make sure a selected class exists
+				if(prev != null) {
+					// Get a list of the available field names to edit
+					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getFields().toArray();
+					
+					// Make sure there is at least one field
+					if(availableOptions.length > 0) {
+						Object fieldName = view.promptSelection("Choose field name:", availableOptions);
+						// Make sure user didn't cancel input
+						if(fieldName != null) {
+							// Prompt for the new name
+							Object newFieldName = view.promptInput("Enter the new name of the field");
+							
+							// Make sure user didn't cancel
+							if(newFieldName != null) {
+								int result = view.getController().editField(prev.getName(), fieldName.toString(), newFieldName.toString());
+								if(result != 0)
+									view.showError(DiagramPanel.this, result);
+							}
+						}
+					}
+					
+					prev = null;
+				}
+			}
+		};
+	}
+	
+	/**
 	 * Get an action listener that will add a method to a given class
 	 * @return - ActionListener with definition for adding a method
 	 */
@@ -363,6 +438,43 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 							int result = view.getController().removeMethod(prev.getName(), methodName.toString());
 							if(result != 0)
 								view.showError(DiagramPanel.this, result);
+						}
+					}
+					
+					prev = null;
+				}
+			}
+		};
+	}
+	
+	
+	/**
+	 * Get an action listener that will edit a method name from a given class
+	 * @return - ActionListener with definition for editing the name of a method
+	 */
+	private ActionListener editMethodAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Make sure a selected class exists
+				if(prev != null) {
+					// Get a list of the available method names to edit
+					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getMethods().toArray();
+					
+					// Make sure there is at least one method
+					if(availableOptions.length > 0) {
+						Object methodName = view.promptSelection("Choose method name:", availableOptions);
+						// Make sure user didn't cancel input
+						if(methodName != null) {
+							// Prompt for the new name
+							Object newMethodName = view.promptInput("Enter the new name of the method");
+							
+							// Make sure user didn't cancel
+							if(newMethodName != null) {
+								int result = view.getController().editMethod(prev.getName(), methodName.toString(), newMethodName.toString());
+								if(result != 0)
+									view.showError(DiagramPanel.this, result);
+							}
 						}
 					}
 					
@@ -581,6 +693,14 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		}
 		else if(tag.equals("relationshipChange")) {
 			// Nothing to do
+		}
+		else if(tag.equals("classChange")) {
+			// Update names
+			// Have to loop through all since the name changed
+			for(Map.Entry<String, GUIClass> entry : guiClasses.entrySet()) {
+				GUIClass temp = entry.getValue();
+				temp.updateName();
+			}
 		}
 		
 		// Update display
