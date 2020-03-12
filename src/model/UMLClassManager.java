@@ -271,13 +271,14 @@ public class UMLClassManager implements Serializable {
 		if (name == null || name.isEmpty()){
 			return false;
 		}
-		Pattern specialSearch = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+		Pattern specialSearch = Pattern.compile("[^a-z0-9_-]", Pattern.CASE_INSENSITIVE);
 		Matcher m = specialSearch.matcher(name);
 		boolean specialChar = m.find();
 		if (specialChar){
 			return false;
 		}
 		if (Character.isLetter(name.charAt(0)) && !name.contains(" ")){
+			
 			return true;
 		}
 		return false;
