@@ -4,8 +4,6 @@ package tests;
 // System imports
 import org.junit.Test;
 
-import main.ErrorHandler;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -169,6 +167,129 @@ public class ConsoleTests {
 		
 		// Add with no specifier
 		assertEquals("add with no specifier", 102, console.execCommand("add"));
+		
+		// Reset the old output streams
+		System.setOut(oldOut);
+		System.setErr(oldErr);
+	}
+	
+	/**
+	 * Test the remove command output
+	 * NOTE SOME OUTPUT RELIES ON FUNCTIONING MODEL
+	 */
+	@Test
+	public void removeClassCommand() {
+		// Set System.out/err to catch output text to test
+		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
+		final ByteArrayOutputStream newErr = new ByteArrayOutputStream();
+		final PrintStream oldOut = System.out;
+		final PrintStream oldErr = System.out;
+		System.setOut(new PrintStream(newOut));
+		System.setErr(new PrintStream(newErr));
+		
+		ConsoleView console = new ConsoleView();
+		
+		// Remove class with valid input
+		console.execCommand("add class normal");
+		assertEquals("remove class valid return code", 0, console.execCommand("remove class normal"));
+		assertEquals("remove class valid error stream", "", scrubOut(newErr.toString()));
+		assertEquals("remove class valid out stream", "Removed class \'normal\'.", scrubOut(newOut.toString()));
+		
+		console.execCommand("add class myclass");
+		
+		// remove class with invalid input
+		assertNotEquals("remove class invalid return code", 0, console.execCommand("remove class not*re(la"));
+		assertEquals("remove class invalid return code 2", 407, console.execCommand("remove class 38&32H3"));
+		
+		// remove class with wrong number of args
+		assertEquals("remove class too many args", 102, console.execCommand("remove class myclass another"));
+		assertEquals("remove class too many args 2", 102, console.execCommand("remove class myclass another woa"));
+		assertEquals("remove class too few args", 102, console.execCommand("remove class"));
+		
+		// remove with no specifier
+		assertEquals("remove with no specifier", 102, console.execCommand("remove"));
+		
+		// Reset the old output streams
+		System.setOut(oldOut);
+		System.setErr(oldErr);
+	}
+	
+	/**
+	 * Test the remove field output
+	 * NOTE SOME OUTPUT RELIES ON FUNCTIONING MODEL
+	 */
+	@Test
+	public void removeFieldCommand() {
+		// Set System.out/err to catch output text to test
+		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
+		final ByteArrayOutputStream newErr = new ByteArrayOutputStream();
+		final PrintStream oldOut = System.out;
+		final PrintStream oldErr = System.out;
+		System.setOut(new PrintStream(newOut));
+		System.setErr(new PrintStream(newErr));
+		
+		ConsoleView console = new ConsoleView();
+		console.execCommand("add class myclass");
+		console.execCommand("add field myclass myfield");
+		
+		// Remove field with valid input
+		assertEquals("remove field valid return code", 0, console.execCommand("remove field myclass myfield"));
+		assertEquals("remove field valid error stream", "", scrubOut(newErr.toString()));
+		assertEquals("remove field valid out stream", "Removed field \'myfield\' from class \'myclass\'.", scrubOut(newOut.toString()));
+		
+		// Remove field with invalid input
+		assertNotEquals("remove field invalid return code", 0, console.execCommand("remove field myclass not*re(la"));
+		assertEquals("remove field invalid return code 2", 407, console.execCommand("remove field myclass 38&32H3"));
+		
+		// Remove field with wrong number of args
+		assertEquals("remove field too many args", 102, console.execCommand("remove field myclass another field"));
+		assertEquals("remove field too many args 2", 102, console.execCommand("remove field myclass another crazy field"));
+		assertEquals("remove field too few args", 102, console.execCommand("remove field myclass"));
+		assertEquals("remove field too few args", 102, console.execCommand("remove field"));
+		
+		// Remove with no specifier
+		assertEquals("add with no specifier", 102, console.execCommand("remove"));
+		
+		// Reset the old output streams
+		System.setOut(oldOut);
+		System.setErr(oldErr);
+	}
+	
+	/**
+	 * Test the remove method output
+	 * NOTE SOME OUTPUT RELIES ON FUNCTIONING MODEL
+	 */
+	@Test
+	public void removeMethodCommand() {
+		// Set System.out/err to catch output text to test
+		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
+		final ByteArrayOutputStream newErr = new ByteArrayOutputStream();
+		final PrintStream oldOut = System.out;
+		final PrintStream oldErr = System.out;
+		System.setOut(new PrintStream(newOut));
+		System.setErr(new PrintStream(newErr));
+		
+		ConsoleView console = new ConsoleView();
+		console.execCommand("add class myclass");
+		console.execCommand("add method myclass mymethod");
+		
+		// Remove method with valid input
+		assertEquals("remove method valid return code", 0, console.execCommand("remove method myclass mymethod"));
+		assertEquals("remove method valid error stream", "", scrubOut(newErr.toString()));
+		assertEquals("remove method valid out stream", "Removed method \'mymethod\' from class \'myclass\'.", scrubOut(newOut.toString()));
+		
+		// Remove method with invalid input
+		assertNotEquals("remove method invalid return code", 0, console.execCommand("remove method myclass not*re(la"));
+		assertEquals("remove method invalid return code 2", 407, console.execCommand("remove method myclass 38&32H3"));
+		
+		// Remove method with wrong number of args
+		assertEquals("remove method too many args", 102, console.execCommand("remove method myclass another method"));
+		assertEquals("remove method too many args 2", 102, console.execCommand("remove method myclass another crazy field"));
+		assertEquals("remove method too few args", 102, console.execCommand("remove method myclass"));
+		assertEquals("remove method too few args", 102, console.execCommand("remove method"));
+		
+		// Remove with no specifier
+		assertEquals("add with no specifier", 102, console.execCommand("remove"));
 		
 		// Reset the old output streams
 		System.setOut(oldOut);
