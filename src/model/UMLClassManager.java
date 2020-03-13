@@ -70,10 +70,12 @@ public class UMLClassManager implements Serializable {
 			{
 				return 402;
 			}
-			else 
+			else if (validName(methodName))
 			{
+				
 				classList.get(className).addMethod(methodName);
 				return 0;
+				
 			}
 		}
 		else return 403;
@@ -94,8 +96,9 @@ public class UMLClassManager implements Serializable {
 			{
 				return 404;
 			}
-			else 
+			else if (validName(fieldName))
 			{
+				
 				classList.get(className).addField(fieldName);
 				return 0;
 			}
@@ -271,14 +274,13 @@ public class UMLClassManager implements Serializable {
 		if (name == null || name.isEmpty()){
 			return false;
 		}
-		Pattern specialSearch = Pattern.compile("[^a-z0-9_-]", Pattern.CASE_INSENSITIVE);
+		Pattern specialSearch = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
 		Matcher m = specialSearch.matcher(name);
 		boolean specialChar = m.find();
 		if (specialChar){
 			return false;
 		}
 		if (Character.isLetter(name.charAt(0)) && !name.contains(" ")){
-			
 			return true;
 		}
 		return false;
