@@ -70,10 +70,12 @@ public class UMLClassManager implements Serializable {
 			{
 				return 402;
 			}
-			else 
+			else if (validName(methodName))
 			{
+				
 				classList.get(className).addMethod(methodName);
 				return 0;
+				
 			}
 		}
 		else return 403;
@@ -94,8 +96,9 @@ public class UMLClassManager implements Serializable {
 			{
 				return 404;
 			}
-			else 
+			else if (validName(fieldName))
 			{
+				
 				classList.get(className).addField(fieldName);
 				return 0;
 			}
@@ -278,7 +281,6 @@ public class UMLClassManager implements Serializable {
 			return false;
 		}
 		if (Character.isLetter(name.charAt(0)) && !name.contains(" ")){
-			
 			return true;
 		}
 		return false;
