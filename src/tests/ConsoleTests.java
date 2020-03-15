@@ -134,7 +134,7 @@ public class ConsoleTests {
 	}
 	
 	/**
-	 * Test the add field output
+	 * Test the add method output
 	 * NOTE SOME OUTPUT RELIES ON FUNCTIONING MODEL
 	 */
 	@Test
@@ -167,6 +167,58 @@ public class ConsoleTests {
 		
 		// Add with no specifier
 		assertEquals("add with no specifier", 102, console.execCommand("add"));
+		
+		// Reset the old output streams
+		System.setOut(oldOut);
+		System.setErr(oldErr);
+	}
+	
+	/**
+	 * Test the add relationship output
+	 * NOTE SOME OUTPUT RELIES ON FUNCTIONING MODEL
+	 */
+	@Test
+	public void addRelationshipCommand() {
+		// Set System.out/err to catch output text to test
+		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
+		final ByteArrayOutputStream newErr = new ByteArrayOutputStream();
+		final PrintStream oldOut = System.out;
+		final PrintStream oldErr = System.out;
+		System.setOut(new PrintStream(newOut));
+		System.setErr(new PrintStream(newErr));
+		
+		ConsoleView console = new ConsoleView();
+		console.execCommand("add class myclass");
+		console.execCommand("add class another");
+		console.execCommand("add class third");
+		
+		// Add relationships with valid input
+		assertEquals("add relationship valid return code", 0, console.execCommand("add relationship myclass aggregation another"));
+		assertEquals("add relationship valid output", "Added aggregation relationship from \'myclass\' to \'another\'.", scrubOut(newOut.toString()));
+		assertEquals("add relationship valid error stream", "", newErr.toString());
+		newOut.reset();
+		newErr.reset();
+		assertEquals("add relationship 2 valid return code", 0, console.execCommand("add relationship another composition third"));
+		assertEquals("add relationship 2 valid output", "Added composition relationship from \'another\' to \'third\'.", scrubOut(newOut.toString()));
+		assertEquals("add relationship 2 valid error stream", "", newErr.toString());
+		newOut.reset();
+		newErr.reset();
+		
+		// Add relationships with invalid input
+		// ERROR CODE WILL CHANGE ONCE THE FUNCTIONALITY HAS BEEN WRITTEN AND A RETURN CODE HAS BEEN ASSIGNED
+		assertEquals("add relationship class not exist return code", 999, console.execCommand("add relationship notarealclass aggregation another"));
+		assertEquals("add relationship class not exist return code", 999, console.execCommand("add relationship notarealclass aggregation another"));
+		assertEquals("add relationship type not exist return code", 999, console.execCommand("add relationship myclass notreal another"));
+		
+		// Add relationships with bad arg count
+		assertEquals("Add relationship with too many args", 102, console.execCommand("add relationship myclass aggregation another morestuff yay"));
+		assertEquals("Add relationship with too many args 2", 102, console.execCommand("add relationship myclass inheritance another third"));
+		assertEquals("Add relationship with too few args", 102, console.execCommand("add relationship myclass aggregation"));
+		assertEquals("Add relationship with too few args 2", 102, console.execCommand("add relationship myclass"));
+		assertEquals("Add relationship no args", 102, console.execCommand("add relationship"));
+		
+		// Add with no specifier
+		assertEquals("Add with no specifier", 102, console.execCommand("add"));
 		
 		// Reset the old output streams
 		System.setOut(oldOut);
@@ -290,38 +342,6 @@ public class ConsoleTests {
 		
 		// Remove with no specifier
 		assertEquals("add with no specifier", 102, console.execCommand("remove"));
-		
-		// Reset the old output streams
-		System.setOut(oldOut);
-		System.setErr(oldErr);
-	}
-	
-	/*
-	 * Check command execution
-	 */
-	@Test
-	public void checkInput() {
-		// Set System.out/err to catch output text to test
-		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
-		final ByteArrayOutputStream newErr = new ByteArrayOutputStream();
-		final PrintStream oldOut = System.out;
-		final PrintStream oldErr = System.out;
-		System.setOut(new PrintStream(newOut));
-		System.setErr(new PrintStream(newErr));
-		
-		ConsoleView editor = new ConsoleView();
-		int result;
-		
-		result = editor.execCommand("remove-class");
-		assertEquals("remove-class no args", 102, result);
-		newErr.reset();
-		
-		result = editor.execCommand("remove-class myclass");
-		assertEquals("remove-class normal", "", scrubOut(newErr.toString()));
-		assertEquals("remove-class normal return code", 0, result);
-		
-		// Can't check remove-class with normal args in this test because
-		//	it relies on remove and add working which should be in a separate test
 		
 		// Reset the old output streams
 		System.setOut(oldOut);
