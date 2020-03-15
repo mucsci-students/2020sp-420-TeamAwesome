@@ -353,7 +353,7 @@ public class ConsoleTests {
 	 * NOTE SOME OUTPUT RELIES ON FUNCTIONING MODEL
 	 */
 	@Test
-	public void addRelationshipCommand() {
+	public void removeRelationshipCommand() {
 		// Set System.out/err to catch output text to test
 		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
 		final ByteArrayOutputStream newErr = new ByteArrayOutputStream();
