@@ -349,6 +349,58 @@ public class ConsoleTests {
 	}
 	
 	/**
+	 * Test the remove relationship output
+	 * NOTE SOME OUTPUT RELIES ON FUNCTIONING MODEL
+	 */
+	@Test
+	public void addRelationshipCommand() {
+		// Set System.out/err to catch output text to test
+		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
+		final ByteArrayOutputStream newErr = new ByteArrayOutputStream();
+		final PrintStream oldOut = System.out;
+		final PrintStream oldErr = System.out;
+		System.setOut(new PrintStream(newOut));
+		System.setErr(new PrintStream(newErr));
+		
+		ConsoleView console = new ConsoleView();
+		console.execCommand("add class myclass");
+		console.execCommand("add class another");
+		console.execCommand("add class third");
+		
+		// Remove relationships with valid input
+		assertEquals("remove relationship valid return code", 0, console.execCommand("remove relationship myclass aggregation another"));
+		assertEquals("remove relationship valid output", "Removed aggregation relationship from \'myclass\' to \'another\'.", scrubOut(newOut.toString()));
+		assertEquals("remove relationship valid error stream", "", newErr.toString());
+		newOut.reset();
+		newErr.reset();
+		assertEquals("remove relationship 2 valid return code", 0, console.execCommand("remove relationship another composition third"));
+		assertEquals("remove relationship 2 valid output", "Remove composition relationship from \'another\' to \'third\'.", scrubOut(newOut.toString()));
+		assertEquals("remove relationship 2 valid error stream", "", newErr.toString());
+		newOut.reset();
+		newErr.reset();
+		
+		// Remove relationships with invalid input
+		// ERROR CODE WILL CHANGE ONCE THE FUNCTIONALITY HAS BEEN WRITTEN AND A RETURN CODE HAS BEEN ASSIGNED
+		assertEquals("remove relationship class not exist return code", 999, console.execCommand("remove relationship notarealclass aggregation another"));
+		assertEquals("remove relationship class not exist return code", 999, console.execCommand("remove relationship notarealclass aggregation another"));
+		assertEquals("remove relationship type not exist return code", 999, console.execCommand("remove relationship myclass notreal another"));
+		
+		// Remove relationships with bad arg count
+		assertEquals("remove relationship with too many args", 102, console.execCommand("remove relationship myclass aggregation another morestuff yay"));
+		assertEquals("remove relationship with too many args 2", 102, console.execCommand("remove relationship myclass inheritance another third"));
+		assertEquals("remove relationship with too few args", 102, console.execCommand("remove relationship myclass aggregation"));
+		assertEquals("remove relationship with too few args 2", 102, console.execCommand("remove relationship myclass"));
+		assertEquals("remove relationship no args", 102, console.execCommand("remove relationship"));
+		
+		// remove with no specifier
+		assertEquals("remove", 102, console.execCommand("remove"));
+		
+		// Reset the old output streams
+		System.setOut(oldOut);
+		System.setErr(oldErr);
+	}
+	
+	/**
 	 * Helper function to scrub the output of System.out.println() for comparisons
 	 * and testing of output.
 	 * @param str - String to scrub
