@@ -446,6 +446,52 @@ public class ConsoleTests {
 	}
 	
 	/**
+	 * Test the edit field output
+	 * NOTE SOME OUTPUT RELIES ON FUNCTIONING MODEL
+	 */
+	@Test
+	public void editFieldCommand() {
+		// Set System.out/err to catch output text to test
+		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
+		final ByteArrayOutputStream newErr = new ByteArrayOutputStream();
+		final PrintStream oldOut = System.out;
+		final PrintStream oldErr = System.out;
+		System.setOut(new PrintStream(newOut));
+		System.setErr(new PrintStream(newErr));
+		
+		ConsoleView console = new ConsoleView();
+		console.execCommand("add class myclass");
+		console.execCommand("add field myclass myfield");
+		
+		// Edit field name with valid input
+		assertEquals("edit field valid return code", 0, console.execCommand("edit field myclass myfield mynewfield"));
+		assertEquals("edit field valid output", "Changed field \'myfield\' from \'myclass\' to \'mynewfield\'.", scrubOut(newOut.toString()));
+		assertEquals("edit field valid error stream", "", scrubOut(newErr.toString()));
+		newOut.reset();
+		newErr.reset();
+		assertEquals("edit field valid return code 2", 0, console.execCommand("edit field myclass newfield myfield"));
+		assertEquals("edit field valid output 2", "Changed class \'newclass\' to \'myclass\'.", scrubOut(newOut.toString()));
+		assertEquals("edit field valid error stream 2", "", scrubOut(newErr.toString()));
+		
+		// Edit field name with invalid input
+		assertEquals("edit field invalid return code", 407, console.execCommand("edit field myclass myfield 1%%%*asd29_newfield"));
+		assertEquals("edit field invalid return code 2", 407, console.execCommand("edit field myclass myfield __%___newfield"));
+		
+		// Edit field name with invalid argument count
+		assertEquals("edit field too many args 1", 102, console.execCommand("edit field myclass myfield newfield another"));
+		assertEquals("edit field too many args 2", 102, console.execCommand("edit field myclass myfield newfield second third"));
+		assertEquals("edit field too few args", 102, console.execCommand("edit field myclass"));
+		assertEquals("edit field too few args 2", 102, console.execCommand("edit field myclass myfield"));
+		
+		// remove with no specifier
+		assertEquals("edit", 102, console.execCommand("edit"));
+		
+		// Reset the old output streams
+		System.setOut(oldOut);
+		System.setErr(oldErr);
+	}
+	
+	/**
 	 * Helper function to scrub the output of System.out.println() for comparisons
 	 * and testing of output.
 	 * @param str - String to scrub
