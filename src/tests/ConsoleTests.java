@@ -470,7 +470,7 @@ public class ConsoleTests {
 		newOut.reset();
 		newErr.reset();
 		assertEquals("edit field valid return code 2", 0, console.execCommand("edit field myclass newfield myfield"));
-		assertEquals("edit field valid output 2", "Changed class \'newclass\' to \'myclass\'.", scrubOut(newOut.toString()));
+		assertEquals("edit field valid output 2", "Changed field \'newfield\' from \'myclass\' to \'myfield\'.", scrubOut(newOut.toString()));
 		assertEquals("edit field valid error stream 2", "", scrubOut(newErr.toString()));
 		
 		// Edit field name with invalid input
@@ -482,6 +482,52 @@ public class ConsoleTests {
 		assertEquals("edit field too many args 2", 102, console.execCommand("edit field myclass myfield newfield second third"));
 		assertEquals("edit field too few args", 102, console.execCommand("edit field myclass"));
 		assertEquals("edit field too few args 2", 102, console.execCommand("edit field myclass myfield"));
+		
+		// remove with no specifier
+		assertEquals("edit", 102, console.execCommand("edit"));
+		
+		// Reset the old output streams
+		System.setOut(oldOut);
+		System.setErr(oldErr);
+	}
+	
+	/**
+	 * Test the edit method output
+	 * NOTE SOME OUTPUT RELIES ON FUNCTIONING MODEL
+	 */
+	@Test
+	public void editMethodCommand() {
+		// Set System.out/err to catch output text to test
+		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
+		final ByteArrayOutputStream newErr = new ByteArrayOutputStream();
+		final PrintStream oldOut = System.out;
+		final PrintStream oldErr = System.out;
+		System.setOut(new PrintStream(newOut));
+		System.setErr(new PrintStream(newErr));
+		
+		ConsoleView console = new ConsoleView();
+		console.execCommand("add class myclass");
+		console.execCommand("add method myclass mymethod");
+		
+		// Edit method name with valid input
+		assertEquals("edit method valid return code", 0, console.execCommand("edit method myclass mymethod mynewmethod"));
+		assertEquals("edit method valid output", "Changed method \'mymethod\' from \'myclass\' to \'mynewmethod\'.", scrubOut(newOut.toString()));
+		assertEquals("edit method valid error stream", "", scrubOut(newErr.toString()));
+		newOut.reset();
+		newErr.reset();
+		assertEquals("edit method valid return code 2", 0, console.execCommand("edit method myclass mynewmethod mymethod"));
+		assertEquals("edit method valid output 2", "Changed method \'mynewmethod\' from \'myclass\' to \'mymethod\'.", scrubOut(newOut.toString()));
+		assertEquals("edit method valid error stream 2", "", scrubOut(newErr.toString()));
+		
+		// Edit method name with invalid input
+		assertEquals("edit method invalid return code", 407, console.execCommand("edit method myclass mymethod 1%%%*asd29_newmethod"));
+		assertEquals("edit method invalid return code 2", 407, console.execCommand("edit method myclass mymethod __%___newmethod"));
+		
+		// Edit method name with invalid argument count
+		assertEquals("edit method too many args 1", 102, console.execCommand("edit method myclass mymethod mynewmethod another"));
+		assertEquals("edit method too many args 2", 102, console.execCommand("edit method myclass mymethod mynewmethod second third"));
+		assertEquals("edit method too few args", 102, console.execCommand("edit method myclass"));
+		assertEquals("edit method too few args 2", 102, console.execCommand("edit method myclass mymethod"));
 		
 		// remove with no specifier
 		assertEquals("edit", 102, console.execCommand("edit"));
