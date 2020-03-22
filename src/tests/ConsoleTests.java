@@ -331,7 +331,7 @@ public class ConsoleTests {
 		assertEquals("remove method valid out stream", "Removed method \'mymethod\' from class \'myclass\'.", scrubOut(newOut.toString()));
 		
 		// Remove method with invalid input
-		assertNotEquals("remove method invalid return code", 0, console.execCommand("remove method myclass not*re(la"));
+		assertNotEquals("remove method invalid return code", 407, console.execCommand("remove method myclass not*re(la"));
 		assertEquals("remove method invalid return code 2", 407, console.execCommand("remove method myclass 38&32H3"));
 		
 		// Remove method with wrong number of args
@@ -394,6 +394,51 @@ public class ConsoleTests {
 		
 		// remove with no specifier
 		assertEquals("remove", 102, console.execCommand("remove"));
+		
+		// Reset the old output streams
+		System.setOut(oldOut);
+		System.setErr(oldErr);
+	}
+	
+	/**
+	 * Test the edit class output
+	 * NOTE SOME OUTPUT RELIES ON FUNCTIONING MODEL
+	 */
+	@Test
+	public void editClassCommand() {
+		// Set System.out/err to catch output text to test
+		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
+		final ByteArrayOutputStream newErr = new ByteArrayOutputStream();
+		final PrintStream oldOut = System.out;
+		final PrintStream oldErr = System.out;
+		System.setOut(new PrintStream(newOut));
+		System.setErr(new PrintStream(newErr));
+		
+		ConsoleView console = new ConsoleView();
+		console.execCommand("add class myclass");
+		
+		
+		// Edit class name with valid input
+		assertEquals("edit class valid return code", 0, console.execCommand("edit class myclass newclass"));
+		assertEquals("edit class valid output", "Changed class \'myclass\' to \'newclass\'.", scrubOut(newOut.toString()));
+		assertEquals("edit class valid error stream", "", scrubOut(newErr.toString()));
+		newOut.reset();
+		newErr.reset();
+		assertEquals("edit class valid return code 2", 0, console.execCommand("edit class newclass myclass"));
+		assertEquals("edit class valid output 2", "Changed class \'newclass\' to \'myclass\'.", scrubOut(newOut.toString()));
+		assertEquals("edit class valid error stream 2", "", scrubOut(newErr.toString()));
+		
+		// Edit class name with invalid input
+		assertEquals("edit class invalid return code", 407, console.execCommand("edit class myclass 1&*29_newclass"));
+		assertEquals("edit class invalid return code 2", 407, console.execCommand("edit class myclass _____newclass"));
+		
+		// Edit class name with invalid argument count
+		assertEquals("edit class too many args 1", 102, console.execCommand("edit class myclass newclass another"));
+		assertEquals("edit class too many args 2", 102, console.execCommand("edit class myclass newclass second third"));
+		assertEquals("edit class too few args", 102, console.execCommand("edit class myclass"));
+		
+		// remove with no specifier
+		assertEquals("edit", 102, console.execCommand("edit"));
 		
 		// Reset the old output streams
 		System.setOut(oldOut);
