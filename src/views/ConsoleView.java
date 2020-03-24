@@ -87,47 +87,202 @@ public class ConsoleView extends View {
 			
 			System.exit(0);
 		}
-		else if(args[0].equals("add-class")) {
-			// Make sure there is an argument for just the class name
-			if(args.length == 2) {
-				// Pull args
-				String className = args[1];
-				
+
+		//split for all add methods
+		else if(args[0].equals("add")){
+			// after first argument is add check what is being added
+			if (args.length < 3)
+			//all adds require at least 3 arguments
+			{
+				return 102;
+			}
+			if(args[1].equals("class"))
+			{
+				//add class requires only one more argument, any more or less is rejected
+				if (args.length == 3) {
+				String className = args[2];
 				result = controller.addClass(className);
-				if(result == 0)
-					System.out.println("Added class \'" + className + "\'.");
-			}
-			else {
-				return 102;
-			}
-		}
-		else if(args[0].equals("edit-class")) {
-			if(args.length == 3) {
-				String className = args[1];
-				String newName = args[2];
+				if (result == 0)
+				{
+					//successfully added class
+				System.out.println("Added class \'" + className + "\'.'");
+				}
+				}
+				else {
+					//if failed the arguments are invalid 
+					return 102;
+				}
 				
-				result = ((CommandController) controller).editClass(className, newName);
-				if(result == 0)
-					System.out.println("Changed class \'" + className + "\' to \'" + newName + "\'.");
 			}
-			else {
-				return 102;
+			// the add field method
+			else if (args[1].equals("field"))
+			{
+				if(args.length == 4) {
+					//takes exactly four arguments
+					result = controller.addField(args[2], args[3]);
+					//adds fieldname (if valid) to given exisiting class
+					System.out.println("Added field \'" + args[3] + "\' to class \'" + args[2] + "\'.");
+				}
+				else {
+					//invalid arguments
+					return 102;
+				}
 			}
-		}
-		else if(args[0].equals("remove-class")) {
-			// Make sure there is only an argument for the class name
-			if(args.length == 2) {
-				// Pull args
-				String className = args[1];
+			//add method...method
+			else if (args[1].equals("method"))
+			{
 				
-				result = controller.removeClass(className);
-				if(result == 0)
-					System.out.println("Removed class \'" + className + "\'.");
-			} 
-			else {
+				if(args.length == 4) {
+					//takes exaclty four arguments
+					result = controller.addMethod(args[2], args[3]);
+					//adds valid methodName to given exisiting class
+					System.out.println("Added method \'" + args[3] + "\' to class \'" + args[2] + "\'.");
+				}
+				else {
+					//invalid amount of arguments
+					return 102;
+				}
+			}
+			//add relationship method
+			else if (args[1].equals("relationship"))
+			{
+				if(args.length == 4) {
+					//takes exactly 4 arguments
+					result = controller.addRelationship(args[2], args[3]);
+					System.out.println("Added relationship between class \'" + args[3] + "\' and class \'" + args[2] + "\'.");
+				}
+				else {
+					//invalid number arguments
+					return 102;
+				}
+			}
+		
+			}
+
+			//command split for all remove methods
+		else if (args[0].equals("remove")){
+			//remove requires at least 2 parameters
+			if (args.length < 2)
+			{
 				return 102;
 			}
+			//remove class method
+			else if (args[1].equals("class"))
+			{
+				if(args.length == 3) {
+					// Pull exactly 3 args
+					String className = args[2];
+					
+					result = controller.removeClass(className);
+					if(result == 0)
+						System.out.println("Removed class \'" + className + "\'.");
+				} 
+				else {
+					//invalid arg count
+					return 102;
+				}
+			}
+			//remove field method
+			else if (args[1].equals("field"))
+			{
+				if(args.length == 4) {
+					//takes exactly 4 arguments, remove, field, classname, fieldname
+					result = controller.removeField(args[2], args[3]);
+					System.out.println("Removed field \'" + args[3] + "\' to class \'" + args[2] + "\'.");
+				}
+				else {
+					//invalid arugment amount
+					return 102;
+				}
+			}
+			//remove method...method
+			else if (args[1].equals("method"))
+			{
+				if(args.length == 4) {
+					//takes 4 parameters
+					result = controller.removeMethod(args[2], args[3]);
+					System.out.println("Removed method \'" + args[3] + "\' to class \'" + args[2] + "\'.");
+				}
+				else {
+					//invalid amount of parameters
+					return 102;
+				}
+			}
+			//remove relationship method
+			else if (args[1].equals("relationship"))
+			{
+				if(args.length == 4) {
+					//takes exaclty 4 parameters
+					result = controller.removeRelationship(args[2], args[3]);
+					System.out.println("Removed relationship between class \'" + args[3] + "\' and class \'" + args[2] + "\'.");
+				}
+				else {
+					//invalid amount of params
+					return 102;
+				}
+			}
+
 		}
+		//split for edit command
+		else if (args[0].equals("edit"))
+		{
+			if(args.length < 3)
+			{
+				//all edits take at least 3 params
+				return 102;
+			}
+			//edit class method
+			else if (args[1].equals("class"))
+			{
+				if(args.length == 4) {
+					//takes 4 params
+					String className = args[2];
+					String newName = args[3];
+					
+					result = ((CommandController) controller).editClass(className, newName);
+					if(result == 0)
+						System.out.println("Changed class \'" + className + "\' to \'" + newName + "\'.");
+				}
+				else {
+					// invalid param amount
+					return 102;
+				}
+			}
+			//edit field method
+			else if (args[1].equals("field"))
+			{
+				if (args.length == 5) {
+					//takes 5 arguments; edit field classname oldfield newfield
+					String className = args[2];
+					String oldName = args[3];
+					String newName = args[4];
+						
+					result = ((CommandController) controller).editField(className,oldName, newName);
+					if(result == 0)
+						System.out.println("Changed field \'" + oldName + "\' to \'" + newName + "\' in class \'" + className + "\'.");
+					else {
+						//invalid param count
+						return 102;
+					}
+				}
+			}
+			//edit method..method 
+			else if (args[1].equals("method"))
+			{
+				if(args.length == 5) {
+					// takes exactly 5 arguments
+					String className = args[2];
+					String oldName = args[3];
+					String newName = args[4];
+					
+					result = ((CommandController) controller).editMethod(className, oldName, newName);
+					if(result == 0)
+						System.out.println("Changed method \'" + oldName + "\' to \'" + newName + "\' in class \'" + className + "\'.");
+				}
+				else return 102;
+			}
+		}
+
 		else if(args[0].equals("save")) {
 			String filePath = "";
 			
@@ -144,6 +299,7 @@ public class ConsoleView extends View {
 					System.out.flush();
 					System.out.print("Save file: ");
 					filePath = scanner.nextLine();
+					
 				}
 			}
 			else {
@@ -197,91 +353,9 @@ public class ConsoleView extends View {
 				return 102;
 			}
 		}
-		else if(args[0].equals("add-field")) {
-			// Expects args[1]=className and args[2]=fieldName
-			if(args.length == 3) {
-				result = controller.addField(args[1], args[2]);
-				System.out.println("Added field \'" + args[2] + "\' to class \'" + args[1] + "\'.");
-			}
-			else {
-				return 102;
-			}
-		}
-		else if(args[0].equals("edit-field")) {
-			if(args.length == 4) {
-				String className = args[1];
-				String oldName = args[2];
-				String newName = args[3];
-				
-				result = ((CommandController) controller).editField(className,oldName, newName);
-				if(result == 0)
-					System.out.println("Changed field \'" + oldName + "\' to \'" + newName + "\' in class \'" + className + "\'.");
-			}
-			else {
-				return 102;
-			}
-		}
-		else if(args[0].equals("add-method")) {
-			// Expects args[1]=className and args[2]=methodName
-			if(args.length == 3) {
-				result = controller.addMethod(args[1], args[2]);
-				System.out.println("Added method \'" + args[2] + "\' to class \'" + args[1] + "\'.");
-			}
-			else {
-				return 102;
-			}
-		}
-		else if(args[0].equals("edit-method")) {
-			if(args.length == 4) {
-				String className = args[1];
-				String oldName = args[2];
-				String newName = args[3];
-				
-				result = ((CommandController) controller).editMethod(className, oldName, newName);
-				if(result == 0)
-					System.out.println("Changed method \'" + oldName + "\' to \'" + newName + "\' in class \'" + className + "\'.");
-			}
-		}	
-		else if(args[0].equals("remove-field")) {
-			// Expects args[1]=className and args[2]=fieldName
-			if(args.length == 3) {
-				result = controller.removeField(args[1], args[2]);
-				System.out.println("Removed field \'" + args[2] + "\' to class \'" + args[1] + "\'.");
-			}
-			else {
-				return 102;
-			}
-		}
-		else if(args[0].equals("remove-method")) {
-			// Expects args[1]=className and args[2]=methodName
-			if(args.length == 3) {
-				result = controller.removeMethod(args[1], args[2]);
-				System.out.println("Removed method \'" + args[2] + "\' to class \'" + args[1] + "\'.");
-			}
-			else {
-				return 102;
-			}
-		}
-		else if(args[0].equals("add-relationship")) {
-			// Expects args[1]=className1 and args[2]=className2
-			if(args.length == 3) {
-				result = controller.addRelationship(args[1], args[2]);
-				System.out.println("Added relationship between class \'" + args[2] + "\' and class \'" + args[1] + "\'.");
-			}
-			else {
-				return 102;
-			}
-		}
-		else if(args[0].equals("remove-relationship")) {
-			// Expects args[1]=className1 and args[2]=className2
-			if(args.length == 3) {
-				result = controller.removeRelationship(args[1], args[2]);
-				System.out.println("Removed relationship between class \'" + args[2] + "\' and class \'" + args[1] + "\'.");
-			}
-			else {
-				return 102;
-			}
-		}
+		
+		
+		
 		else if(args[0].equals("list-fields")) {
 			// Expects args[1]=className
 			if(args.length == 2) {
@@ -369,25 +443,26 @@ public class ConsoleView extends View {
 	 */
 	private void populateValidCommands() {
 		validCommands.put("help", new String[]{"Prints out a list of valid commands with descriptions"});
-		validCommands.put("add-class <class_name>", new String[]{"add the given class name"});
-		validCommands.put("edit-class <class_name>", new String[]{"edit the given existing class to the new given class name"});
-		validCommands.put("remove-class <class_name>", new String[]{"add the given class name"});
-		validCommands.put("exit", new String[]{"quit the program"});
-		validCommands.put("quit", new String[]{"quit the program"});
-		validCommands.put("save", new String[]{"save the current state of the UML diagram", "if a file has not been set it will prompt the user."});
+		validCommands.put("add", new String[]{"Base command, accepts a Class, Method, relationship, or Field; for more help try 'help add <parameter>'"});
+		validCommands.put("add class <class_name>", new String[]{"Add the given class name"});
+		validCommands.put("edit class <class_name>", new String[]{"Edit the given existing class to the new given class name"});
+		validCommands.put("remove class <class_name>", new String[]{"Add the given class name"});
+		validCommands.put("exit", new String[]{"Quit the program"});
+		validCommands.put("quit", new String[]{"Quit the program"});
+		validCommands.put("save", new String[]{"Save the current state of the UML diagram", "if a file has not been set it will prompt the user."});
 		validCommands.put("load <file_path>", new String[] {"Load the given file into the UML editor"});
-		validCommands.put("list-classes", new String[]{"list all of the created classes"});
-		validCommands.put("add-field", new String[]{"Takes a exisiting className and new fieldName to add the field into the class"});
-		validCommands.put("edit-field <class_name>", new String[]{"takes an existing field in an existing class and change it to the given new name"});
-		validCommands.put("add-method", new String[]{"Takes a exisiting className and new methodName to add the method into the class"});
-		validCommands.put("edit-field <class_name>", new String[]{"takes an existing method in an existing class and change it to the given new name"});
-		validCommands.put("remove-field", new String[]{"Takes a exisiting className and existing fieldName to remove the field from the class"});
-		validCommands.put("remove-method", new String[]{"Takes a exisiting className and existing methodName to remove the method from the class"});
-		validCommands.put("add-relationship", new String[]{"Takes two exisiting classNames and creates a relationship between the two"});
-		validCommands.put("remove-relationship", new String[]{"Takes two exisiting classNames and removes an exisiting relationship between the two"});
-		validCommands.put("list-fields", new String[]{"takes an exisiting class and lists all fields assoicatied with the class"});
-		validCommands.put("list-methods", new String[]{"takes an exisiting class and lists all methods assoicatied with the class"});
-		validCommands.put("list-relationships", new String[]{"takes an exisiting class and lists all relationships assoicatied with the class"});
+		validCommands.put("list classes", new String[]{"List all of the created classes"});
+		validCommands.put("add field", new String[]{"Takes a exisiting className and new fieldName to add the field into the class"});
+		validCommands.put("edit field <class_name>", new String[]{"Takes an existing field in an existing class and change it to the given new name"});
+		validCommands.put("add method", new String[]{"Takes a exisiting className and new methodName to add the method into the class"});
+		validCommands.put("edit field <class_name>", new String[]{"Takes an existing method in an existing class and change it to the given new name"});
+		validCommands.put("remove field", new String[]{"Takes a exisiting className and existing fieldName to remove the field from the class"});
+		validCommands.put("remove method", new String[]{"Takes a exisiting className and existing methodName to remove the method from the class"});
+		validCommands.put("add relationship", new String[]{"Takes two exisiting classNames and creates a relationship between the two"});
+		validCommands.put("remove relationship", new String[]{"Takes two exisiting classNames and removes an exisiting relationship between the two"});
+		validCommands.put("list fields", new String[]{"Takes an exisiting class and lists all fields assoicatied with the class"});
+		validCommands.put("list methods", new String[]{"Takes an exisiting class and lists all methods assoicatied with the class"});
+		validCommands.put("list relationships", new String[]{"Takes an exisiting class and lists all relationships assoicatied with the class"});
 	}
 	
 	/**
