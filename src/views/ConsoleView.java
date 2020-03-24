@@ -90,67 +90,87 @@ public class ConsoleView extends View {
 
 		//split for all add methods
 		else if(args[0].equals("add")){
+			// after first argument is add check what is being added
 			if (args.length < 3)
+			//all adds require at least 3 arguments
 			{
 				return 102;
 			}
 			if(args[1].equals("class"))
 			{
+				//add class requires only one more argument, any more or less is rejected
 				if (args.length == 3) {
 				String className = args[2];
 				result = controller.addClass(className);
 				if (result == 0)
 				{
+					//successfully added class
 				System.out.println("Added class \'" + className + "\'.'");
 				}
 				}
 				else {
+					//if failed the arguments are invalid 
 					return 102;
 				}
 				
 			}
+			// the add field method
 			else if (args[1].equals("field"))
 			{
 				if(args.length == 4) {
+					//takes exactly four arguments
 					result = controller.addField(args[2], args[3]);
+					//adds fieldname (if valid) to given exisiting class
 					System.out.println("Added field \'" + args[3] + "\' to class \'" + args[2] + "\'.");
 				}
 				else {
+					//invalid arguments
 					return 102;
 				}
 			}
+			//add method...method
 			else if (args[1].equals("method"))
 			{
+				
 				if(args.length == 4) {
+					//takes exaclty four arguments
 					result = controller.addMethod(args[2], args[3]);
+					//adds valid methodName to given exisiting class
 					System.out.println("Added method \'" + args[3] + "\' to class \'" + args[2] + "\'.");
 				}
 				else {
+					//invalid amount of arguments
 					return 102;
 				}
 			}
+			//add relationship method
 			else if (args[1].equals("relationship"))
 			{
 				if(args.length == 4) {
+					//takes exactly 4 arguments
 					result = controller.addRelationship(args[2], args[3]);
 					System.out.println("Added relationship between class \'" + args[3] + "\' and class \'" + args[2] + "\'.");
 				}
 				else {
+					//invalid number arguments
 					return 102;
 				}
 			}
-			else return 102;
+		
 			}
 
+			//command split for all remove methods
 		else if (args[0].equals("remove")){
+			//remove requires at least 2 parameters
 			if (args.length < 2)
 			{
 				return 102;
 			}
+			//remove class method
 			else if (args[1].equals("class"))
 			{
 				if(args.length == 3) {
-					// Pull args
+					// Pull exactly 3 args
 					String className = args[2];
 					
 					result = controller.removeClass(className);
@@ -158,51 +178,64 @@ public class ConsoleView extends View {
 						System.out.println("Removed class \'" + className + "\'.");
 				} 
 				else {
+					//invalid arg count
 					return 102;
 				}
 			}
+			//remove field method
 			else if (args[1].equals("field"))
 			{
 				if(args.length == 4) {
+					//takes exactly 4 arguments, remove, field, classname, fieldname
 					result = controller.removeField(args[2], args[3]);
 					System.out.println("Removed field \'" + args[3] + "\' to class \'" + args[2] + "\'.");
 				}
 				else {
+					//invalid arugment amount
 					return 102;
 				}
 			}
+			//remove method...method
 			else if (args[1].equals("method"))
 			{
 				if(args.length == 4) {
+					//takes 4 parameters
 					result = controller.removeMethod(args[2], args[3]);
 					System.out.println("Removed method \'" + args[3] + "\' to class \'" + args[2] + "\'.");
 				}
 				else {
+					//invalid amount of parameters
 					return 102;
 				}
 			}
+			//remove relationship method
 			else if (args[1].equals("relationship"))
 			{
 				if(args.length == 4) {
+					//takes exaclty 4 parameters
 					result = controller.removeRelationship(args[2], args[3]);
 					System.out.println("Removed relationship between class \'" + args[3] + "\' and class \'" + args[2] + "\'.");
 				}
 				else {
+					//invalid amount of params
 					return 102;
 				}
 			}
 
 		}
-
+		//split for edit command
 		else if (args[0].equals("edit"))
 		{
 			if(args.length < 3)
 			{
+				//all edits take at least 3 params
 				return 102;
 			}
+			//edit class method
 			else if (args[1].equals("class"))
 			{
 				if(args.length == 4) {
+					//takes 4 params
 					String className = args[2];
 					String newName = args[3];
 					
@@ -211,13 +244,15 @@ public class ConsoleView extends View {
 						System.out.println("Changed class \'" + className + "\' to \'" + newName + "\'.");
 				}
 				else {
+					// invalid param amount
 					return 102;
 				}
 			}
+			//edit field method
 			else if (args[1].equals("field"))
 			{
 				if (args.length == 5) {
-					
+					//takes 5 arguments; edit field classname oldfield newfield
 					String className = args[2];
 					String oldName = args[3];
 					String newName = args[4];
@@ -226,13 +261,16 @@ public class ConsoleView extends View {
 					if(result == 0)
 						System.out.println("Changed field \'" + oldName + "\' to \'" + newName + "\' in class \'" + className + "\'.");
 					else {
+						//invalid param count
 						return 102;
 					}
 				}
 			}
+			//edit method..method 
 			else if (args[1].equals("method"))
 			{
 				if(args.length == 5) {
+					// takes exactly 5 arguments
 					String className = args[2];
 					String oldName = args[3];
 					String newName = args[4];
@@ -241,6 +279,7 @@ public class ConsoleView extends View {
 					if(result == 0)
 						System.out.println("Changed method \'" + oldName + "\' to \'" + newName + "\' in class \'" + className + "\'.");
 				}
+				else return 102;
 			}
 		}
 
