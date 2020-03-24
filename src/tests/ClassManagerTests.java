@@ -4,6 +4,9 @@ package tests;
 import static org.junit.Assert.assertEquals;
 // System imports
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
@@ -67,22 +70,24 @@ public class ClassManagerTests {
 	@Test
 	public void methodTests() {
 		UMLClassManager manager = new UMLClassManager();
-		int result = manager.addMethods("class1", "method");
+		int result = manager.addMethods("class1", "method", "int", params);
 		assertEquals("Class does not exist", result, 403);
 		manager.addClass("c");
-		result = manager.addMethods("c", "method");
+		ArrayList<String> params = new ArrayList<String>();
+		params.add("string");
+		result = manager.addMethods("c", "method", "int", params);
 		assertEquals("Success", result, 0);
-		result = manager.addMethods("c", "method");
+		result = manager.addMethods("c", "method", "int", params);
 		assertEquals("Method exists already", result, 402);
 		manager.removeClass("c");
-		result = manager.removeMethods("c", "method");
+		result = manager.removeMethods("c", "method", "int", params);
 		assertEquals("Class does not exist", result, 403);
 		manager.addClass("d");
-		result = manager.removeMethods("d", "method");
+		result = manager.removeMethods("d", "method", "double", params);
 		assertEquals("Method does not exist", result, 406);
-		manager.addMethods("d", "method");
+		manager.addMethods("d", "method", "double", params);
 		String r = manager.listMethods("d")[0].toString();
-		assertEquals("method is the only method", "[method]", r);
+		assertEquals("method is the only method", "[double method(string)]", r);
 		result = manager.removeMethods("d", "method");
 		assertEquals("Success", result, 0);
 	}
@@ -93,22 +98,22 @@ public class ClassManagerTests {
 	@Test
 	public void fieldTests() {
 		UMLClassManager manager = new UMLClassManager();
-		int result = manager.addFields("class1", "field");
+		int result = manager.addFields("class1", "field", "int");
 		assertEquals("Class does not exist", result, 403);
 		manager.addClass("c");
-		result = manager.addFields("c", "field");
+		result = manager.addFields("c", "field", "int");
 		assertEquals("Success", result, 0);
-		result = manager.addFields("c", "field");
+		result = manager.addFields("c", "field", "int");
 		assertEquals("Field exists already", result, 404);
 		manager.removeClass("c");
-		result = manager.removeFields("c", "field");
+		result = manager.removeFields("c", "field", "int");
 		assertEquals("Class does not exist", result, 403);
 		manager.addClass("d");
-		result = manager.removeFields("d", "field");
+		result = manager.removeFields("d", "field", "double");
 		assertEquals("Field does not exist", result, 405);
-		manager.addFields("d", "field");
+		manager.addFields("d", "field", "double");
 		String r = manager.listFields("d")[0].toString();
-		assertEquals("field is the only field", "[field]", r);
+		assertEquals("field is the only field", "[double field]", r);
 		result = manager.removeFields("d", "field");
 		assertEquals("Success", result, 0);
 	}
@@ -155,25 +160,26 @@ public class ClassManagerTests {
 	@Test
 	public void relationshipTests() {
 		UMLClassManager manager = new UMLClassManager();
-		int result = manager.addRelationship("class1", "method");
+		int result = manager.addRelationship("class1", "aggregation", "method");
 		assertEquals("One or more of the classes do not exist", result, 107);
 		manager.addClass("c");
 		manager.addClass("d");
-		result = manager.addRelationship("c", "d");
+		result = manager.addRelationship("c","Jibberish", "d");
+		assertEquals("Relationship is not a valid relationship", result, 204);
+		result = manager.addRelationship("c","aggregation", "d");
 		assertEquals("Success", result, 0);
-		result = manager.addRelationship("c", "d");
+		result = manager.addRelationship("c", "aggregation", "d");
 		assertEquals("Relationship exists already", result, 106);
 		String r = manager.listRelationships("c")[0].toString();
-		assertEquals("C is related to D", "[c" + UMLRelationship.DELIMITER + "d]", r);
+		assertEquals("C is related to D", "[c" + UMLRelationship.ADELIMITER + "d]", r);
 		manager.removeClass("c");
-		result = manager.removeRelationship("c", "d");
+		result = manager.removeRelationship("c","aggregation", "d");
 		assertEquals("One or more classes do not exist", result, 107);
 		manager.addClass("c");
-		result = manager.removeRelationship("c", "d");
+		result = manager.removeRelationship("c","composition", "d");
 		assertEquals("Relationship does not exist", result, 108);
-		manager.addMethods("d", "method");
-		manager.addRelationship("c", "d");
-		result = manager.removeRelationship("c", "d");
+		manager.addRelationship("c", "composition", "d");
+		result = manager.removeRelationship("c", "composition", "d");
 		assertEquals("Success", result, 0);
 	}
 	
