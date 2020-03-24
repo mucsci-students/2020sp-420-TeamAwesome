@@ -72,11 +72,10 @@ public class UMLClassManager implements Serializable {
 			}
 			else if (validName(methodName))
 			{
-				
 				classList.get(className).addMethod(methodName);
-				return 0;
-				
+				return 0;			
 			}
+			return 408;
 		}
 		else return 403;
 		
@@ -102,6 +101,7 @@ public class UMLClassManager implements Serializable {
 				classList.get(className).addField(fieldName);
 				return 0;
 			}
+			return 409;
 		}
 		else return 403;
 	}
