@@ -127,6 +127,45 @@ public class GUIView extends View {
 		}
 		return 0;
 	}
+	
+	/**
+	 * Get the component that has the given name
+	 * @param name - name of the component
+	 * @return - associated JComponent
+	 */
+	public JComponent getComponent(String name) {
+		// TODO
+		return null;
+	}
+	
+	/**
+	 * Get the component at the specified location
+	 * @param x - x coordinate contained in component
+	 * @param y - y coordinate contained in component
+	 * @return - associated JComponent
+	 */
+	public JComponent getComponent(int x, int y) {
+		// TODO
+		return null;
+	}
+	
+	/**
+	 * Get the entire window instance.
+	 * @return - window JFrame
+	 */
+	public JFrame getWindow() {
+		// TODO
+		return null;
+	}
+	
+	/**
+	 * Get the instance of the diagram panel
+	 * @return - diagramPanel
+	 */
+	public DiagramPanel getDiagram() {
+		// TODO
+		return null;
+	}
 
 	@Override
 	public void updated(Observable src, String tag, Object data) {
