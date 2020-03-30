@@ -14,6 +14,9 @@ public class ErrorHandler {
 	// Map with the relationship: error_code -> String representation of error
 	public static final HashMap<Integer, String> ERROR_TABLE = createErrorTable();
 	
+	// Last stored error code
+	public static int LAST_CODE = 0;
+	
 	// Initializer for ERROR_TABLE
 	private static final HashMap<Integer, String> createErrorTable() {
 		// Create temporary map

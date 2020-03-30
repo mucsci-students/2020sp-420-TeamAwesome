@@ -5,9 +5,11 @@ package tests;
 import org.junit.Test;
 
 import controller.GUIController;
+import main.ErrorHandler;
 import model.UMLClassManager;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import java.awt.Component;
 import javax.swing.JComponent;
@@ -92,6 +94,29 @@ public class GUITests {
 	public void addClass() {
 		UMLClassManager model = new UMLClassManager();
 		GUIView gui = new GUIView(new GUIController(model), model);
-		gui.loadData(new String[] {"my class"});
+		
+		gui.loadData(new String[] {"myclass"});
+		((JMenuItem)gui.getComponent("mouseAddClass")).doClick();
+		assertEquals("Add class normal exit code", 0, ErrorHandler.LAST_CODE);
+		assertNotEquals("Add class normal exist check", null, model.getClass("myclass"));
+		assertEquals("Number of classes after single add", 1, model.getClassNames().length);
+		
+		gui.loadData(new String[] {"secondclass"});
+		((JMenuItem)gui.getComponent("mouseAddClass")).doClick();
+		assertEquals("Add class normal exit code 2", 0, ErrorHandler.LAST_CODE);
+		assertNotEquals("Add class normal exist check 2", null, model.getClass("secondclass"));
+		assertEquals("Number of classes after second add", 2, model.getClassNames().length);
+		
+		gui.loadData(new String[] {"3*29"});
+		((JMenuItem)gui.getComponent("mouseAddClass")).doClick();
+		assertNotEquals("Add class invalid name error code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Add class invalid not exists check", null, model.getClass("3*29"));
+		assertEquals("Number of classes after invalid add", 2, model.getClassNames().length);
+		
+		gui.loadData(new String[] {"myclass"});
+		((JMenuItem)gui.getComponent("mouseAddClass")).doClick();
+		assertNotEquals("Add class duplicate exit code", 0, ErrorHandler.LAST_CODE);
+		assertNotEquals("Add class duplicate exist check", null, model.getClass("myclass"));
+		assertEquals("Number of classes after single add", 2, model.getClassNames().length);
 	}
 }
