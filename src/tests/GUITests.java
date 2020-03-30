@@ -128,7 +128,7 @@ public class GUITests {
 		UMLClassManager model = new UMLClassManager();
 		// Assuming add class works
 		model.addClass("myclass");
-		model.addClass("second class");
+		model.addClass("secondclass");
 		GUIView gui = new GUIView(new GUIController(model), model);
 		
 		assertEquals("Number of classes prior to remove", 2, model.getClassNames().length);
@@ -149,5 +149,38 @@ public class GUITests {
 		((JMenuItem)gui.getComponent("mouseRemoveClass")).doClick();
 		assertNotEquals("Remove class not exist", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Number of classes after invalid remove", 0, model.getClassNames().length);
+	}
+	
+	/**
+	 * Test the editing of classes
+	 */
+	@Test
+	public void editClass() {
+		UMLClassManager model = new UMLClassManager();
+		// Assuming add class works
+		model.addClass("myclass");
+		model.addClass("secondclass");
+		GUIView gui = new GUIView(new GUIController(model), model);
+		
+		assertEquals("Number of classes prior to edit", 2, model.getClassNames().length);
+		
+		gui.loadData(new String[] {"myclass", "changedlol"});
+		((JMenuItem)gui.getComponent("mouseEditClass")).doClick();
+		assertEquals("Edit class normal exit code", 0, ErrorHandler.LAST_CODE);
+		assertNotEquals("Edit class new name exist check", null, model.getClass("changedlol"));
+		assertEquals("Number of class post name change", 2, model.getClassNames().length);
+		
+		gui.loadData(new String[] {"changedlol", "myclass"});
+		((JMenuItem)gui.getComponent("mouseEditClass")).doClick();
+		assertEquals("Edit class normal exit code 2", 0, ErrorHandler.LAST_CODE);
+		assertNotEquals("Edit class new name exist check 2", null, model.getClass("myclass"));
+		assertEquals("Number of class post name change", 2, model.getClassNames().length);
+		
+		gui.loadData(new String[] {"myclass", "n*tg*(dnamebird"});
+		((JMenuItem)gui.getComponent("mouseEditClass")).doClick();
+		assertNotEquals("Edit class invalid new name exit code", 0, ErrorHandler.LAST_CODE);
+		assertNotEquals("Edit class invalid old name still exists", null, model.getClass("myclass"));
+		assertEquals("Edit class invalid new name does not exist", null, model.getClass("n*tg*(dnamebird"));
+		assertEquals("Number of class post invalid name change", 2, model.getClassNames().length);
 	}
 }
