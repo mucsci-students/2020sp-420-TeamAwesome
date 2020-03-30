@@ -119,4 +119,35 @@ public class GUITests {
 		assertNotEquals("Add class duplicate exist check", null, model.getClass("myclass"));
 		assertEquals("Number of classes after single add", 2, model.getClassNames().length);
 	}
+	
+	/**
+	 * Test the removal of classes from the GUI
+	 */
+	@Test
+	public void removeClass() {
+		UMLClassManager model = new UMLClassManager();
+		// Assuming add class works
+		model.addClass("myclass");
+		model.addClass("second class");
+		GUIView gui = new GUIView(new GUIController(model), model);
+		
+		assertEquals("Number of classes prior to remove", 2, model.getClassNames().length);
+		
+		gui.loadData(new String[] {"myclass"});
+		((JMenuItem)gui.getComponent("mouseRemoveClass")).doClick();
+		assertEquals("Remove class normal exit code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Remove class normal exist check", null, model.getClass("myclass"));
+		assertEquals("Number of classes after normal remove", 1, model.getClassNames().length);
+		
+		gui.loadData(new String[] {"secondclass"});
+		((JMenuItem)gui.getComponent("mouseRemoveClass")).doClick();
+		assertEquals("Remove class normal exit code 2", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Remove class normal exist check 2", null, model.getClass("secondclass"));
+		assertEquals("Number of classes after normal remove 2", 0, model.getClassNames().length);
+		
+		gui.loadData(new String[] {"notreal"}); // Like birds
+		((JMenuItem)gui.getComponent("mouseRemoveClass")).doClick();
+		assertNotEquals("Remove class not exist", 0, ErrorHandler.LAST_CODE);
+		assertNotEquals("Number of classes after invalid remove", 0, model.getClassNames().length);
+	}
 }
