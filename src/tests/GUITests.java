@@ -175,12 +175,26 @@ public class GUITests {
 		assertEquals("Edit class normal exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class new name exist check 2", null, model.getClass("myclass"));
 		assertEquals("Number of class post name change", 2, model.getClassNames().length);
-		
+
 		gui.loadData(new String[] {"myclass", "n*tg*(dnamebird"});
 		((JMenuItem)gui.getComponent("mouseEditClass")).doClick();
 		assertNotEquals("Edit class invalid new name exit code", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class invalid old name still exists", null, model.getClass("myclass"));
 		assertEquals("Edit class invalid new name does not exist", null, model.getClass("n*tg*(dnamebird"));
+		assertEquals("Number of class post invalid name change", 2, model.getClassNames().length);
+		
+		gui.loadData(new String[] {"myclass", "secondclass"});
+		((JMenuItem)gui.getComponent("mouseEditClass")).doClick();
+		assertNotEquals("Edit class invalid new name exit code 2", 0, ErrorHandler.LAST_CODE);
+		assertNotEquals("Edit class invalid old name still exists 2", null, model.getClass("myclass"));
+		assertNotEquals("Edit class invalid new name still exists", null, model.getClass("secondclass"));
+		assertEquals("Number of class post invalid name change", 2, model.getClassNames().length);
+		
+		gui.loadData(new String[] {"notreal", "likebirds"});
+		((JMenuItem)gui.getComponent("mouseEditClass")).doClick();
+		assertNotEquals("Edit class invalid old name exit code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Edit class invalid old name still not exist", null, model.getClass("notreal"));
+		assertEquals("Edit class invalid new name not exists", null, model.getClass("likebirds"));
 		assertEquals("Number of class post invalid name change", 2, model.getClassNames().length);
 	}
 }
