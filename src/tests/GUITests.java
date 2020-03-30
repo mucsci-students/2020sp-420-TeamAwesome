@@ -4,6 +4,9 @@ package tests;
 // System imports
 import org.junit.Test;
 
+import controller.GUIController;
+import model.UMLClassManager;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.awt.Component;
@@ -87,6 +90,8 @@ public class GUITests {
 	 */
 	@Test
 	public void addClass() {
-		GUIView gui = new GUIView();
+		UMLClassManager model = new UMLClassManager();
+		GUIView gui = new GUIView(new GUIController(model), model);
+		gui.loadData(new String[] {"my class"});
 	}
 }

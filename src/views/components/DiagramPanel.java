@@ -40,7 +40,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	
 	// Map of graphical representations of classes
 	private HashMap<String, GUIClass> guiClasses;
-	
+
 	// Location of the last class selected/dragged
 	private int lastX;
 	private int lastY;

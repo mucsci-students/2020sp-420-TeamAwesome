@@ -3,20 +3,21 @@ package views;
 
 // System imports
 import java.awt.Dimension;
+import java.util.HashMap;
+
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 //Local imports
 import controller.UMLController;
-import controller.GUIController;
 import main.ErrorHandler;
 import main.UMLFileIO;
 import model.UMLClassManager;
 import observe.Observable;
 import views.components.DiagramPanel;
+import views.components.GUIClass;
 
 /**
  * A graphical view of the UML editor
@@ -24,6 +25,7 @@ import views.components.DiagramPanel;
  *
  */
 public class GUIView extends View {
+	private UMLClassManager model;
 	private UMLController controller;
 	private UMLFileIO fileIO;
 	
@@ -31,22 +33,28 @@ public class GUIView extends View {
 	private JFrame window;
 	private DiagramPanel umlDiagram;
 	
-	public GUIView() {
+	public GUIView(UMLController controller, UMLClassManager model) {
 		// Setup look and feel
 		if(setLook() != 0);
 		
 		// Initialize file IO
 		fileIO = new UMLFileIO();
 
-		// Setup controller
-		controller = new GUIController(new UMLClassManager());
-		controller.addObserver(this);
+		// Setup controller and model
+		this.controller = controller;
+		this.model = model;
+		this.controller.addObserver(this);
 		
 		setupWindow();
 		setupDiagram();
 		
 		window.pack();
 		window.setVisible(true);
+	}
+	
+	public GUIView() {
+		// TODO
+		// Pass in empty controller and model to other constructor
 	}
 	
 	/**
@@ -163,6 +171,29 @@ public class GUIView extends View {
 	 * @return - diagramPanel
 	 */
 	public DiagramPanel getDiagram() {
+		// TODO
+		return null;
+	}
+	
+	/**
+	 * Load a list of data to load into the diagram to substitute human input.
+	 * Note - Will only be taken into consideration when GUI is set to non-human mode
+	 * @param data - Data to load for actions
+	 */
+	public void loadData(Object[] data) {
+		// TODO
+	}
+	
+	/**
+	 * Return the map of added GUIClasses
+	 * @return
+	 */
+	public HashMap<String, GUIClass> getGUIClasses() {
+		// TODO
+		return null;
+	}
+	
+	public UMLClassManager getModel() {
 		// TODO
 		return null;
 	}
