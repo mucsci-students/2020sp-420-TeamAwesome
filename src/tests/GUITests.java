@@ -339,10 +339,19 @@ public class GUITests {
 		assertEquals("Add method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Add method valid num methods", 1, myclass.getMethods().size());
 		
-
-		gui.loadData(new String[] {"myclass", "void", "mymethod"});
+		gui.loadData(new String[] {"myclass", "void", "mymethod", "String par1, int par2"});
 		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
-		assertEquals("Add method valid return code", 0, ErrorHandler.LAST_CODE);
-		assertEquals("Add method valid num methods", 1, myclass.getMethods().size());
+		assertEquals("Add method valid return code 2", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Add method valid num methods 2", 2, myclass.getMethods().size());
+		
+		gui.loadData(new String[] {"myclass", "void", "mymethod", "String overloaded"});
+		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
+		assertEquals("Add overload method return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num methods", 2, myclass.getMethods().size());
+		
+		gui.loadData(new String[] {"myclass", "void", "*not()real*"});
+		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
+		assertNotEquals("Add method invalid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num methods", 2, myclass.getMethods().size());
 	}
 }
