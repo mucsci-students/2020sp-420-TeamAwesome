@@ -57,8 +57,8 @@ public class GUIController extends UMLController {
 	}
 
 	@Override
-	public int addField(String className, String fieldName) {
-		int result = model.addFields(className, fieldName);
+	public int addField(String className, String fieldName, String type) {
+		int result = model.addFields(className, fieldName, type);
 		if(result == 0) {
 			// Notify observer of change
 			notify("fieldChange", model.getClass(className));
@@ -137,8 +137,8 @@ public class GUIController extends UMLController {
 	}
 
 	@Override
-	public int editMethod(String className, String oldMethod, String newMethod) {
-		int result = model.editMethods(className, oldMethod, newMethod);
+	public int editMethod(String className, String oldMethod, String params, String newMethod) {
+		int result = model.editMethods(className, oldMethod, params, newMethod);
 		if(result == 0) {
 			// Notify observer of change
 			notify("methodChange", model.getClass(className));

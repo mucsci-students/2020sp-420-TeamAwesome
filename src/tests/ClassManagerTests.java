@@ -5,9 +5,7 @@ import static org.junit.Assert.assertEquals;
 // System imports
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 
-import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
 // Local imports
@@ -70,25 +68,23 @@ public class ClassManagerTests {
 	@Test
 	public void methodTests() {
 		UMLClassManager manager = new UMLClassManager();
-		int result = manager.addMethods("class1", "method", "int", params);
+		int result = manager.addMethods("class1", "method", "int", "string");
 		assertEquals("Class does not exist", result, 403);
 		manager.addClass("c");
-		ArrayList<String> params = new ArrayList<String>();
-		params.add("string");
-		result = manager.addMethods("c", "method", "int", params);
+		result = manager.addMethods("c", "method", "int", "string");
 		assertEquals("Success", result, 0);
-		result = manager.addMethods("c", "method", "int", params);
+		result = manager.addMethods("c", "method", "int", "string");
 		assertEquals("Method exists already", result, 402);
 		manager.removeClass("c");
-		result = manager.removeMethods("c", "method", "int", params);
+		result = manager.removeMethods("c", "method", "string");
 		assertEquals("Class does not exist", result, 403);
 		manager.addClass("d");
-		result = manager.removeMethods("d", "method", "double", params);
+		result = manager.removeMethods("d", "method", "string");
 		assertEquals("Method does not exist", result, 406);
-		manager.addMethods("d", "method", "double", params);
+		manager.addMethods("d", "method", "double", "string");
 		String r = manager.listMethods("d")[0].toString();
 		assertEquals("method is the only method", "[double method(string)]", r);
-		result = manager.removeMethods("d", "method");
+		result = manager.removeMethods("d", "method", "string");
 		assertEquals("Success", result, 0);
 	}
 	
@@ -106,10 +102,10 @@ public class ClassManagerTests {
 		result = manager.addFields("c", "field", "int");
 		assertEquals("Field exists already", result, 404);
 		manager.removeClass("c");
-		result = manager.removeFields("c", "field", "int");
+		result = manager.removeFields("c", "field");
 		assertEquals("Class does not exist", result, 403);
 		manager.addClass("d");
-		result = manager.removeFields("d", "field", "double");
+		result = manager.removeFields("d", "field");
 		assertEquals("Field does not exist", result, 405);
 		manager.addFields("d", "field", "double");
 		String r = manager.listFields("d")[0].toString();
@@ -128,7 +124,7 @@ public class ClassManagerTests {
 		assertEquals("Selected class does not exist", result, 401);
 		result = manager.editFields("e", "f", "g");
 		assertEquals("Selected class does not exist", result, 403);
-		result = manager.editMethods("e", "f", "g");
+		result = manager.editMethods("e", "f", "string", "g");
 		assertEquals("Selected class does not exist", result, 403);
 		manager.addClass("e");
 		result = manager.editClass("e", "f");
@@ -138,19 +134,19 @@ public class ClassManagerTests {
 		assertEquals("New class name already exists", result, 400);
 		result = manager.editFields("h", "f", "g");
 		assertEquals("Selected field does not exist", result, 405);
-		result = manager.editMethods("h", "f", "g");
+		result = manager.editMethods("h", "f", "string", "g");
 		assertEquals("Selected method does not exist", result, 406);
-		manager.addFields("h", "f");
-		manager.addMethods("h", "m");
+		manager.addFields("h", "f", "int");
+		manager.addMethods("h", "m", "double", "string");
 		result = manager.editFields("h", "f", "g");
 		assertEquals("Success", result, 0);
-		result = manager.editMethods("h", "m", "b");
+		result = manager.editMethods("h", "m", "string", "b");
 		assertEquals("Succcess", result, 0);
-		manager.addFields("h", "z");
-		manager.addMethods("h", "a");
+		manager.addFields("h", "z", "double");
+		manager.addMethods("h", "a", "int", "string");
 		result = manager.editFields("h", "g", "z");
 		assertEquals("Selected new name already exists", result, 404);
-		result = manager.editMethods("h", "b", "a");
+		result = manager.editMethods("h", "b", "string", "a");
 		assertEquals("Selected new name already exists", result, 402);
 	}
 	
@@ -165,13 +161,13 @@ public class ClassManagerTests {
 		manager.addClass("c");
 		manager.addClass("d");
 		result = manager.addRelationship("c","Jibberish", "d");
-		assertEquals("Relationship is not a valid relationship", result, 204);
+		assertEquals("Relationship is not a valid relationship", result, 202);
 		result = manager.addRelationship("c","aggregation", "d");
 		assertEquals("Success", result, 0);
 		result = manager.addRelationship("c", "aggregation", "d");
 		assertEquals("Relationship exists already", result, 106);
 		String r = manager.listRelationships("c")[0].toString();
-		assertEquals("C is related to D", "[c" + UMLRelationship.ADELIMITER + "d]", r);
+		assertEquals("C is related to D", "[c" + UMLRelationship.AGGREGATION + "d]", r);
 		manager.removeClass("c");
 		result = manager.removeRelationship("c","aggregation", "d");
 		assertEquals("One or more classes do not exist", result, 107);
