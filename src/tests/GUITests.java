@@ -54,10 +54,10 @@ public class GUITests {
 		Component[] mouseMenuChildren = mouseMenu.getComponents();
 		assertTrue("Main mouse menu not empty", mouseMenuChildren.length != 0);
 		assertEquals("Main mouse menu number of items", 4, mouseMenuChildren.length);
-		assertEquals("Main mouse menu first child class add", "Add Class" , ((JMenuItem)mouseMenuChildren[0]).getName());
+		assertEquals("Main mouse menu first child class add", "mouseAddClass" , ((JMenuItem)mouseMenuChildren[0]).getName());
 		assertTrue("Main mouse menu second child separator", mouseMenuChildren[1] instanceof JSeparator);
-		assertEquals("Main mouse menu third child save", "Save to File" , ((JMenuItem)mouseMenuChildren[2]).getName());
-		assertEquals("Main mouse menu fourth child load", "Load File" , ((JMenuItem)mouseMenuChildren[3]).getName());
+		assertEquals("Main mouse menu third child save", "mouseSave" , ((JMenuItem)mouseMenuChildren[2]).getName());
+		assertEquals("Main mouse menu fourth child load", "mouseLoad" , ((JMenuItem)mouseMenuChildren[3]).getName());
 	}
 	
 	/**
@@ -74,19 +74,19 @@ public class GUITests {
 		Component[] classMenuChildren = classMenu.getComponents();
 		assertTrue("Class menu not empty", classMenuChildren.length != 0);
 		assertEquals("Class menu number of items", 13, classMenuChildren.length);
-		assertEquals("Class menu first child", "Remove Class" , ((JMenuItem)classMenuChildren[0]).getName());
-		assertEquals("Class menu second child", "Edit Class Name", ((JMenuItem)classMenuChildren[1]).getName());
+		assertEquals("Class menu first child", "classRemoveClass" , ((JMenuItem)classMenuChildren[0]).getName());
+		assertEquals("Class menu second child", "classEditClass", ((JMenuItem)classMenuChildren[1]).getName());
 		assertTrue("Class menu third child separator", classMenuChildren[2] instanceof JSeparator);
-		assertEquals("Class menu fourth child", "Add Field" , ((JMenuItem)classMenuChildren[3]).getName());
-		assertEquals("Class menu child 5", "Remove Field" , ((JMenuItem)classMenuChildren[4]).getName());
-		assertEquals("Class menu child 6", "Edit Field Name" , ((JMenuItem)classMenuChildren[5]).getName());
+		assertEquals("Class menu fourth child", "classAddField" , ((JMenuItem)classMenuChildren[3]).getName());
+		assertEquals("Class menu child 5", "classRemoveField" , ((JMenuItem)classMenuChildren[4]).getName());
+		assertEquals("Class menu child 6", "classEditField" , ((JMenuItem)classMenuChildren[5]).getName());
 		assertTrue("Class menu child 7 separator", classMenuChildren[6] instanceof JSeparator);
-		assertEquals("Class menu child 8", "Add Method" , ((JMenuItem)classMenuChildren[7]).getName());
-		assertEquals("Class menu child 9", "Remove Method" , ((JMenuItem)classMenuChildren[8]).getName());
-		assertEquals("Class menu child 10", "Edit Method Name" , ((JMenuItem)classMenuChildren[9]).getName());
+		assertEquals("Class menu child 8", "classAddMethod" , ((JMenuItem)classMenuChildren[7]).getName());
+		assertEquals("Class menu child 9", "classRemoveMethod" , ((JMenuItem)classMenuChildren[8]).getName());
+		assertEquals("Class menu child 10", "classEditMethod" , ((JMenuItem)classMenuChildren[9]).getName());
 		assertTrue("Class menu child 11 separator", classMenuChildren[10] instanceof JSeparator);
-		assertEquals("Class menu child 12", "Add Relationship" , ((JMenuItem)classMenuChildren[11]).getName());
-		assertEquals("Class menu child 13", "Remove Relationship" , ((JMenuItem)classMenuChildren[12]).getName());
+		assertEquals("Class menu child 12", "classAddRelationship" , ((JMenuItem)classMenuChildren[11]).getName());
+		assertEquals("Class menu child 13", "classRemoveRelationship" , ((JMenuItem)classMenuChildren[12]).getName());
 	}
 	
 	/**
@@ -136,19 +136,19 @@ public class GUITests {
 		assertEquals("Number of classes prior to remove", 2, model.getClassNames().length);
 		
 		gui.loadData(new String[] {"myclass"});
-		((JMenuItem)gui.getComponent("mouseRemoveClass")).doClick();
+		((JMenuItem)gui.getComponent("classRemoveClass")).doClick();
 		assertEquals("Remove class normal exit code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove class normal exist check", null, model.getClass("myclass"));
 		assertEquals("Number of classes after normal remove", 1, model.getClassNames().length);
 		
 		gui.loadData(new String[] {"secondclass"});
-		((JMenuItem)gui.getComponent("mouseRemoveClass")).doClick();
+		((JMenuItem)gui.getComponent("classRemoveClass")).doClick();
 		assertEquals("Remove class normal exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove class normal exist check 2", null, model.getClass("secondclass"));
 		assertEquals("Number of classes after normal remove 2", 0, model.getClassNames().length);
 		
 		gui.loadData(new String[] {"notreal"}); // Like birds
-		((JMenuItem)gui.getComponent("mouseRemoveClass")).doClick();
+		((JMenuItem)gui.getComponent("classRemoveClass")).doClick();
 		assertNotEquals("Remove class not exist", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Number of classes after invalid remove", 0, model.getClassNames().length);
 	}
@@ -167,33 +167,33 @@ public class GUITests {
 		assertEquals("Number of classes prior to edit", 2, model.getClassNames().length);
 		
 		gui.loadData(new String[] {"myclass", "changedlol"});
-		((JMenuItem)gui.getComponent("mouseEditClass")).doClick();
+		((JMenuItem)gui.getComponent("classEditClass")).doClick();
 		assertEquals("Edit class normal exit code", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class new name exist check", null, model.getClass("changedlol"));
 		assertEquals("Number of class post name change", 2, model.getClassNames().length);
 		
 		gui.loadData(new String[] {"changedlol", "myclass"});
-		((JMenuItem)gui.getComponent("mouseEditClass")).doClick();
+		((JMenuItem)gui.getComponent("classEditClass")).doClick();
 		assertEquals("Edit class normal exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class new name exist check 2", null, model.getClass("myclass"));
 		assertEquals("Number of class post name change", 2, model.getClassNames().length);
 
 		gui.loadData(new String[] {"myclass", "n*tg*(dnamebird"});
-		((JMenuItem)gui.getComponent("mouseEditClass")).doClick();
+		((JMenuItem)gui.getComponent("classEditClass")).doClick();
 		assertNotEquals("Edit class invalid new name exit code", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class invalid old name still exists", null, model.getClass("myclass"));
 		assertEquals("Edit class invalid new name does not exist", null, model.getClass("n*tg*(dnamebird"));
 		assertEquals("Number of class post invalid name change", 2, model.getClassNames().length);
 		
 		gui.loadData(new String[] {"myclass", "secondclass"});
-		((JMenuItem)gui.getComponent("mouseEditClass")).doClick();
+		((JMenuItem)gui.getComponent("classEditClass")).doClick();
 		assertNotEquals("Edit class invalid new name exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class invalid old name still exists 2", null, model.getClass("myclass"));
 		assertNotEquals("Edit class invalid new name still exists", null, model.getClass("secondclass"));
 		assertEquals("Number of class post invalid name change", 2, model.getClassNames().length);
 		
 		gui.loadData(new String[] {"notreal", "likebirds"});
-		((JMenuItem)gui.getComponent("mouseEditClass")).doClick();
+		((JMenuItem)gui.getComponent("classEditClass")).doClick();
 		assertNotEquals("Edit class invalid old name exit code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Edit class invalid old name still not exist", null, model.getClass("notreal"));
 		assertEquals("Edit class invalid new name not exists", null, model.getClass("likebirds"));
@@ -214,25 +214,25 @@ public class GUITests {
 		assertEquals("Number of fields initial", 0, myclass.getFields().size());
 		
 		gui.loadData(new String[] {"myclass", "int", "myfield"});
-		((JMenuItem)gui.getComponent("mouseAddField")).doClick();
+		((JMenuItem)gui.getComponent("classAddField")).doClick();
 		assertEquals("Add field valid exit code", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Add field valid has field", myclass.hasField("myfield"));
 		assertEquals("Add field valid num fields", 1, myclass.getFields().size());
 		
 		gui.loadData(new String[] {"myclass", "UMLClass", "another"});
-		((JMenuItem)gui.getComponent("mouseAddField")).doClick();
+		((JMenuItem)gui.getComponent("classAddField")).doClick();
 		assertEquals("Add field valid exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Add field valid has field 2", myclass.hasField("another"));
 		assertEquals("Add field valid num fields 2", 2, myclass.getFields().size());
 		
 		gui.loadData(new String[] {"myclass", "double", "myfield"});
-		((JMenuItem)gui.getComponent("mouseAddField")).doClick();
+		((JMenuItem)gui.getComponent("classAddField")).doClick();
 		assertNotEquals("Add field duplicate name diff type", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Add field original still exists", myclass.hasField("myfield"));
 		assertEquals("Add field duplicate num fields", 2, myclass.getFields().size());
 		
 		gui.loadData(new String[] {"myclass", "int", "m@lf0rm*dn@me"});
-		((JMenuItem)gui.getComponent("mouseAddField")).doClick();
+		((JMenuItem)gui.getComponent("classAddField")).doClick();
 		assertNotEquals("Add field invalid exit code", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Add field invalid does not exist", myclass.hasField("m@lf0rm*dn@me"));
 		assertEquals("Add filed invalid num fields", 2, myclass.getFields().size());
@@ -254,24 +254,24 @@ public class GUITests {
 		assertEquals("Number of fields initial", 2, myclass.getFields().size());
 		
 		gui.loadData(new String[] {"myclass", "myfield"});
-		((JMenuItem)gui.getComponent("mouseRemoveField")).doClick();
+		((JMenuItem)gui.getComponent("classRemoveField")).doClick();
 		assertEquals("Remove field valid return code", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Remove field valid no longer exists", myclass.hasField("myfield"));
 		assertEquals("Remove field valid num fields", 1, myclass.getFields().size());
 		
 		gui.loadData(new String[] {"myclass", "myfield"});
-		((JMenuItem)gui.getComponent("mouseRemoveField")).doClick();
+		((JMenuItem)gui.getComponent("classRemoveField")).doClick();
 		assertNotEquals("Remove field doesn't exist", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Remove filed not in list", myclass.hasField("myfield"));
 		assertEquals("Remove field doesn't exist num fields", 1, myclass.getFields().size());
 		
 		gui.loadData(new String[] {"myclass", "n*tr3@l"}); // Like birds
-		((JMenuItem)gui.getComponent("mouseRemoveField")).doClick();
+		((JMenuItem)gui.getComponent("classRemoveField")).doClick();
 		assertNotEquals("Remove field invalid", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove field invalid num fields", 1, myclass.getFields().size());
 		
 		gui.loadData(new String[] {"myclass", "another"});
-		((JMenuItem)gui.getComponent("mouseRemoveField")).doClick();
+		((JMenuItem)gui.getComponent("classRemoveField")).doClick();
 		assertEquals("Remove field valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Remove field valid no longer exists 2", myclass.hasField("another"));
 		assertEquals("Remove field valid num fields 2", 0, myclass.getFields().size());
@@ -293,27 +293,27 @@ public class GUITests {
 		assertEquals("Number of fields init", 2, myclass.getFields().size());
 		
 		gui.loadData(new String[] {"myclass", "myfield", "other"});
-		((JMenuItem)gui.getComponent("mouseEditField")).doClick();
+		((JMenuItem)gui.getComponent("classEditField")).doClick();
 		assertEquals("Edit field valid return code", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Edit field valid old name doesn't exist", myclass.hasField("myfield"));
 		assertTrue("Edit field valid new name exists", myclass.hasField("other"));
 		assertEquals("Edit field valid num fields", 2, myclass.getFields().size());
 		
 		gui.loadData(new String[] {"myclass", "other", "myfield"});
-		((JMenuItem)gui.getComponent("mouseEditField")).doClick();
+		((JMenuItem)gui.getComponent("classEditField")).doClick();
 		assertEquals("Edit field valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Edit field valid old name not exists 2", myclass.hasField("other"));
 		assertTrue("Edit field valid new name exists 2", myclass.hasField("myfield"));
 		assertEquals("Edit field valid num fields unchanged", 2, myclass.getFields().size());
 		
 		gui.loadData(new String[] {"myclass", "myfield", "another"});
-		((JMenuItem)gui.getComponent("mouseEditField")).doClick();
+		((JMenuItem)gui.getComponent("classEditField")).doClick();
 		assertNotEquals("Edit field duplicate return code", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Edit field duplicate original still exists", myclass.hasField("myfield"));
 		assertEquals("Edit field duplicate num fields unchanged", 2, myclass.getFields().size());
 		
 		gui.loadData(new String[] {"myclass", "another", "_n*t()real"});
-		((JMenuItem)gui.getComponent("mouseEditField")).doClick();
+		((JMenuItem)gui.getComponent("classEditField")).doClick();
 		assertNotEquals("Edit field invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Edit field invalid old name still exists", myclass.hasField("another"));
 		assertFalse("Edit field invalid new name does not exist", myclass.hasField("_n*t()real"));
@@ -335,13 +335,13 @@ public class GUITests {
 		
 		// Adding method 'int noparams() {}'
 		gui.loadData(new String[] {"myclass", "int", "noparams"});
-		((JMenuItem)gui.getComponent("mouseAddMethod")).doClick();
+		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
 		assertEquals("Add method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Add method valid num methods", 1, myclass.getMethods().size());
 		
 
 		gui.loadData(new String[] {"myclass", "void", "mymethod"});
-		((JMenuItem)gui.getComponent("mouseAddMethod")).doClick();
+		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
 		assertEquals("Add method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Add method valid num methods", 1, myclass.getMethods().size());
 	}
