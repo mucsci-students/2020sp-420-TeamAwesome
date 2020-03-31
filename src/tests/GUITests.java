@@ -276,4 +276,47 @@ public class GUITests {
 		assertFalse("Remove field valid no longer exists 2", myclass.hasField("another"));
 		assertEquals("Remove field valid num fields 2", 0, myclass.getFields().size());
 	}
+	
+	/**
+	 * Test the editing of field names
+	 */
+	@Test
+	public void editField() {
+		UMLClassManager model = new UMLClassManager();
+		// Assuming add class works
+		model.addClass("myclass");
+		model.addFields("myclass", "myfield");
+		model.addFields("myclass", "another");
+		UMLClass myclass = model.getClass("myclass");
+		GUIView gui = new GUIView(new GUIController(model), model);
+		
+		assertEquals("Number of fields init", 2, myclass.getFields().size());
+		
+		gui.loadData(new String[] {"myclass", "myfield", "other"});
+		((JMenuItem)gui.getComponent("mouseEditField")).doClick();
+		assertEquals("Edit field valid return code", 0, ErrorHandler.LAST_CODE);
+		assertFalse("Edit field valid old name doesn't exist", myclass.hasField("myfield"));
+		assertTrue("Edit field valid new name exists", myclass.hasField("other"));
+		assertEquals("Edit field valid num fields", 2, myclass.getFields().size());
+		
+		gui.loadData(new String[] {"myclass", "other", "myfield"});
+		((JMenuItem)gui.getComponent("mouseEditField")).doClick();
+		assertEquals("Edit field valid return code 2", 0, ErrorHandler.LAST_CODE);
+		assertFalse("Edit field valid old name not exists 2", myclass.hasField("other"));
+		assertTrue("Edit field valid new name exists 2", myclass.hasField("myfield"));
+		assertEquals("Edit field valid num fields unchanged", 2, myclass.getFields().size());
+		
+		gui.loadData(new String[] {"myclass", "myfield", "another"});
+		((JMenuItem)gui.getComponent("mouseEditField")).doClick();
+		assertNotEquals("Edit field duplicate return code", 0, ErrorHandler.LAST_CODE);
+		assertTrue("Edit field duplicate original still exists", myclass.hasField("myfield"));
+		assertEquals("Edit field duplicate num fields unchanged", 2, myclass.getFields().size());
+		
+		gui.loadData(new String[] {"myclass", "another", "_n*t()real"});
+		((JMenuItem)gui.getComponent("mouseEditField")).doClick();
+		assertNotEquals("Edit field invalid return code", 0, ErrorHandler.LAST_CODE);
+		assertTrue("Edit field invalid old name still exists", myclass.hasField("another"));
+		assertFalse("Edit field invalid new name does not exist", myclass.hasField("_n*t()real"));
+		assertEquals("Edit field invalid num fields unchanged", 2, myclass.getFields().size());
+	}
 }
