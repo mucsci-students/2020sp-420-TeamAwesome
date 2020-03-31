@@ -213,14 +213,14 @@ public class UMLClassManager implements Serializable {
 	{
 			//check if the new name doesn't already exist as a class name
 		if (classList.containsKey(className)){
-			if (classList.get(className).getMethods().containsKey(newName))
+			if (classList.get(className).getMethods().containsKey(newName + params))
 			{
 				return 402; 
 			}
 			if (classList.get(className).getMethods().containsKey(oldMethod + params))
 			{
 				//this is great code don't question it keep moving
-				String returnType = classList.get(className).getMethods().get(oldMethod).getReturnType();
+				String returnType = classList.get(className).getMethods().get(oldMethod + params).getReturnType();
 				classList.get(className).removeMethod(oldMethod, params);
 				classList.get(className).addMethod(newName, returnType, params);
 				return 0;
