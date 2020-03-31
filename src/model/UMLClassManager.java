@@ -217,7 +217,7 @@ public class UMLClassManager implements Serializable {
 			{
 				return 402; 
 			}
-			if (classList.get(className).getMethods().containsKey(oldMethod))
+			if (classList.get(className).getMethods().containsKey(oldMethod + params))
 			{
 				//this is great code don't question it keep moving
 				String returnType = classList.get(className).getMethods().get(oldMethod).getReturnType();
@@ -320,7 +320,7 @@ public class UMLClassManager implements Serializable {
 	 * @param destClass - the second class's name
 	 * @return 0 if successfully added relationship, error code otherwise
 	 */
-	public int addRelationship(String srcClass, String destClass, String type) {
+	public int addRelationship(String srcClass, String type, String destClass) {
 		// Make sure both class names exist
 		if(!classList.containsKey(srcClass) || !classList.containsKey(destClass))
 			return 107;
