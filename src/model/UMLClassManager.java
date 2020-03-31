@@ -66,7 +66,7 @@ public class UMLClassManager implements Serializable {
 
 		if (classList.containsKey(className))
 		{
-			if (classList.get(className).getMethods().containsKey(methodName)) 
+			if (classList.get(className).getMethods().containsKey(methodName + params)) 
 			{
 				return 402;
 			}

@@ -71,4 +71,13 @@ public class Method implements Serializable {
 	public String getParams() {
 		return this.params;
 	}
+	
+	@Override
+	/**
+	 * returns a string representation of a methodd
+	 */
+	public String toString() {
+		return returnType + " " + name + "(" + params + ")";
+		
+	}
 }

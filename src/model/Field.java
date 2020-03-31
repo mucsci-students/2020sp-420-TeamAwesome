@@ -49,4 +49,13 @@ public class Field  implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	@Override
+	/**
+	 * returns a string representation of a field
+	 */
+	public String toString() {
+		return type + " " + name;
+		
+	}
 }
