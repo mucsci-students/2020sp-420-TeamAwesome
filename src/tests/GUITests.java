@@ -6,9 +6,11 @@ import org.junit.Test;
 
 import controller.GUIController;
 import main.ErrorHandler;
+import model.UMLClass;
 import model.UMLClassManager;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import java.awt.Component;
@@ -196,5 +198,43 @@ public class GUITests {
 		assertEquals("Edit class invalid old name still not exist", null, model.getClass("notreal"));
 		assertEquals("Edit class invalid new name not exists", null, model.getClass("likebirds"));
 		assertEquals("Number of class post invalid name change", 2, model.getClassNames().length);
+	}
+	
+	/**
+	 * Test the addition of fields to classes
+	 */
+	@Test
+	public void addField() {
+		UMLClassManager model = new UMLClassManager();
+		// Assuming add class works
+		model.addClass("myclass");
+		UMLClass myclass = model.getClass("myclass");
+		GUIView gui = new GUIView(new GUIController(model), model);
+		
+		assertEquals("Number of fields initial", 0, myclass.getFields().size());
+		
+		gui.loadData(new String[] {"myclass", "int", "myfield"});
+		((JMenuItem)gui.getComponent("mouseAddField")).doClick();
+		assertEquals("Add field valid exit code", 0, ErrorHandler.LAST_CODE);
+		assertTrue("Add field valid has field", myclass.hasField("myfield"));
+		assertEquals("Add field valid num fields", 1, myclass.getFields().size());
+		
+		gui.loadData(new String[] {"myclass", "UMLClass", "another"});
+		((JMenuItem)gui.getComponent("mouseAddField")).doClick();
+		assertEquals("Add field valid exit code 2", 0, ErrorHandler.LAST_CODE);
+		assertTrue("Add field valid has field 2", myclass.hasField("another"));
+		assertEquals("Add field valid num fields 2", 2, myclass.getFields().size());
+		
+		gui.loadData(new String[] {"myclass", "double", "myfield"});
+		((JMenuItem)gui.getComponent("mouseAddField")).doClick();
+		assertNotEquals("Add field duplicate name diff type", 0, ErrorHandler.LAST_CODE);
+		assertTrue("Add field original still exists", myclass.hasField("myfield"));
+		assertEquals("Add field duplicate num fields", 2, myclass.getFields().size());
+		
+		gui.loadData(new String[] {"myclass", "int", "m@lf0rm*dn@me"});
+		((JMenuItem)gui.getComponent("mouseAddField")).doClick();
+		assertNotEquals("Add field invalid exit code", 0, ErrorHandler.LAST_CODE);
+		assertFalse("Add field invalid does not exist", myclass.hasField("m@lf0rm*dn@me"));
+		assertEquals("Add filed invalid num fields", 2, myclass.getFields().size());
 	}
 }
