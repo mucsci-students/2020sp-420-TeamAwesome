@@ -319,4 +319,30 @@ public class GUITests {
 		assertFalse("Edit field invalid new name does not exist", myclass.hasField("_n*t()real"));
 		assertEquals("Edit field invalid num fields unchanged", 2, myclass.getFields().size());
 	}
+	
+	/**
+	 * Test the addition of methods to class
+	 */
+	@Test
+	public void addMethod() {
+		UMLClassManager model = new UMLClassManager();
+		// Assuming add class works
+		model.addClass("myclass");
+		UMLClass myclass = model.getClass("myclass");
+		GUIView gui = new GUIView(new GUIController(model), model);
+		
+		assertEquals("Number of methods initial", 0, myclass.getMethods().size());
+		
+		// Adding method 'int noparams() {}'
+		gui.loadData(new String[] {"myclass", "int", "noparams"});
+		((JMenuItem)gui.getComponent("mouseAddMethod")).doClick();
+		assertEquals("Add method valid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Add method valid num methods", 1, myclass.getMethods().size());
+		
+
+		gui.loadData(new String[] {"myclass", "void", "mymethod"});
+		((JMenuItem)gui.getComponent("mouseAddMethod")).doClick();
+		assertEquals("Add method valid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Add method valid num methods", 1, myclass.getMethods().size());
+	}
 }
