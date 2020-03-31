@@ -237,4 +237,43 @@ public class GUITests {
 		assertFalse("Add field invalid does not exist", myclass.hasField("m@lf0rm*dn@me"));
 		assertEquals("Add filed invalid num fields", 2, myclass.getFields().size());
 	}
+	
+	/**
+	 * Test the removal of fields from classes
+	 */
+	@Test
+	public void removeField() {
+		UMLClassManager model = new UMLClassManager();
+		// Assuming add class works
+		model.addClass("myclass");
+		model.addFields("myclass", "myfield");
+		model.addFields("myclass", "another");
+		UMLClass myclass = model.getClass("myclass");
+		GUIView gui = new GUIView(new GUIController(model), model);
+		
+		assertEquals("Number of fields initial", 2, myclass.getFields().size());
+		
+		gui.loadData(new String[] {"myclass", "myfield"});
+		((JMenuItem)gui.getComponent("mouseRemoveField")).doClick();
+		assertEquals("Remove field valid return code", 0, ErrorHandler.LAST_CODE);
+		assertFalse("Remove field valid no longer exists", myclass.hasField("myfield"));
+		assertEquals("Remove field valid num fields", 1, myclass.getFields().size());
+		
+		gui.loadData(new String[] {"myclass", "myfield"});
+		((JMenuItem)gui.getComponent("mouseRemoveField")).doClick();
+		assertNotEquals("Remove field doesn't exist", 0, ErrorHandler.LAST_CODE);
+		assertFalse("Remove filed not in list", myclass.hasField("myfield"));
+		assertEquals("Remove field doesn't exist num fields", 1, myclass.getFields().size());
+		
+		gui.loadData(new String[] {"myclass", "n*tr3@l"}); // Like birds
+		((JMenuItem)gui.getComponent("mouseRemoveField")).doClick();
+		assertNotEquals("Remove field invalid", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Remove field invalid num fields", 1, myclass.getFields().size());
+		
+		gui.loadData(new String[] {"myclass", "another"});
+		((JMenuItem)gui.getComponent("mouseRemoveField")).doClick();
+		assertEquals("Remove field valid return code 2", 0, ErrorHandler.LAST_CODE);
+		assertFalse("Remove field valid no longer exists 2", myclass.hasField("another"));
+		assertEquals("Remove field valid num fields 2", 0, myclass.getFields().size());
+	}
 }
