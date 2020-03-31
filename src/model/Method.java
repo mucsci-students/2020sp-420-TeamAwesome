@@ -69,7 +69,7 @@ public class Method implements Serializable {
 	 * @return method parameter list
 	 */
 	public String getParams() {
-		return this.params;
+		return "(" + this.params + ")";
 	}
 	
 	@Override

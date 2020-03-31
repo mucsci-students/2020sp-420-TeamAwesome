@@ -139,7 +139,7 @@ public class UMLClassManager implements Serializable {
 
 		if (classList.containsKey(className))
 		{
-			if (classList.get(className).getMethods().containsKey(methodName)) 
+			if (classList.get(className).getMethods().containsKey(methodName + params)) 
 			{
 				classList.get(className).removeMethod(methodName, params);
 				return 0;
@@ -295,10 +295,21 @@ public class UMLClassManager implements Serializable {
 	 */
 	public Object[] listFields(String className) {
 		// Make sure class exists
-		if(!classList.containsKey(className))
-			return new Object[]{"", 109};
-		
-		return new Object[]{classList.get(className).getFields(), 0};
+		if(!classList.containsKey(className)) {
+			return new Object[] {"", 109};
+		}
+		else {
+			UMLClass inst = getClass(className);
+			String temp = "[";
+			for(Map.Entry<String, Field> entry : inst.getFields().entrySet()) {
+				Field finst = entry.getValue();
+				temp += finst.getType() + " " + finst.getName() + ", ";
+			}
+			temp = temp.substring(0, temp.lastIndexOf(", "));
+			temp += "]";
+			
+			return new Object[]{temp, 0};
+		}
 	}
 	
 	/**
@@ -308,10 +319,21 @@ public class UMLClassManager implements Serializable {
 	 */
 	public Object[] listMethods(String className) {
 		// Make sure class exists
-		if(!classList.containsKey(className))
-			return new Object[]{"", 109};
-		
-		return new Object[]{classList.get(className).getMethods(), 0};
+				if(!classList.containsKey(className)) {
+					return new Object[] {"", 109};
+				}
+				else {
+					UMLClass inst = getClass(className);
+					String temp = "[";
+					for(Map.Entry<String, Method> entry : inst.getMethods().entrySet()) {
+						Method finst = entry.getValue();
+						temp += finst.getReturnType() + " " + finst.getName() + finst.getParams() + ", ";
+					}
+					temp = temp.substring(0, temp.lastIndexOf(", "));
+					temp += "]";
+					
+					return new Object[]{temp, 0};
+				}
 	}
 	
 	/**
