@@ -1,7 +1,7 @@
 package model;
 
 //System imports
-import java.util.HashMap; 
+import java.util.LinkedHashMap; 
 import java.util.Map;
 import java.util.regex.Matcher; 
 import java.util.regex.Pattern;
@@ -20,17 +20,17 @@ public class UMLClassManager implements Serializable {
 	// Version ID for serialization
 	private static final long serialVersionUID = 2L;
 	
-	private HashMap<String, UMLClass> classList;
-	private HashMap<String, UMLRelationship> relationships;
+	private LinkedHashMap<String, UMLClass> classList;
+	private LinkedHashMap<String, UMLRelationship> relationships;
 
 	/**
 	 * Default constructor if we don't have a linked list make one
 	 */
 	public UMLClassManager() {
-		classList = new HashMap<String, UMLClass>();
-		relationships = new HashMap<String, UMLRelationship>();
+		classList = new LinkedHashMap<String, UMLClass>();
+		relationships = new LinkedHashMap<String, UMLRelationship>();
 	}
-  
+	
 	public boolean empty() {
 		return classList.isEmpty();
 	}
@@ -61,18 +61,18 @@ public class UMLClassManager implements Serializable {
 	 * @param methodName - the name of the new method
 	 * @return 0 on success and corresponding error code else
 	 */
-	public int addMethods(String className, String methodName)
+	public int addMethods(String className, String methodName, String returnType, String params)
 	{
 
 		if (classList.containsKey(className))
 		{
-			if (classList.get(className).getMethods().contains(methodName)) 
+			if (classList.get(className).getMethods().containsKey(methodName + params)) 
 			{
 				return 402;
 			}
 			else if (validName(methodName))
 			{
-				classList.get(className).addMethod(methodName);
+				classList.get(className).addMethod(methodName, returnType, params);
 				return 0;			
 			}
 			return 408;
@@ -87,18 +87,18 @@ public class UMLClassManager implements Serializable {
 	 * @param fieldName - the name of the new field
 	 * @return 0 on success and corresponding error code else
 	 */
-	public int addFields(String className, String fieldName)
+	public int addFields(String className, String fieldName, String type)
 	{
 		if (classList.containsKey(className))
 		{
-			if (classList.get(className).getFields().contains(fieldName)) 
+			if (classList.get(className).getFields().containsKey(fieldName)) 
 			{
 				return 404;
 			}
 			else if (validName(fieldName))
 			{
 				
-				classList.get(className).addField(fieldName);
+				classList.get(className).addField(fieldName, type);
 				return 0;
 			}
 			return 409;
@@ -115,7 +115,7 @@ public class UMLClassManager implements Serializable {
 	{
 		if (classList.containsKey(className))
 		{
-			if (classList.get(className).getFields().contains(fieldName)) 
+			if (classList.get(className).getFields().containsKey(fieldName)) 
 			{
 				classList.get(className).removeField(fieldName);
 				return 0;
@@ -134,14 +134,14 @@ public class UMLClassManager implements Serializable {
 	 * @param methodName - the name of the method we want to remove
 	 * @return - returns 0 on success and corresponding error codes else
 	 */
-	public int removeMethods(String className, String methodName)
+	public int removeMethods(String className, String methodName, String params)
 	{
 
 		if (classList.containsKey(className))
 		{
-			if (classList.get(className).getMethods().contains(methodName)) 
+			if (classList.get(className).getMethods().containsKey(methodName + params)) 
 			{
-				classList.get(className).removeMethod(methodName);
+				classList.get(className).removeMethod(methodName, params);
 				return 0;
 			}
 			else 
@@ -156,7 +156,7 @@ public class UMLClassManager implements Serializable {
 	 * 
 	 * @param oldName; the class we want to edit 
 	 * @param newName; the name of the new class
-	 * @return 0 on succesful name change and error code on failure 
+	 * @return 0 on successful name change and error code on failure 
 	 */
 	public int editClass(String oldName, String newName)
 	{
@@ -185,15 +185,16 @@ public class UMLClassManager implements Serializable {
 	{
 			//check if the new name doesn't already exist as a class name
 		if (classList.containsKey(className)){
-			if (classList.get(className).getFields().contains(newName))
+			if (classList.get(className).getFields().containsKey(newName))
 			{
 				return 404; 
 			}
-			if (classList.get(className).getFields().contains(oldField))
+			if (classList.get(className).getFields().containsKey(oldField))
 			{
 				//this is great code don't question it keep moving
+				String type = classList.get(className).getFields().get(oldField).getType();
 				classList.get(className).removeField(oldField);
-				classList.get(className).addField(newName);
+				classList.get(className).addField(newName, type);
 				return 0;
 			}
 			return 405;
@@ -208,19 +209,20 @@ public class UMLClassManager implements Serializable {
 	 * @param newName - the new method name
 	 * @return - 0 on successful 'name change' and corresponding error codes in all other cases
 	 */
-	public int editMethods(String className, String oldMethod, String newName)
+	public int editMethods(String className, String oldMethod, String params, String newName)
 	{
 			//check if the new name doesn't already exist as a class name
 		if (classList.containsKey(className)){
-			if (classList.get(className).getMethods().contains(newName))
+			if (classList.get(className).getMethods().containsKey(newName + params))
 			{
 				return 402; 
 			}
-			if (classList.get(className).getMethods().contains(oldMethod))
+			if (classList.get(className).getMethods().containsKey(oldMethod + params))
 			{
 				//this is great code don't question it keep moving
-				classList.get(className).removeMethod(oldMethod);
-				classList.get(className).addMethod(newName);
+				String returnType = classList.get(className).getMethods().get(oldMethod + params).getReturnType();
+				classList.get(className).removeMethod(oldMethod, params);
+				classList.get(className).addMethod(newName, returnType, params);
 				return 0;
 			}
 			return 406;
@@ -293,10 +295,21 @@ public class UMLClassManager implements Serializable {
 	 */
 	public Object[] listFields(String className) {
 		// Make sure class exists
-		if(!classList.containsKey(className))
-			return new Object[]{"", 109};
-		
-		return new Object[]{classList.get(className).getFields(), 0};
+		if(!classList.containsKey(className)) {
+			return new Object[] {"", 109};
+		}
+		else {
+			UMLClass inst = getClass(className);
+			String temp = "[";
+			for(Map.Entry<String, Field> entry : inst.getFields().entrySet()) {
+				Field finst = entry.getValue();
+				temp += finst.getType() + " " + finst.getName() + ", ";
+			}
+			temp = temp.substring(0, temp.lastIndexOf(", "));
+			temp += "]";
+			
+			return new Object[]{temp, 0};
+		}
 	}
 	
 	/**
@@ -306,10 +319,21 @@ public class UMLClassManager implements Serializable {
 	 */
 	public Object[] listMethods(String className) {
 		// Make sure class exists
-		if(!classList.containsKey(className))
-			return new Object[]{"", 109};
-		
-		return new Object[]{classList.get(className).getMethods(), 0};
+				if(!classList.containsKey(className)) {
+					return new Object[] {"", 109};
+				}
+				else {
+					UMLClass inst = getClass(className);
+					String temp = "[";
+					for(Map.Entry<String, Method> entry : inst.getMethods().entrySet()) {
+						Method finst = entry.getValue();
+						temp += finst.getReturnType() + " " + finst.getName() + finst.getParams() + ", ";
+					}
+					temp = temp.substring(0, temp.lastIndexOf(", "));
+					temp += "]";
+					
+					return new Object[]{temp, 0};
+				}
 	}
 	
 	/**
@@ -318,19 +342,23 @@ public class UMLClassManager implements Serializable {
 	 * @param destClass - the second class's name
 	 * @return 0 if successfully added relationship, error code otherwise
 	 */
-	public int addRelationship(String srcClass, String destClass) {
+	public int addRelationship(String srcClass, String type, String destClass) {
 		// Make sure both class names exist
 		if(!classList.containsKey(srcClass) || !classList.containsKey(destClass))
 			return 107;
 		
 		// Make sure a relationship between both classes does not exist
-		if(relationshipExists(srcClass, destClass))
+		if(relationshipExists(srcClass, destClass, type))
 			return 106;
 		
+		//validate type
+		if(!validType(srcClass, destClass, type))
+			return 202;
+		
 		// If both classes exist and do not have a pre-existing relationship, then
-		//		create a new relationship between them
-		String key = UMLRelationship.GENERATE_STRING(srcClass, destClass);
-		UMLRelationship relation = new UMLRelationship(classList.get(srcClass), classList.get(destClass));
+		//		create a new relationship between them if the type is valid
+		String key = UMLRelationship.GENERATE_STRING(srcClass, destClass, type);
+		UMLRelationship relation = new UMLRelationship(classList.get(srcClass), classList.get(destClass), type);
 		relationships.put(key, relation);
 		
 		// Indicate success
@@ -343,19 +371,19 @@ public class UMLClassManager implements Serializable {
 	 * @param destClass - the second class's name
 	 * @return 0 if successfully removed the relationship, error code if otherwise
 	 */
-	public int removeRelationship(String srcClass, String destClass) {
+	public int removeRelationship(String srcClass, String type, String destClass) {
 		// Make sure both class name exist
 		if(!classList.containsKey(srcClass) || !classList.containsKey(destClass))
 			return 107;
 		
 		// Make sure there is a pre-existing relationship
-		if(!relationshipExists(srcClass, destClass))
+		if(!relationshipExists(srcClass, destClass, type))
 			return 108;
 		
 		// Determine which class is the key in the relationships map
-		String key = UMLRelationship.GENERATE_STRING(srcClass, destClass);
+		String key = UMLRelationship.GENERATE_STRING(srcClass, destClass, type);
 		if(!relationships.containsKey(key))
-			key = UMLRelationship.GENERATE_STRING(destClass, srcClass);
+			key = UMLRelationship.GENERATE_STRING(destClass, srcClass, type);
 		
 		// Remove the relationship from the map
 		relationships.remove(key);
@@ -399,12 +427,27 @@ public class UMLClassManager implements Serializable {
 	 * @param class2
 	 * @return true if a relationship exists, false if not
 	 */
-	private boolean relationshipExists(String class1, String class2) {
+	private boolean relationshipExists(String class1, String class2, String type) {
 		// Iterate through relationship checking both directions (class1 -> class2) and (class1 <- class2)
-		String direct1 = UMLRelationship.GENERATE_STRING(class1, class2);  
-		String direct2 = UMLRelationship.GENERATE_STRING(class2, class1);  
+		String direct1 = UMLRelationship.GENERATE_STRING(class1, class2, type);  
+		String direct2 = UMLRelationship.GENERATE_STRING(class2, class1, type);  
 		
 		return relationships.containsKey(direct1) || relationships.containsKey(direct2);
+	}
+	
+	/**
+	 * checks the validity of a relationship type
+	 * @param class1 first class in relationship
+	 * @param class2 second class in relationship
+	 * @param type
+	 * @return
+	 */
+	public boolean validType(String class1, String class2, String type) {
+		String rel = UMLRelationship.GENERATE_STRING(class1, class2, type);
+		if(rel == "Invalid Type") {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -472,7 +515,7 @@ public class UMLClassManager implements Serializable {
 	 * Get the map of classes
 	 * @return - classList
 	 */
-	protected HashMap<String, UMLClass> getClassList() {
+	protected LinkedHashMap<String, UMLClass> getClassList() {
 		return classList;
 	}
 
@@ -480,7 +523,7 @@ public class UMLClassManager implements Serializable {
 	 * Get the map of relationships
 	 * @return - relationships
 	 */
-	public HashMap<String, UMLRelationship> getRelationships() {
+	public LinkedHashMap<String, UMLRelationship> getRelationships() {
 		return relationships;
 	}
 	
