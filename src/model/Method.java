@@ -21,7 +21,7 @@ public class Method implements Serializable {
 	 * @param returnType the method return turn
 	 * @param params method parameter list
 	 */
-	public Method(String name, String returnType, String params) {
+	public Method(String returnType, String name, String params) {
 		this.name = name;
 		this.returnType = returnType;
 		this.params = params;
@@ -74,7 +74,7 @@ public class Method implements Serializable {
 	
 	@Override
 	/**
-	 * returns a string representation of a methodd
+	 * returns a string representation of a method
 	 */
 	public String toString() {
 		return returnType + " " + name + "(" + params + ")";

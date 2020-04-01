@@ -18,6 +18,7 @@ public class UMLClass implements Serializable {
 	private String name;
 	public static final String [] types = {"int", "double", "float", "short", "long", "boolean", "String"};
 	private HashMap<String, Field> fields;
+	// Key = methodName + params
 	private HashMap<String, Method> methods;
 	
 	// Coordinates of class, for GUI use only
@@ -39,8 +40,8 @@ public class UMLClass implements Serializable {
 	 * Adds a field to to ArrayList field
 	 * @param field name of field to be added
 	 */
-	public void addField(String field, String type) {
-		Field newField = new Field(field, type);
+	public void addField(String type, String field) {
+		Field newField = new Field(type, field);
 		fields.put(field, newField);
 	}
 	
@@ -48,8 +49,8 @@ public class UMLClass implements Serializable {
 	 * Adds a method to ArrayList methods
 	 * @param method the name of the method to be added
 	 */
-	public void addMethod(String method, String returnType, String params) {
-		Method newMethod = new Method(method, returnType, params);
+	public void addMethod(String returnType, String method, String params) {
+		Method newMethod = new Method(returnType, method, params);
 		methods.put(method + params, newMethod);
 	}
 	
@@ -90,8 +91,8 @@ public class UMLClass implements Serializable {
 	 * @param methodName
 	 * @return - true if class has method
 	 */
-	public boolean hasMethod(String methodName) {
-		return methods.containsKey(methodName);
+	public boolean hasMethod(String methodName, String params) {
+		return methods.containsKey(methodName + params);
 	}
 	
 	/**

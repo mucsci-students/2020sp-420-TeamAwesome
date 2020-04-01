@@ -54,8 +54,8 @@ public class CommandController extends UMLController {
 		return result;
 	}
 
-	public int addField(String className, String fieldName, String type) {
-		int result = getModel().addFields(className, fieldName, type);
+	public int addField(String className, String type, String fieldName) {
+		int result = getModel().addFields(className, type, fieldName);
 		if(result == 0)
 			notify("addField", getModel());
 		return result;
@@ -68,8 +68,8 @@ public class CommandController extends UMLController {
 		return result;
 	}
 
-	public int addMethod(String className, String methodName, String returnType, String params) {
-		int result = getModel().addMethods(className, methodName, returnType, params);
+	public int addMethod(String className, String returnType, String methodName, String params) {
+		int result = getModel().addMethods(className, returnType, methodName, params);
 		if(result == 0)
 			notify("addMethod", getModel());
 		return result;
@@ -82,15 +82,15 @@ public class CommandController extends UMLController {
 		return result;
 	}
 
-	public int addRelationship(String class1, String class2, String type) {
-		int result = getModel().addRelationship(class1, class2, type);
+	public int addRelationship(String class1, String type, String class2) {
+		int result = getModel().addRelationship(class1, type, class2);
 		if(result == 0)
 			notify("addRelationship", getModel());
 		return result;
 	}
 
-	public int removeRelationship(String class1, String class2, String type) {
-		int result = getModel().removeRelationship(class1, class2, type);
+	public int removeRelationship(String class1, String type, String class2) {
+		int result = getModel().removeRelationship(class1, type, class2);
 		if(result == 0)
 			notify("removeRelationship", getModel());
 		return result;
