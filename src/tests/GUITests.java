@@ -339,6 +339,7 @@ public class GUITests {
 		assertEquals("Add method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Add method valid num methods", 1, myclass.getMethods().size());
 		
+		// Adding method 'void mymethod(String par1, int par2) {}'
 		gui.loadData(new String[] {"myclass", "void", "mymethod", "String par1, int par2"});
 		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
 		assertEquals("Add method valid return code 2", 0, ErrorHandler.LAST_CODE);
@@ -353,5 +354,25 @@ public class GUITests {
 		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
 		assertNotEquals("Add method invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods", 2, myclass.getMethods().size());
+	}
+	
+	/**
+	 * Test the removal of methods to class
+	 */
+	@Test
+	public void removeMethod() {
+		UMLClassManager model = new UMLClassManager();
+		model.addClass("myclass");
+		model.addMethods("myclass", "mymethod");
+		model.addMethods("myclass", "another");
+		model.addMethods("myclass", "another");
+		UMLClass myclass = model.getClass("myclass");
+		GUIView gui = new GUIView(new GUIController(model), model);
+		
+		assertEquals("Init number of methods", 2, myclass.getMethods().size());
+		
+		// Remove mymethod with no params
+		gui.loadData(new String[] {"myclass", "mymethod"});
+		((JMenuItem)gui.getComponent("classRemoveMethod")).doClick();
 	}
 }
