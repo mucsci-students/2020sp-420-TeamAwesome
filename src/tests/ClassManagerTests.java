@@ -68,12 +68,12 @@ public class ClassManagerTests {
 	@Test
 	public void methodTests() {
 		UMLClassManager manager = new UMLClassManager();
-		int result = manager.addMethods("class1", "method", "int", "string");
+		int result = manager.addMethods("class1", "int", "method", "string");
 		assertEquals("Class does not exist", 403, result);
 		manager.addClass("c");
-		result = manager.addMethods("c", "method", "int", "string");
+		result = manager.addMethods("c", "int", "method", "string");
 		assertEquals("Success", 0, result);
-		result = manager.addMethods("c", "method", "int", "string");
+		result = manager.addMethods("c", "int", "method", "string");
 		assertEquals("Method exists already", 402, result);
 		manager.removeClass("c");
 		result = manager.removeMethods("c", "method", "string");
@@ -81,7 +81,7 @@ public class ClassManagerTests {
 		manager.addClass("d");
 		result = manager.removeMethods("d", "method", "string");
 		assertEquals("Method does not exist", 406, result);
-		manager.addMethods("d", "method", "double", "string");
+		manager.addMethods("d", "double", "method", "string");
 		String r = manager.listMethods("d")[0].toString();
 		assertEquals("method is the only method", "[double method(string)]", r);
 		result = manager.removeMethods("d", "method", "string");
@@ -94,12 +94,12 @@ public class ClassManagerTests {
 	@Test
 	public void fieldTests() {
 		UMLClassManager manager = new UMLClassManager();
-		int result = manager.addFields("class1", "field", "int");
+		int result = manager.addFields("class1", "int", "field");
 		assertEquals("Class does not exist", 403, result);
 		manager.addClass("c");
-		result = manager.addFields("c", "field", "int");
+		result = manager.addFields("c", "int", "field");
 		assertEquals("Success", 0, result);
-		result = manager.addFields("c", "field", "int");
+		result = manager.addFields("c", "int", "field");
 		assertEquals("Field exists already", 404, result);
 		manager.removeClass("c");
 		result = manager.removeFields("c", "field");
@@ -107,7 +107,7 @@ public class ClassManagerTests {
 		manager.addClass("d");
 		result = manager.removeFields("d", "field");
 		assertEquals("Field does not exist", 405, result);
-		manager.addFields("d", "field", "double");
+		manager.addFields("d", "double", "field");
 		String r = manager.listFields("d")[0].toString();
 		assertEquals("field is the only field", "[double field]", r);
 		result = manager.removeFields("d", "field");
@@ -136,14 +136,14 @@ public class ClassManagerTests {
 		assertEquals("Selected field does not exist", 405, result);
 		result = manager.editMethods("h", "f", "string", "g");
 		assertEquals("Selected method does not exist", 406, result);
-		manager.addFields("h", "f", "int");
-		manager.addMethods("h", "m", "double", "string");
+		manager.addFields("h", "int", "f");
+		manager.addMethods("h", "double", "m", "string");
 		result = manager.editFields("h", "f", "g");
 		assertEquals("Success", 0, result);
 		result = manager.editMethods("h", "m", "string", "b");
 		assertEquals("Succcess", 0, result);
-		manager.addFields("h", "z", "double");
-		manager.addMethods("h", "a", "int", "string");
+		manager.addFields("h", "double", "z");
+		manager.addMethods("h", "int", "a", "string");
 		result = manager.editFields("h", "g", "z");
 		assertEquals("Selected new name already exists", 404, result);
 		result = manager.editMethods("h", "b", "string", "a");

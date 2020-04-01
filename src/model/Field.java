@@ -15,7 +15,7 @@ public class Field  implements Serializable {
 	 * @param name field name
 	 * @param type field type
 	 */
-	public Field(String name, String type) {
+	public Field(String type, String name) {
 		this.name = name;
 		this.type = type;
 	}

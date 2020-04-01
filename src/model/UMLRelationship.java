@@ -19,7 +19,7 @@ public class UMLRelationship implements Serializable {
 	 * @param class1
 	 * @param class2
 	 */
-	public UMLRelationship(UMLClass class1, UMLClass class2, String type) {
+	public UMLRelationship(UMLClass class1, String type, UMLClass class2) {
 		this.class1 = class1;
 		this.class2 = class2;
 		this.type = type;
@@ -64,7 +64,7 @@ public class UMLRelationship implements Serializable {
 	 * @param className2
 	 * @return String of format 'className1 DELIMITER className2'
 	 */
-	public static final String GENERATE_STRING(String className1, String className2, String type) {
+	public static final String GENERATE_STRING(String className1, String type, String className2) {
 		if(type == "aggregation") {
 			return className1 + AGGREGATION + className2;
 		}

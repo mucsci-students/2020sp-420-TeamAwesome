@@ -61,7 +61,7 @@ public class UMLClassManager implements Serializable {
 	 * @param methodName - the name of the new method
 	 * @return 0 on success and corresponding error code else
 	 */
-	public int addMethods(String className, String methodName, String returnType, String params)
+	public int addMethods(String className, String returnType, String methodName, String params)
 	{
 
 		if (classList.containsKey(className))
@@ -72,7 +72,7 @@ public class UMLClassManager implements Serializable {
 			}
 			else if (validName(methodName))
 			{
-				classList.get(className).addMethod(methodName, returnType, params);
+				classList.get(className).addMethod(returnType, methodName, params);
 				return 0;			
 			}
 			return 408;
@@ -87,7 +87,7 @@ public class UMLClassManager implements Serializable {
 	 * @param fieldName - the name of the new field
 	 * @return 0 on success and corresponding error code else
 	 */
-	public int addFields(String className, String fieldName, String type)
+	public int addFields(String className, String type, String fieldName)
 	{
 		if (classList.containsKey(className))
 		{
@@ -98,7 +98,7 @@ public class UMLClassManager implements Serializable {
 			else if (validName(fieldName))
 			{
 				
-				classList.get(className).addField(fieldName, type);
+				classList.get(className).addField(type, fieldName);
 				return 0;
 			}
 			return 409;
@@ -348,17 +348,17 @@ public class UMLClassManager implements Serializable {
 			return 107;
 		
 		// Make sure a relationship between both classes does not exist
-		if(relationshipExists(srcClass, destClass, type))
+		if(relationshipExists(srcClass, type, destClass))
 			return 106;
 		
 		//validate type
-		if(!validType(srcClass, destClass, type))
+		if(!validType(srcClass, type, destClass))
 			return 202;
 		
 		// If both classes exist and do not have a pre-existing relationship, then
 		//		create a new relationship between them if the type is valid
-		String key = UMLRelationship.GENERATE_STRING(srcClass, destClass, type);
-		UMLRelationship relation = new UMLRelationship(classList.get(srcClass), classList.get(destClass), type);
+		String key = UMLRelationship.GENERATE_STRING(srcClass, type, destClass);
+		UMLRelationship relation = new UMLRelationship(classList.get(srcClass), type, classList.get(destClass));
 		relationships.put(key, relation);
 		
 		// Indicate success
@@ -377,13 +377,13 @@ public class UMLClassManager implements Serializable {
 			return 107;
 		
 		// Make sure there is a pre-existing relationship
-		if(!relationshipExists(srcClass, destClass, type))
+		if(!relationshipExists(srcClass, type, destClass))
 			return 108;
 		
 		// Determine which class is the key in the relationships map
-		String key = UMLRelationship.GENERATE_STRING(srcClass, destClass, type);
+		String key = UMLRelationship.GENERATE_STRING(srcClass, type, destClass);
 		if(!relationships.containsKey(key))
-			key = UMLRelationship.GENERATE_STRING(destClass, srcClass, type);
+			key = UMLRelationship.GENERATE_STRING(destClass, type, srcClass);
 		
 		// Remove the relationship from the map
 		relationships.remove(key);
@@ -427,10 +427,10 @@ public class UMLClassManager implements Serializable {
 	 * @param class2
 	 * @return true if a relationship exists, false if not
 	 */
-	private boolean relationshipExists(String class1, String class2, String type) {
+	private boolean relationshipExists(String class1, String type, String class2) {
 		// Iterate through relationship checking both directions (class1 -> class2) and (class1 <- class2)
-		String direct1 = UMLRelationship.GENERATE_STRING(class1, class2, type);  
-		String direct2 = UMLRelationship.GENERATE_STRING(class2, class1, type);  
+		String direct1 = UMLRelationship.GENERATE_STRING(class1, type, class2);  
+		String direct2 = UMLRelationship.GENERATE_STRING(class2, type, class1);  
 		
 		return relationships.containsKey(direct1) || relationships.containsKey(direct2);
 	}
@@ -442,8 +442,8 @@ public class UMLClassManager implements Serializable {
 	 * @param type
 	 * @return
 	 */
-	public boolean validType(String class1, String class2, String type) {
-		String rel = UMLRelationship.GENERATE_STRING(class1, class2, type);
+	public boolean validType(String class1, String type, String class2) {
+		String rel = UMLRelationship.GENERATE_STRING(class1, type, class2);
 		if(rel == "Invalid Type") {
 			return false;
 		}
