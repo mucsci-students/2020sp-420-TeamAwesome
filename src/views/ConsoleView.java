@@ -144,7 +144,7 @@ public class ConsoleView extends View {
 					}
 					result = controller.addMethod(args[2], args[3], args[4], paramlist);
 					//adds valid methodName to given exisiting class
-					System.out.println("Added method \'" + args[4] + "which returns a \'" + args[3] +"\' to class \'" + args[2] + "\'.");
+					System.out.println("Added method \'" + args[4] + "with returnType \'" + args[3] +"\' to class \'" + args[2] + "\'.");
 				}
 				else {
 					//invalid amount of arguments
