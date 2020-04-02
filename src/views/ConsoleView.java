@@ -217,7 +217,7 @@ public class ConsoleView extends View {
 						++i;
 					}
 					result = controller.removeMethod(args[2], args[3], paramlist);
-					System.out.println("Removed method \'" + args[3] + "\' to class \'" + args[2] + "\'.");
+					System.out.println("Removed method \'" + args[3] + "\' from class \'" + args[2] + "\'.");
 				}
 				else {
 					//invalid amount of parameters
