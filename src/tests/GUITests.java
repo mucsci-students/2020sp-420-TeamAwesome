@@ -389,4 +389,34 @@ public class GUITests {
 		assertNotEquals("Remove method invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove invalid method nothing removed", 1, myclass.getMethods().size());
 	}
+	
+	/**
+	 * Test the editing of method names for a class
+	 */
+	@Test
+	public void editMethod() {
+		UMLClassManager model = new UMLClassManager();
+		model.addClass("myclass");
+		model.addMethods("myclass", "mymethod");
+		model.addMethods("myclass", "another");
+		UMLClass myclass = model.getClass("myclass");
+		GUIView gui = new GUIView(new GUIController(model), model);
+		
+		assertEquals("Init number of methods", 2, myclass.getMethods().size());
+		
+		gui.loadData(new String[] {"myclass", "mymethod", "newmethod"});
+		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
+		assertEquals("Edit method name valid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num methods the same", 2, myclass.getMethods().size());
+		
+		gui.loadData(new String[] {"myclass", "newmethod", "mymethod"});
+		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
+		assertEquals("Edit method name valid return code 2", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num methods unchanged", 2, myclass.getMethods().size());
+		
+		gui.loadData(new String[] {"myclass", "mymethod", "another"});
+		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
+		assertNotEquals("Edit method to duplicate name return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num methods unchanged", 2, myclass.getMethods().size());
+	}
 }
