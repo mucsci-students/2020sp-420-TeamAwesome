@@ -1,56 +1,43 @@
-# UMLEditor
-## Version 1.5.0
-### Motivation
-This UML Editor was created as per the course requirements of 420 Software Engineering at Millersville University during the Spring of 2020. 
+#<div align="center"> <span style="color:#07ABF5"> UMLEditor </span> </div> 
 
-### Functionality
-Using our UMLEditor tool you can
-* Add/remove/rename classes
-* Add/remove/rename fields
-* Add/remove/rename methods
-* Add/remove relationships between classes
-
-### How to Run
-Steps  
-1. Install Maven  
-	a. Link: https://mkyong.com/maven/how-to-install-maven-in-windows/  
-2. Install Bash  
-	a. Link: https://itsfoss.com/install-bash-on-windows/ 
-3. Open console window capable of running bash
-4. Type "./run-uml-console.sh" for a console view or "./run-uml-gui.sh" for a GUI view and hit enter
-
-### View Options
-Prompted to select console view or GUI view after startup.
-
-### How to Use
-Once UMLeditor is running type "help" and hit enter to print out a list of valid commands and their descriptions.
+Unified Modeling Language (UML) is a general-purpose, developmental, modeling language made for software engineers. It provides a standardized visualization the design of a system. UMLEditor is intended to allow the user to create, edit, and visualize the basic functions of UML.
 
 
-### Contributors
+### <span style="color:#07ABF5"> Motivation </span>
+UMLEditor was created as per the course requirements of 420 Software Engineering at Millersville University during the Spring of 2020. 
+
+
+### <span style="color:#07ABF5"> Requirements </span> 
+There are two installation requirements for running UML Editor. Apache Maven, and Linux Bash Shell. Below are outsourced links to guides for how to install Maven and Bash on windows.   
+ 
+* [Install Maven](https://mkyong.com/maven/how-to-install-maven-in-windows/)  
+
+* [Install Bash](https://itsfoss.com/install-bash-on-windows/)  	
+
+
+### <span style="color:#07ABF5"> Authors </span>
 TeamAwesome
 - Ryan Haas
 - Anthony Mason
 - Dylan Wagner
 - Benjamin Mullins
 
-### MIT License
-Copyright (c) [2020] Ryan Hass, Anythony Mason Dylan Ragner, Benjamin Mullins
+### <span style="color:#07ABF5"> Contributing Guide </span>
+TeamAwesome is ecstatic about outside contributions. If you wish to contribute please read through our [Contributing Guide](https://github.com/mucsci-students/2020sp-420-TeamAwesome/blob/develop/CONTRIBUTING.md). The Contributing guide includes the following
+ sections: 
+ * Asking Questions 
+ * Providing Feedback 
+ * Reporting Issues 
+ * Existing Issues 
+ * Writing Bug Reports
+ * Feature Quests. 
 
+Also make sure any contributions follow the guidelines laid out in our [Code of Conduct](https://github.com/mucsci-students/2020sp-420-TeamAwesome/blob/develop/CODE_OF_CONDUCT.md).
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+### <span style="color:#07ABF5"> Code of Conduct </span>
+This project has adopted it's own Code of Conduct. For more information see [Code of Conduct](https://github.com/mucsci-students/2020sp-420-TeamAwesome/blob/develop/CODE_OF_CONDUCT.md). Code of Conduct includes sections on:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+ 
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+### <span style="color:#07ABF5"> License </span>
+Licensed under the [MIT License](https://github.com/mucsci-students/2020sp-420-TeamAwesome/blob/develop/LICENSE).
