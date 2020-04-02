@@ -218,7 +218,7 @@ public class ConsoleView extends View {
 					}
 					paramlist = paramlist.trim();
 					result = controller.removeMethod(args[2], args[3], paramlist);
-					System.out.println("Removed method \'" + args[3] + "\' ( " + paramlist + " )"  " from class \'" + args[2] + "\'.");
+					System.out.println("Removed method \'" + args[3] + "\' ( " + paramlist + " )" + " from class \'" + args[2] + "\'.");
 				}
 				else {
 					//invalid amount of parameters
@@ -231,7 +231,7 @@ public class ConsoleView extends View {
 				if(args.length == 5) {
 					//takes exaclty 5 arguments; remove, relationship, classname1, type, classname2
 					result = controller.removeRelationship(args[2], args[3], args[4]);
-					System.out.println("Removed " args[3] + " relationship between class \'" + args[4] + "\' and class \'" + args[2] + "\'.");
+					System.out.println("Removed " + args[3] + " relationship between class \'" + args[4] + "\' and class \'" + args[2] + "\'.");
 				}
 				else {
 					//invalid amount of params
