@@ -361,6 +361,7 @@ public class GUITests {
 	 */
 	@Test
 	public void removeMethod() {
+		// TODO - Add parameters once new model merged
 		UMLClassManager model = new UMLClassManager();
 		model.addClass("myclass");
 		model.addMethods("myclass", "mymethod");
@@ -460,5 +461,25 @@ public class GUITests {
 		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
 		assertNotEquals("Add relationship invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
+	}
+	
+	/**
+	 * Test the removal of relationships
+	 */
+	@Test
+	public void removeRelationship() {
+		UMLClassManager model = new UMLClassManager();
+		model.addClass("class1");
+		model.addClass("class2");
+		model.addClass("class3");
+		// TODO - Add relationship type after merge
+		model.addRelationship("class1", "class2");
+		model.addRelationship("class1", "class3");
+		model.addRelationship("class2", "class3");
+		GUIView gui = new GUIView(new GUIController(model), model);
+		
+		assertEquals("Init num relationships", 3, model.getRelationships().size());
+		
+		
 	}
 }
