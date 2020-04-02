@@ -374,5 +374,19 @@ public class GUITests {
 		// Remove mymethod with no params
 		gui.loadData(new String[] {"myclass", "mymethod"});
 		((JMenuItem)gui.getComponent("classRemoveMethod")).doClick();
+		assertEquals("Remove method valid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num methods post remove", 2, myclass.getMethods().size());
+		
+		// Remove another with args
+		// TODO - Change once model updates are incorporated
+		gui.loadData(new String[] {"myclass", "another", "String par1"});
+		((JMenuItem)gui.getComponent("classRemoveMethod")).doClick();
+		assertEquals("Remove overload method valid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num methods post overload remove", 1, myclass.getMethods().size());
+		
+		gui.loadData(new String[] {"myclass", "d*e$n0#"});
+		((JMenuItem)gui.getComponent("classRemoveMethod")).doClick();
+		assertNotEquals("Remove method invalid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Remove invalid method nothing removed", 1, myclass.getMethods().size());
 	}
 }
