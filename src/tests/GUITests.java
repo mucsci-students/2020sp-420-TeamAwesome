@@ -419,4 +419,46 @@ public class GUITests {
 		assertNotEquals("Edit method to duplicate name return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods unchanged", 2, myclass.getMethods().size());
 	}
+	
+	/**
+	 * Test the adding of relationships
+	 */
+	@Test
+	public void addRelationship() {
+		UMLClassManager model = new UMLClassManager();
+		model.addClass("class1");
+		model.addClass("class2");
+		model.addClass("class3");
+		GUIView gui = new GUIView(new GUIController(model), model);
+		
+		assertEquals("Init number of relationships for class1", "[]", model.listRelationships("class1")[0]);
+		assertEquals("Init number of relationships for class2", "[]", model.listRelationships("class2")[0]);
+		assertEquals("Init number of relationships for class3", "[]", model.listRelationships("class3")[0]);
+		assertEquals("Init number total relationships", 0, model.getRelationships().size());
+		
+		gui.loadData(new String[] {"class1", "aggregation", "class2"});
+		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
+		assertEquals("Add relationship valid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num total relationships after valid add", 1, model.getRelationships().size());
+		
+		gui.loadData(new String[] {"class2", "inheritance", "class3"});
+		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
+		assertEquals("Add relationship valid return code 2", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num total relationships", 2, model.getRelationships().size());
+		
+		gui.loadData(new String[] {"class1", "not real", "class3"});
+		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
+		assertNotEquals("Add relationship invalid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num total relationships", 2, model.getRelationships().size());
+		
+		gui.loadData(new String[] {"class1", "aggregation", "class2"});
+		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
+		assertNotEquals("Add relationship duplicate return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num total relationships", 2, model.getRelationships().size());
+		
+		gui.loadData(new String[] {"class1", "aggregation", "notreal"});
+		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
+		assertNotEquals("Add relationship invalid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num total relationships", 2, model.getRelationships().size());
+	}
 }

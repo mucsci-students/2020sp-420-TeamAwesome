@@ -62,4 +62,14 @@ public class ErrorHandler {
 			return "Error " + code + ": " + ERROR_TABLE.get(code);
 		return "No such error found";
 	}
+	
+	/**
+	 * Set the last code and return the passed in code for convenience
+	 * @param code - return code
+	 * @return the passed in code
+	 */
+	public static final int setCode(int code) {
+		LAST_CODE = code;
+		return code;
+	}
 }
