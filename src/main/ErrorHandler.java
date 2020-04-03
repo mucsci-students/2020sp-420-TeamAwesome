@@ -36,6 +36,7 @@ public class ErrorHandler {
 		tempMap.put(110, "Unable to set GUI look and feel.");
 		tempMap.put(200, "Class not added. Duplicate class.");
 		tempMap.put(201, "Class not removed. Class does not exist.");
+		tempMap.put(202, "Relationship is not of a valid type.");
 		tempMap.put(301, "Was unable to create file");
 		tempMap.put(302, "Was unable open file for writing");
 		tempMap.put(303, "Was unable read file");
@@ -49,6 +50,7 @@ public class ErrorHandler {
 		tempMap.put(407, "Class name entered is invalid.");
 		tempMap.put(408, "Method name entered is invalid.");
 		tempMap.put(409, "Field name entered is invalid.");
+		tempMap.put(410, "Type of relationship not real or unsupported.");
 		return tempMap;
 	}
 	
