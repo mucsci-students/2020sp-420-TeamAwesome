@@ -36,8 +36,8 @@ public class CommandController extends UMLController {
 		return result;
 	}
 	
-	public int editMethod(String className, String oldName, String params, String newName) {
-		int result = getModel().editMethods(className, oldName, params, newName);
+	public int editMethod(String className, String oldName, String newName, String params) {
+		int result = getModel().editMethods(className, oldName, newName, params);
 		if(result == 0)
 			notify("editClass", getModel());
 		return result;

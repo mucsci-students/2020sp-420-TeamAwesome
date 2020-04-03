@@ -209,7 +209,7 @@ public class UMLClassManager implements Serializable {
 	 * @param newName - the new method name
 	 * @return - 0 on successful 'name change' and corresponding error codes in all other cases
 	 */
-	public int editMethods(String className, String oldMethod, String params, String newName)
+	public int editMethods(String className, String oldMethod, String newName, String params)
 	{
 			//check if the new name doesn't already exist as a class name
 		if (classList.containsKey(className)){
