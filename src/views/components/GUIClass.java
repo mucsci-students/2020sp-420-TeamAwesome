@@ -19,6 +19,8 @@ import javax.swing.border.Border;
 
 //Local imports
 import model.UMLClass;
+import model.Method;
+import model.Field;
 
 /**
  * A GUI representation of a UML Class
@@ -145,10 +147,11 @@ public class GUIClass extends JPanel {
 		
 		// Check to see if there is a method in the class that is not a label
 		//		If so then add it to the panel
-		for(String methodName : umlClass.getMethods()) {
-			if(!methodLabels.containsKey(methodName)) {
-				JLabel temp = generateLabel(methodName);
-				methodLabels.put(methodName, temp);
+		for(Map.Entry<String, Method> entry : umlClass.getMethods().entrySet()) {
+			Method method = entry.getValue();
+			if(!methodLabels.containsKey(entry.getKey())) {
+				JLabel temp = generateLabel(method.toString());
+				methodLabels.put(entry.getKey(), temp);
 				
 				// Add label to display
 				methodRegion.add(temp);
@@ -166,9 +169,9 @@ public class GUIClass extends JPanel {
 			Map.Entry<String, JLabel> entry = entryIt.next();
 			
 			// Get the label name
-			String name = entry.getKey();
+			String key = entry.getKey();
 			// Check if label is not in class list
-			if(!umlClass.hasMethod(name)) {
+			if(!umlClass.getMethods().containsKey(key)) {
 				// Remove label from display
 				methodRegion.remove(entry.getValue());
 				
@@ -197,10 +200,11 @@ public class GUIClass extends JPanel {
 		
 		// Check to see if there is a field in the class that is not a label
 		//		If so then add it to the panel
-		for(String fieldName : umlClass.getFields()) {
-			if(!fieldLabels.containsKey(fieldName)) {
-				JLabel temp = generateLabel(fieldName);
-				fieldLabels.put(fieldName, temp);
+		for(Map.Entry<String, Field> entry : umlClass.getFields().entrySet()) {
+			Field field = entry.getValue();
+			if(!fieldLabels.containsKey(entry.getKey())) {
+				JLabel temp = generateLabel(field.toString());
+				fieldLabels.put(entry.getKey(), temp);
 				
 				// Add label to display
 				fieldRegion.add(temp);
