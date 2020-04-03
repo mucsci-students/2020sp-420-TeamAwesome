@@ -246,8 +246,8 @@ public class GUITests {
 		UMLClassManager model = new UMLClassManager();
 		// Assuming add class works
 		model.addClass("myclass");
-		model.addFields("myclass", "myfield");
-		model.addFields("myclass", "another");
+		model.addFields("myclass", "int", "myfield");
+		model.addFields("myclass", "String", "another");
 		UMLClass myclass = model.getClass("myclass");
 		GUIView gui = new GUIView(new GUIController(model), model);
 		
@@ -285,8 +285,8 @@ public class GUITests {
 		UMLClassManager model = new UMLClassManager();
 		// Assuming add class works
 		model.addClass("myclass");
-		model.addFields("myclass", "myfield");
-		model.addFields("myclass", "another");
+		model.addFields("myclass", "Object", "myfield");
+		model.addFields("myclass", "double", "another");
 		UMLClass myclass = model.getClass("myclass");
 		GUIView gui = new GUIView(new GUIController(model), model);
 		
@@ -361,16 +361,15 @@ public class GUITests {
 	 */
 	@Test
 	public void removeMethod() {
-		// TODO - Add parameters once new model merged
 		UMLClassManager model = new UMLClassManager();
 		model.addClass("myclass");
-		model.addMethods("myclass", "mymethod");
-		model.addMethods("myclass", "another");
-		model.addMethods("myclass", "another");
+		model.addMethods("myclass", "int", "mymethod", "");
+		model.addMethods("myclass", "String", "another", "String par1");
+		model.addMethods("myclass", "String", "another", "");
 		UMLClass myclass = model.getClass("myclass");
 		GUIView gui = new GUIView(new GUIController(model), model);
 		
-		assertEquals("Init number of methods", 2, myclass.getMethods().size());
+		assertEquals("Init number of methods", 3, myclass.getMethods().size());
 		
 		// Remove mymethod with no params
 		gui.loadData(new String[] {"myclass", "mymethod"});
@@ -379,7 +378,6 @@ public class GUITests {
 		assertEquals("Num methods post remove", 2, myclass.getMethods().size());
 		
 		// Remove another with args
-		// TODO - Change once model updates are incorporated
 		gui.loadData(new String[] {"myclass", "another", "String par1"});
 		((JMenuItem)gui.getComponent("classRemoveMethod")).doClick();
 		assertEquals("Remove overload method valid return code", 0, ErrorHandler.LAST_CODE);
@@ -398,24 +396,24 @@ public class GUITests {
 	public void editMethod() {
 		UMLClassManager model = new UMLClassManager();
 		model.addClass("myclass");
-		model.addMethods("myclass", "mymethod");
-		model.addMethods("myclass", "another");
+		model.addMethods("myclass", "int", "mymethod", "");
+		model.addMethods("myclass", "boolean", "another", "boolean istrue");
 		UMLClass myclass = model.getClass("myclass");
 		GUIView gui = new GUIView(new GUIController(model), model);
 		
 		assertEquals("Init number of methods", 2, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "mymethod", "newmethod"});
+		gui.loadData(new String[] {"myclass", "mymethod", "",  "newmethod"});
 		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
 		assertEquals("Edit method name valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods the same", 2, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "newmethod", "mymethod"});
+		gui.loadData(new String[] {"myclass", "newmethod", "", "mymethod"});
 		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
 		assertEquals("Edit method name valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods unchanged", 2, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "mymethod", "another"});
+		gui.loadData(new String[] {"myclass", "mymethod", "", "another"});
 		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
 		assertNotEquals("Edit method to duplicate name return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods unchanged", 2, myclass.getMethods().size());
@@ -472,14 +470,31 @@ public class GUITests {
 		model.addClass("class1");
 		model.addClass("class2");
 		model.addClass("class3");
-		// TODO - Add relationship type after merge
-		model.addRelationship("class1", "class2");
-		model.addRelationship("class1", "class3");
-		model.addRelationship("class2", "class3");
+		model.addRelationship("class1", "aggregation", "class2");
+		model.addRelationship("class1", "inheritance", "class3");
+		model.addRelationship("class2", "composition", "class3");
 		GUIView gui = new GUIView(new GUIController(model), model);
 		
 		assertEquals("Init num relationships", 3, model.getRelationships().size());
 		
+		gui.loadData(new String[] {"class1", "aggregation", "class2"});
+		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
+		assertEquals("Remove valid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num relationships post remove", 2, model.getRelationships().size());
 		
+		gui.loadData(new String[] {"class1", "aggregation", "class2"});
+		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
+		assertNotEquals("Remove invalid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num relationships post invalid remove", 2, model.getRelationships().size());
+		
+		gui.loadData(new String[] {"class2", "notrealtype", "class3"});
+		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
+		assertNotEquals("Remove invalid return code 2", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num relationships post invalid remove 2", 2, model.getRelationships().size());
+		
+		gui.loadData(new String[] {"class1", "inheritance", "class3"});
+		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
+		assertNotEquals("Remove invalid return code", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num relationships post invalid remove", 2, model.getRelationships().size());
 	}
 }
