@@ -40,7 +40,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	
 	// Map of graphical representations of classes
 	private HashMap<String, GUIClass> guiClasses;
-	
+
 	// Location of the last class selected/dragged
 	private int lastX;
 	private int lastY;
@@ -314,7 +314,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					
 					// Make sure user did not cancel input
 					if(fieldName != null) {
-						int result = view.getController().addField(prev.getName(), fieldName.toString());
+						// TODO
+						int result = view.getController().addField(prev.getName(), null, fieldName.toString());
 						if(result != 0)
 							view.showError(DiagramPanel.this, result);
 					}
@@ -336,7 +337,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				// Make sure a selected class exists
 				if(prev != null) {
 					// Get a list of the available field names to remove
-					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getFields().toArray();
+					// TODO betteer
+					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getFields().keySet().toArray();
 					
 					// Make sure there is at least one field
 					if(availableOptions.length > 0) {
@@ -366,7 +368,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				// Make sure a selected class exists
 				if(prev != null) {
 					// Get a list of the available field names to edit
-					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getFields().toArray();
+					// TODO 
+					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getFields().keySet().toArray();
 					
 					// Make sure there is at least one field
 					if(availableOptions.length > 0) {
@@ -406,7 +409,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					
 					// Make sure user did not cancel input
 					if(methodName != null) {
-						int result = view.getController().addMethod(prev.getName(), methodName.toString());
+						// TODO
+						int result = view.getController().addMethod(prev.getName(), methodName.toString(), null, null);
 						if(result != 0)
 							view.showError(DiagramPanel.this, result);
 					}
@@ -428,14 +432,16 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				// Make sure a selected class exists
 				if(prev != null) {
 					// Get a list of the available field names to remove
-					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getMethods().toArray();
+					// TODO
+					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getMethods().keySet().toArray();
 					
 					// Make sure there is at least one field
 					if(availableOptions.length > 0) {
 						Object methodName = view.promptSelection("Choose method name:", availableOptions);
 						// Make sure user didn't cancel input
 						if(methodName != null) {
-							int result = view.getController().removeMethod(prev.getName(), methodName.toString());
+							// TODO
+							int result = view.getController().removeMethod(prev.getName(), methodName.toString(), null);
 							if(result != 0)
 								view.showError(DiagramPanel.this, result);
 						}
@@ -459,7 +465,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				// Make sure a selected class exists
 				if(prev != null) {
 					// Get a list of the available method names to edit
-					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getMethods().toArray();
+					// TODO
+					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getMethods().keySet().toArray();
 					
 					// Make sure there is at least one method
 					if(availableOptions.length > 0) {
@@ -471,7 +478,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 							
 							// Make sure user didn't cancel
 							if(newMethodName != null) {
-								int result = view.getController().editMethod(prev.getName(), methodName.toString(), newMethodName.toString());
+								// TODO
+								int result = view.getController().editMethod(prev.getName(), methodName.toString(), null, newMethodName.toString());
 								if(result != 0)
 									view.showError(DiagramPanel.this, result);
 							}
@@ -503,7 +511,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						Object destClass = view.promptSelection("Destination class: ", availableClasses);
 						// Make sure user didn't cancel input
 						if(destClass != null) {
-							int result = view.getController().addRelationship(prev.getName(), destClass.toString());
+							// TODO
+							int result = view.getController().addRelationship(prev.getName(), null, destClass.toString());
 							if(result != 0)
 								view.showError(DiagramPanel.this, result);
 						}
@@ -534,7 +543,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						Object destClass = view.promptSelection("Destination class: ", availableClasses);
 						// Make sure user didn't cancel input
 						if(destClass != null) {
-							int result = view.getController().removeRelationship(prev.getName(), destClass.toString());
+							// TODO
+							int result = view.getController().removeRelationship(prev.getName(), null, destClass.toString());
 							if(result != 0)
 								view.showError(DiagramPanel.this, result);
 						}
