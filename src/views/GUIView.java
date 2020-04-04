@@ -49,12 +49,10 @@ public class GUIView extends View {
 		setupDiagram();
 		
 		window.pack();
-		window.setVisible(true);
 	}
 	
-	public GUIView() {
-		// TODO
-		// Pass in empty controller and model to other constructor
+	public void show() {
+		window.setVisible(true);
 	}
 	
 	/**
@@ -153,8 +151,7 @@ public class GUIView extends View {
 	 * @return - associated JComponent
 	 */
 	public JComponent getComponent(int x, int y) {
-		// TODO
-		return null;
+		return (JComponent)umlDiagram.getComponentAt(x, y);
 	}
 	
 	/**
@@ -162,8 +159,7 @@ public class GUIView extends View {
 	 * @return - window JFrame
 	 */
 	public JFrame getWindow() {
-		// TODO
-		return null;
+		return window;
 	}
 	
 	/**
@@ -171,8 +167,7 @@ public class GUIView extends View {
 	 * @return - diagramPanel
 	 */
 	public DiagramPanel getDiagram() {
-		// TODO
-		return null;
+		return umlDiagram;
 	}
 	
 	/**
@@ -193,9 +188,12 @@ public class GUIView extends View {
 		return null;
 	}
 	
+	/**
+	 * Get the view's model
+	 * @return - model
+	 */
 	public UMLClassManager getModel() {
-		// TODO
-		return null;
+		return model;
 	}
 
 	@Override

@@ -150,16 +150,18 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	}
 	
 	/**
-	 * Setup the mouse and window menus and their items
+	 * Setup the mouse and window menus and their items.
+	 * Set names for all components for tests
 	 */
 	private void setupMenus() {
 		// Create the popup menu for when a user right clicks in the diagram
 		mouseMenu = new JPopupMenu();
+		mouseMenu.setName("Mouse Menu");
 		
 		// Initialize the menu items
-		mouseAddClass = new JMenuItem("Add Class");
-		mouseSaveFile = new JMenuItem("Save to File");
-		mouseLoadFile = new JMenuItem("Load File");
+		mouseAddClass = createMenuItem("Add Class", "mouseAddClass");
+		mouseSaveFile = createMenuItem("Save to File", "mouseSave");
+		mouseLoadFile = createMenuItem("Load File", "mouseLoad");
 		
 		// Add menu items to mouse menu
 		mouseMenu.add(mouseAddClass);
@@ -170,21 +172,22 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		// Create the popup menu for when a user right clicks a class
 		// 		NOTE: Displaying this is handled in the GUIView's mouse listeners
 		classMenu = new JPopupMenu();
+		classMenu.setName("Class Menu");
 		
 		// Initialize class menu options
-		classRemoveClass = new JMenuItem("Remove Class");
-		classEditClass = new JMenuItem("Edit Class Name");
+		classRemoveClass = createMenuItem("Remove Class", "classRemvoeClass");
+		classEditClass = createMenuItem("Edit Class Name", "classEditClass");
 		
-		classAddField = new JMenuItem("Add Field");
-		classRemoveField = new JMenuItem("Remove Field");
-		classEditField = new JMenuItem("Edit Field Name");
+		classAddField = createMenuItem("Add Field", "classAddField");
+		classRemoveField = createMenuItem("Remove Field", "classRemoveField");
+		classEditField = createMenuItem("Edit Field Name", "classEditField");
 
-		classAddMethod = new JMenuItem("Add Method");
-		classRemoveMethod = new JMenuItem("Remove Method");
-		classEditMethod = new JMenuItem("Edit Method Name");
+		classAddMethod = createMenuItem("Add Method", "classAddMethod");
+		classRemoveMethod = createMenuItem("Remove Method", "classRemoveMethod");
+		classEditMethod = createMenuItem("Edit Method Name", "classEditMethod");
 		
-		classAddRelationship = new JMenuItem("Add Relationship");
-		classRemoveRelationship = new JMenuItem("Remove Relationship");
+		classAddRelationship = createMenuItem("Add Relationship", "classAddRelationship");
+		classRemoveRelationship = createMenuItem("Remove Relationship", "classRemoveRelationship");
 		
 		// Add items to class menu
 		classMenu.add(classRemoveClass);
@@ -200,6 +203,17 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		classMenu.addSeparator();
 		classMenu.add(classAddRelationship);
 		classMenu.add(classRemoveRelationship);
+	}
+	
+	/**
+	 * Get a menu item with the specified label and set its name
+	 * @param label - Text to display
+	 * @param name - Name for testing purposes
+	 */
+	private JMenuItem createMenuItem(String label, String name) {
+		JMenuItem temp = new JMenuItem(label);
+		temp.setName(name);
+		return temp;
 	}
 	
 	/**

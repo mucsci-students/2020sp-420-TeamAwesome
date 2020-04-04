@@ -34,7 +34,8 @@ public class GUITests {
 	 */
 	@Test
 	public void baseInitialization() {
-		GUIView gui = new GUIView();
+		UMLClassManager model = new UMLClassManager();
+		GUIView gui = new GUIView(new GUIController(model), model);
 		assertTrue("Window not null", gui.getWindow() != null);
 		assertTrue("Controller not null", gui.getController() != null);
 		assertTrue("Diagram exists", gui.getDiagram() != null);
@@ -45,7 +46,8 @@ public class GUITests {
 	 */
 	@Test
 	public void mouseMenuInitializations() {
-		GUIView gui = new GUIView();
+		UMLClassManager model = new UMLClassManager();
+		GUIView gui = new GUIView(new GUIController(model), model);
 		JComponent mouseMenu = gui.getComponent("Mouse Menu");
 		assertTrue("Main mouse menu exists", mouseMenu != null);
 		assertTrue("Main mouse menu is popup menu", mouseMenu instanceof JPopupMenu);
@@ -65,7 +67,8 @@ public class GUITests {
 	 */
 	@Test
 	public void classMenuInitialization() {
-		GUIView gui = new GUIView();
+		UMLClassManager model = new UMLClassManager();
+		GUIView gui = new GUIView(new GUIController(model), model);
 		JComponent classMenu = gui.getComponent("Class Menu");
 		assertTrue("Class menu exists", classMenu != null);
 		assertTrue("Class menu is popup menu", classMenu instanceof JPopupMenu);
