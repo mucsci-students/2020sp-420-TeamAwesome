@@ -11,6 +11,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import main.ErrorHandler;
+
 /**
  * For adding and removing classes from the UML diagram
  * @author antho
@@ -44,16 +46,16 @@ public class UMLClassManager implements Serializable {
 		//check if name is valid
 		if (!validName(name))
 		{
-			return 407;
+			return ErrorHandler.setCode(407);
 		}
 		//Prevent duplicates
 		if (classList.containsKey(name))
 		{
-			return 200;
+			return ErrorHandler.setCode(200);
 		}
 		UMLClass newClass = new UMLClass(name);
 		classList.put(name, newClass);
-		return 0;
+		return ErrorHandler.setCode(0);
 	}
 	/**
 	 * 
@@ -68,16 +70,16 @@ public class UMLClassManager implements Serializable {
 		{
 			if (classList.get(className).getMethods().containsKey(methodName + params)) 
 			{
-				return 402;
+				return ErrorHandler.setCode(402);
 			}
 			else if (validName(methodName))
 			{
 				classList.get(className).addMethod(returnType, methodName, params);
-				return 0;			
+				return ErrorHandler.setCode(0);			
 			}
-			return 408;
+			return ErrorHandler.setCode(408);
 		}
-		else return 403;
+		else return ErrorHandler.setCode(403);
 		
 	}
 
@@ -93,17 +95,17 @@ public class UMLClassManager implements Serializable {
 		{
 			if (classList.get(className).getFields().containsKey(fieldName)) 
 			{
-				return 404;
+				return ErrorHandler.setCode(404);
 			}
 			else if (validName(fieldName))
 			{
 				
 				classList.get(className).addField(type, fieldName);
-				return 0;
+				return ErrorHandler.setCode(0);
 			}
-			return 409;
+			return ErrorHandler.setCode(409);
 		}
-		else return 403;
+		else return ErrorHandler.setCode(403);
 	}
 	/**
 	 * 
@@ -118,14 +120,14 @@ public class UMLClassManager implements Serializable {
 			if (classList.get(className).getFields().containsKey(fieldName)) 
 			{
 				classList.get(className).removeField(fieldName);
-				return 0;
+				return ErrorHandler.setCode(0);
 			}
 			else 
 			{
-				return 405;
+				return ErrorHandler.setCode(405);
 			}
 		}
-		else return 403;
+		else return ErrorHandler.setCode(403);
 	}
 
 	/**
@@ -142,14 +144,14 @@ public class UMLClassManager implements Serializable {
 			if (classList.get(className).getMethods().containsKey(methodName + params)) 
 			{
 				classList.get(className).removeMethod(methodName, params);
-				return 0;
+				return ErrorHandler.setCode(0);
 			}
 			else 
 			{
-				return 406;
+				return ErrorHandler.setCode(406);
 			}
 		}
-		else return 403;
+		else return ErrorHandler.setCode(403);
 		
 	}
 	/**
@@ -163,7 +165,7 @@ public class UMLClassManager implements Serializable {
 			//check if the new name doesn't already exist as a class name
 		if (classList.containsKey(newName))
 		{
-			return 400;
+			return ErrorHandler.setCode(400);
 		}
 		if (classList.containsKey(oldName))
 		{
@@ -171,9 +173,9 @@ public class UMLClassManager implements Serializable {
 			tempCopy.setName(newName);
 			classList.remove(oldName);
 			classList.put(newName, tempCopy);
-			return 0;
+			return ErrorHandler.setCode(0);
 		}
-		return 401;
+		return ErrorHandler.setCode(401);
 	}
 		/**
 	 * @param className; the class holding the field we want to edit
@@ -187,7 +189,7 @@ public class UMLClassManager implements Serializable {
 		if (classList.containsKey(className)){
 			if (classList.get(className).getFields().containsKey(newName))
 			{
-				return 404; 
+				return ErrorHandler.setCode(404); 
 			}
 			if (classList.get(className).getFields().containsKey(oldField))
 			{
@@ -195,11 +197,11 @@ public class UMLClassManager implements Serializable {
 				String type = classList.get(className).getFields().get(oldField).getType();
 				classList.get(className).removeField(oldField);
 				classList.get(className).addField(newName, type);
-				return 0;
+				return ErrorHandler.setCode(0);
 			}
-			return 405;
+			return ErrorHandler.setCode(405);
 		}
-		return 403;
+		return ErrorHandler.setCode(403);
 	}
 
 	/**
@@ -215,7 +217,7 @@ public class UMLClassManager implements Serializable {
 		if (classList.containsKey(className)){
 			if (classList.get(className).getMethods().containsKey(newName + params))
 			{
-				return 402; 
+				return ErrorHandler.setCode(402); 
 			}
 			if (classList.get(className).getMethods().containsKey(oldMethod + params))
 			{
@@ -223,11 +225,11 @@ public class UMLClassManager implements Serializable {
 				String returnType = classList.get(className).getMethods().get(oldMethod + params).getReturnType();
 				classList.get(className).removeMethod(oldMethod, params);
 				classList.get(className).addMethod(newName, returnType, params);
-				return 0;
+				return ErrorHandler.setCode(0);
 			}
-			return 406;
+			return ErrorHandler.setCode(406);
 		}
-		return 403;
+		return ErrorHandler.setCode(403);
 	}
 	
 	/**
@@ -244,9 +246,9 @@ public class UMLClassManager implements Serializable {
 			// Remove any relationship involving the class
 			relationships.entrySet().removeIf(e -> e.getValue().hasClass(className));
 			
-			return 0;
+			return ErrorHandler.setCode(0);
 		}
-		return 201;
+		return ErrorHandler.setCode(201);
 	}
 	
 	/**
@@ -296,7 +298,7 @@ public class UMLClassManager implements Serializable {
 	public Object[] listFields(String className) {
 		// Make sure class exists
 		if(!classList.containsKey(className)) {
-			return new Object[] {"", 109};
+			return new Object[] {"", ErrorHandler.setCode(109)};
 		}
 		else {
 			UMLClass inst = getClass(className);
@@ -308,7 +310,7 @@ public class UMLClassManager implements Serializable {
 			temp = temp.substring(0, temp.lastIndexOf(", "));
 			temp += "]";
 			
-			return new Object[]{temp, 0};
+			return new Object[]{temp, ErrorHandler.setCode(0)};
 		}
 	}
 	
@@ -320,7 +322,7 @@ public class UMLClassManager implements Serializable {
 	public Object[] listMethods(String className) {
 		// Make sure class exists
 				if(!classList.containsKey(className)) {
-					return new Object[] {"", 109};
+					return new Object[] {"", ErrorHandler.setCode(109)};
 				}
 				else {
 					UMLClass inst = getClass(className);
@@ -332,7 +334,7 @@ public class UMLClassManager implements Serializable {
 					temp = temp.substring(0, temp.lastIndexOf(", "));
 					temp += "]";
 					
-					return new Object[]{temp, 0};
+					return new Object[]{temp, ErrorHandler.setCode(0)};
 				}
 	}
 	
@@ -345,15 +347,15 @@ public class UMLClassManager implements Serializable {
 	public int addRelationship(String srcClass, String type, String destClass) {
 		// Make sure both class names exist
 		if(!classList.containsKey(srcClass) || !classList.containsKey(destClass))
-			return 107;
+			return ErrorHandler.setCode(107);
 		
 		// Make sure a relationship between both classes does not exist
 		if(relationshipExists(srcClass, type, destClass))
-			return 106;
+			return ErrorHandler.setCode(106);
 		
 		//validate type
 		if(!validType(srcClass, type, destClass))
-			return 202;
+			return ErrorHandler.setCode(202);
 		
 		// If both classes exist and do not have a pre-existing relationship, then
 		//		create a new relationship between them if the type is valid
@@ -362,7 +364,7 @@ public class UMLClassManager implements Serializable {
 		relationships.put(key, relation);
 		
 		// Indicate success
-		return 0;
+		return ErrorHandler.setCode(0);
 	}
 	
 	/**
@@ -374,11 +376,11 @@ public class UMLClassManager implements Serializable {
 	public int removeRelationship(String srcClass, String type, String destClass) {
 		// Make sure both class name exist
 		if(!classList.containsKey(srcClass) || !classList.containsKey(destClass))
-			return 107;
+			return ErrorHandler.setCode(107);
 		
 		// Make sure there is a pre-existing relationship
 		if(!relationshipExists(srcClass, type, destClass))
-			return 108;
+			return ErrorHandler.setCode(108);
 		
 		// Determine which class is the key in the relationships map
 		String key = UMLRelationship.GENERATE_STRING(srcClass, type, destClass);
@@ -388,7 +390,7 @@ public class UMLClassManager implements Serializable {
 		// Remove the relationship from the map
 		relationships.remove(key);
 		
-		return 0;
+		return ErrorHandler.setCode(0);
 	}
 	
 	/**
@@ -399,7 +401,7 @@ public class UMLClassManager implements Serializable {
 	public Object[] listRelationships(String className) {
 		// Make sure class exists
 		if(!classList.containsKey(className))
-			return new Object[]{"", 107};
+			return new Object[]{"", ErrorHandler.setCode(107)};
 		
 		// Find all relationships with className involved
 		String result = "[";
@@ -418,7 +420,7 @@ public class UMLClassManager implements Serializable {
 		
 		result += "]";
 		
-		return new Object[]{result, 0};
+		return new Object[]{result, ErrorHandler.setCode(0)};
 	}
 	
 	/**
@@ -459,10 +461,10 @@ public class UMLClassManager implements Serializable {
 	public int setClassLocation(String className, int x, int y) {
 		if(classList.containsKey(className)) {
 			classList.get(className).setLocation(x, y);
-			return 0;
+			return ErrorHandler.setCode(0);
 		}
 		
-		return 109;
+		return ErrorHandler.setCode(109);
 	}
 	
 	/**
@@ -497,7 +499,7 @@ public class UMLClassManager implements Serializable {
 		classList = clonedManager.getClassList();
 		relationships = clonedManager.getRelationships();
 		
-		return 0;
+		return ErrorHandler.setCode(0);
 	}
 	
 	/**
