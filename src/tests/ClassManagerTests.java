@@ -86,6 +86,8 @@ public class ClassManagerTests {
 		assertEquals("method is the only method", "[double method(string)]", r);
 		result = manager.removeMethods("d", "method", "string");
 		assertEquals("Success", 0, result);
+		result = manager.addMethods("d", "not real", "method", "string");
+		assertEquals("Return type is not valid", 203, result);
 	}
 	
 	/*
@@ -112,6 +114,8 @@ public class ClassManagerTests {
 		assertEquals("field is the only field", "[double field]", r);
 		result = manager.removeFields("d", "field");
 		assertEquals("Success", 0, result);
+		result = manager.addFields("d", "not real", "field");
+		assertEquals("Type is not valid", 203, result);
 	}
 	
 	/*
@@ -140,13 +144,13 @@ public class ClassManagerTests {
 		manager.addMethods("h", "double", "m", "string");
 		result = manager.editFields("h", "f", "g");
 		assertEquals("Success", 0, result);
-		result = manager.editMethods("h", "m", "string", "b");
+		result = manager.editMethods("h", "m", "b", "string");
 		assertEquals("Succcess", 0, result);
 		manager.addFields("h", "double", "z");
 		manager.addMethods("h", "int", "a", "string");
 		result = manager.editFields("h", "g", "z");
 		assertEquals("Selected new name already exists", 404, result);
-		result = manager.editMethods("h", "b", "string", "a");
+		result = manager.editMethods("h", "b", "a", "string");
 		assertEquals("Selected new name already exists", 402, result);
 	}
 	

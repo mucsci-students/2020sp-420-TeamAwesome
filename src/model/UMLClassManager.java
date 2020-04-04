@@ -72,6 +72,10 @@ public class UMLClassManager implements Serializable {
 			{
 				return ErrorHandler.setCode(402);
 			}
+			else if (!validName(returnType))
+			{
+				return ErrorHandler.setCode(203);
+			}
 			else if (validName(methodName))
 			{
 				classList.get(className).addMethod(returnType, methodName, params);
@@ -97,6 +101,10 @@ public class UMLClassManager implements Serializable {
 			{
 				return ErrorHandler.setCode(404);
 			}
+			else if (!validName(type))
+			{
+				return ErrorHandler.setCode(203);
+			}
 			else if (validName(fieldName))
 			{
 				
@@ -111,7 +119,7 @@ public class UMLClassManager implements Serializable {
 	 * 
 	 * @param className - class to remove field from
 	 * @param fieldName - fieldname to remove
-	 * @return - returns 0 on successfull removal and corresponding error code in all other cases
+	 * @return - returns 0 on successful removal and corresponding error code in all other cases
 	 */
 	public int removeFields(String className, String fieldName)
 	{
@@ -272,7 +280,12 @@ public class UMLClassManager implements Serializable {
 		return result;
 	}
 
-	public boolean validName(String name)
+	/**
+	 * makes sure a method or field name is valid.
+	 * @param name name to be checked
+	 * @return true if valid false otherwise
+	 */
+	private boolean validName(String name)
 	{
 		
 		if (name == null || name.isEmpty()){
@@ -289,6 +302,7 @@ public class UMLClassManager implements Serializable {
 		}
 		return false;
 	}
+	
 	
 	/**
 	 * List the fields of the given class
@@ -354,7 +368,7 @@ public class UMLClassManager implements Serializable {
 			return ErrorHandler.setCode(106);
 		
 		//validate type
-		if(!validType(srcClass, type, destClass))
+		if(!validRealationshipType(srcClass, type, destClass))
 			return ErrorHandler.setCode(202);
 		
 		// If both classes exist and do not have a pre-existing relationship, then
@@ -444,7 +458,7 @@ public class UMLClassManager implements Serializable {
 	 * @param type
 	 * @return
 	 */
-	public boolean validType(String class1, String type, String class2) {
+	private boolean validRealationshipType(String class1, String type, String class2) {
 		String rel = UMLRelationship.GENERATE_STRING(class1, type, class2);
 		if(rel == "Invalid Type") {
 			return false;
