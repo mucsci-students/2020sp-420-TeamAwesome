@@ -136,6 +136,8 @@ public class ClassManagerTests {
 		manager.addClass("h");
 		result = manager.editClass("f", "h");
 		assertEquals("New class name already exists", 400, result);
+		result = manager.editClass("h", "@");
+		assertEquals("New class name is invalid.", 407, result);
 		result = manager.editFields("h", "f", "g");
 		assertEquals("Selected field does not exist", 405, result);
 		result = manager.editMethods("h", "f", "string", "g");
@@ -150,8 +152,12 @@ public class ClassManagerTests {
 		manager.addMethods("h", "int", "a", "string");
 		result = manager.editFields("h", "g", "z");
 		assertEquals("Selected new name already exists", 404, result);
+		result = manager.editFields("h", "g", "&");
+		assertEquals("New field name is invalid.", 409, result);
 		result = manager.editMethods("h", "b", "a", "string");
 		assertEquals("Selected new name already exists", 402, result);
+		result = manager.editMethods("h", "b", " ", "string");
+		assertEquals("New method name is invalid", 408, result);
 	}
 	
 	/*

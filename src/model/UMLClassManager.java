@@ -175,6 +175,8 @@ public class UMLClassManager implements Serializable {
 		{
 			return ErrorHandler.setCode(400);
 		}
+		if(!validName(newName))
+			return ErrorHandler.setCode(407);
 		if (classList.containsKey(oldName))
 		{
 			UMLClass tempCopy = classList.get(oldName);
@@ -199,6 +201,8 @@ public class UMLClassManager implements Serializable {
 			{
 				return ErrorHandler.setCode(404); 
 			}
+			if(!validName(newName))
+				return ErrorHandler.setCode(409);
 			if (classList.get(className).getFields().containsKey(oldField))
 			{
 				//this is great code don't question it keep moving
@@ -227,6 +231,8 @@ public class UMLClassManager implements Serializable {
 			{
 				return ErrorHandler.setCode(402); 
 			}
+			if(!validName(newName))
+				return ErrorHandler.setCode(408);
 			if (classList.get(className).getMethods().containsKey(oldMethod + params))
 			{
 				//this is great code don't question it keep moving
