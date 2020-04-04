@@ -271,10 +271,13 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Object className = null;
+				
+				// Check if human
 				if(isHuman) {
 					// Prompt the user for a class name
 					className = view.promptInput("Enter class name:");
-				} else {
+				} 
+				else {
 					// Ensure correct amount of data exists
 					if(data.length != 1)
 						return;
@@ -303,13 +306,19 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Make sure a selected class exists
-				if(prev != null) {
+				if(prev != null && isHuman) {
 					int result = view.getController().removeClass(prev.getName());
 					if(result != 0)
 						view.showError(DiagramPanel.this, result);
 					
 					// Reset prev
 					prev = null;
+				}
+				else if(!isHuman) {
+					// Ensure correct amount of data exists
+					if(data.length != 1)
+						return;
+					view.getController().removeClass(data[0].toString());
 				}
 			}
 		};
@@ -852,12 +861,12 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Check menu children
 		for(Component c : mouseMenu.getComponents()) {
-			if(c.getName().equals(name)) {
+			if(c.getName() != null && c.getName().equals(name)) {
 				return c;
 			}
 		}
 		for(Component c : classMenu.getComponents()) {
-			if(c.getName().equals(name)) {
+			if(c.getName() != null && c.getName().equals(name)) {
 				return c;
 			}
 		}

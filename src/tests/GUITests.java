@@ -131,10 +131,12 @@ public class GUITests {
 	@Test
 	public void removeClass() {
 		UMLClassManager model = new UMLClassManager();
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
 		// Assuming add class works
-		model.addClass("myclass");
-		model.addClass("secondclass");
-		GUIView gui = new GUIView(new GUIController(model), model, false);
+		controller.addClass("myclass");
+		controller.addClass("secondclass");
 		
 		assertEquals("Number of classes prior to remove", 2, model.getClassNames().length);
 		
@@ -153,7 +155,7 @@ public class GUITests {
 		gui.loadData(new String[] {"notreal"}); // Like birds
 		((JMenuItem)gui.getComponent("classRemoveClass")).doClick();
 		assertNotEquals("Remove class not exist", 0, ErrorHandler.LAST_CODE);
-		assertNotEquals("Number of classes after invalid remove", 0, model.getClassNames().length);
+		assertEquals("Number of classes after invalid remove", 0, model.getClassNames().length);
 	}
 	
 	/**
@@ -162,10 +164,12 @@ public class GUITests {
 	@Test
 	public void editClass() {
 		UMLClassManager model = new UMLClassManager();
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
 		// Assuming add class works
-		model.addClass("myclass");
-		model.addClass("secondclass");
-		GUIView gui = new GUIView(new GUIController(model), model, false);
+		controller.addClass("myclass");
+		controller.addClass("secondclass");
 		
 		assertEquals("Number of classes prior to edit", 2, model.getClassNames().length);
 		
@@ -209,10 +213,12 @@ public class GUITests {
 	@Test
 	public void addField() {
 		UMLClassManager model = new UMLClassManager();
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
 		// Assuming add class works
-		model.addClass("myclass");
+		controller.addClass("myclass");
 		UMLClass myclass = model.getClass("myclass");
-		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Number of fields initial", 0, myclass.getFields().size());
 		
@@ -247,12 +253,14 @@ public class GUITests {
 	@Test
 	public void removeField() {
 		UMLClassManager model = new UMLClassManager();
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
 		// Assuming add class works
-		model.addClass("myclass");
-		model.addFields("myclass", "int", "myfield");
-		model.addFields("myclass", "String", "another");
+		controller.addClass("myclass");
+		controller.addField("myclass", "int", "myfield");
+		controller.addField("myclass", "String", "another");
 		UMLClass myclass = model.getClass("myclass");
-		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Number of fields initial", 2, myclass.getFields().size());
 		
@@ -286,12 +294,14 @@ public class GUITests {
 	@Test
 	public void editField() {
 		UMLClassManager model = new UMLClassManager();
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
 		// Assuming add class works
-		model.addClass("myclass");
-		model.addFields("myclass", "Object", "myfield");
-		model.addFields("myclass", "double", "another");
+		controller.addClass("myclass");
+		controller.addField("myclass", "Object", "myfield");
+		controller.addField("myclass", "double", "another");
 		UMLClass myclass = model.getClass("myclass");
-		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Number of fields init", 2, myclass.getFields().size());
 		
@@ -329,10 +339,12 @@ public class GUITests {
 	@Test
 	public void addMethod() {
 		UMLClassManager model = new UMLClassManager();
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
 		// Assuming add class works
-		model.addClass("myclass");
+		controller.addClass("myclass");
 		UMLClass myclass = model.getClass("myclass");
-		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Number of methods initial", 0, myclass.getMethods().size());
 		
@@ -365,12 +377,14 @@ public class GUITests {
 	@Test
 	public void removeMethod() {
 		UMLClassManager model = new UMLClassManager();
-		model.addClass("myclass");
-		model.addMethods("myclass", "int", "mymethod", "");
-		model.addMethods("myclass", "String", "another", "String par1");
-		model.addMethods("myclass", "String", "another", "");
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
+		controller.addClass("myclass");
+		controller.addMethod("myclass", "int", "mymethod", "");
+		controller.addMethod("myclass", "String", "another", "String par1");
+		controller.addMethod("myclass", "String", "another", "");
 		UMLClass myclass = model.getClass("myclass");
-		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Init number of methods", 3, myclass.getMethods().size());
 		
@@ -398,11 +412,13 @@ public class GUITests {
 	@Test
 	public void editMethod() {
 		UMLClassManager model = new UMLClassManager();
-		model.addClass("myclass");
-		model.addMethods("myclass", "int", "mymethod", "");
-		model.addMethods("myclass", "boolean", "another", "boolean istrue");
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
+		controller.addClass("myclass");
+		controller.addMethod("myclass", "int", "mymethod", "");
+		controller.addMethod("myclass", "boolean", "another", "boolean istrue");
 		UMLClass myclass = model.getClass("myclass");
-		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Init number of methods", 2, myclass.getMethods().size());
 		
@@ -428,10 +444,12 @@ public class GUITests {
 	@Test
 	public void addRelationship() {
 		UMLClassManager model = new UMLClassManager();
-		model.addClass("class1");
-		model.addClass("class2");
-		model.addClass("class3");
-		GUIView gui = new GUIView(new GUIController(model), model, false);
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
+		controller.addClass("class1");
+		controller.addClass("class2");
+		controller.addClass("class3");
 		
 		assertEquals("Init number of relationships for class1", "[]", model.listRelationships("class1")[0]);
 		assertEquals("Init number of relationships for class2", "[]", model.listRelationships("class2")[0]);
@@ -470,13 +488,15 @@ public class GUITests {
 	@Test
 	public void removeRelationship() {
 		UMLClassManager model = new UMLClassManager();
-		model.addClass("class1");
-		model.addClass("class2");
-		model.addClass("class3");
-		model.addRelationship("class1", "aggregation", "class2");
-		model.addRelationship("class1", "inheritance", "class3");
-		model.addRelationship("class2", "composition", "class3");
-		GUIView gui = new GUIView(new GUIController(model), model, false);
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
+		controller.addClass("class1");
+		controller.addClass("class2");
+		controller.addClass("class3");
+		controller.addRelationship("class1", "aggregation", "class2");
+		controller.addRelationship("class1", "inheritance", "class3");
+		controller.addRelationship("class2", "composition", "class3");
 		
 		assertEquals("Init num relationships", 3, model.getRelationships().size());
 		
