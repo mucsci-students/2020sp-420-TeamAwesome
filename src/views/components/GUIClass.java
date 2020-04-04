@@ -28,6 +28,8 @@ import model.Field;
  *
  */
 public class GUIClass extends JPanel {
+	private static final long serialVersionUID = 1L;
+
 	// Instance of UMLClass
 	private UMLClass umlClass;
 	

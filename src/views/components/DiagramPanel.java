@@ -1,6 +1,7 @@
 // Package name
 package views.components;
 
+import java.awt.Component;
 //System imports
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -11,6 +12,7 @@ import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -18,7 +20,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import main.UMLFileIO;
 // Local imports
 import model.UMLClass;
 import model.UMLRelationship;
@@ -72,8 +73,28 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	private int mouseY;
 	private GUIClass prev;
 	
+	// Flag for testing
+	private boolean isHuman;
+	// Preloaded data for testing
+	private Object[] data;
+	
+	/**
+	 * Create panel for human
+	 * @param view - the parent view
+	 */
 	public DiagramPanel(GUIView view) {
+		this(view, true);
+	}
+	
+	/**
+	 * Create a panel that allows components to be drawn and dragged by the user.
+	 * Also allows drawing of relationship types.
+	 * @param view- the parent view
+	 * @param isHuman - whether the view is for a human or testing
+	 */
+	public DiagramPanel(GUIView view, boolean isHuman) {
 		this.view = view;
+		this.setHuman(isHuman);
 		
 		// To enable dragging and dynamic locations, remove the layout manager
 		setLayout(null);
@@ -175,7 +196,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		classMenu.setName("Class Menu");
 		
 		// Initialize class menu options
-		classRemoveClass = createMenuItem("Remove Class", "classRemvoeClass");
+		classRemoveClass = createMenuItem("Remove Class", "classRemoveClass");
 		classEditClass = createMenuItem("Edit Class Name", "classEditClass");
 		
 		classAddField = createMenuItem("Add Field", "classAddField");
@@ -249,13 +270,21 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Prompt the user for a class name
-				Object className = view.promptInput("Enter class name:");
+				Object className = null;
+				if(isHuman) {
+					// Prompt the user for a class name
+					className = view.promptInput("Enter class name:");
+				} else {
+					// Ensure correct amount of data exists
+					if(data.length != 1)
+						return;
+					className = data[0];
+				}
 				
 				// Make sure user did not cancel input
 				if(className != null) {
 					int result = view.getController().addClass(className.toString(), mouseX, mouseY);
-					if(result != 0)
+					if(result != 0 && isHuman)
 						view.showError(DiagramPanel.this, result);
 				}
 				
@@ -801,6 +830,68 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Find the component with the given name, or null if not found
+	 * @param name
+	 */
+	public Component findComponent(String name) {
+		// Check popup menus
+		if(mouseMenu.getName().equals(name))
+			return mouseMenu;
+		if(classMenu.getName().equals(name))
+			return classMenu;
+		
+		// Check main self children
+		for(Component c : getComponents()) {
+			if(c.getName().equals(name)) {
+				return c;
+			}
+		}
+		
+		// Check menu children
+		for(Component c : mouseMenu.getComponents()) {
+			if(c.getName().equals(name)) {
+				return c;
+			}
+		}
+		for(Component c : classMenu.getComponents()) {
+			if(c.getName().equals(name)) {
+				return c;
+			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * @return isHuman
+	 */
+	public boolean isHuman() {
+		return isHuman;
+	}
+	
+	/**
+	 * Pre-load the given data for testing.
+	 * @param data - new data
+	 */
+	public void setData(Object[] data) {
+		this.data = data;
+	}
+
+	/**
+	 * @param isHuman - Whether the view is for a human
+	 */
+	public void setHuman(boolean isHuman) {
+		this.isHuman = isHuman;
+	}
+
+	/**
+	 * @return the guiClasses
+	 */
+	public HashMap<String, GUIClass> getGuiClasses() {
+		return guiClasses;
 	}
 
 	@Override

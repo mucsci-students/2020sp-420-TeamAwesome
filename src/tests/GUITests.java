@@ -35,7 +35,7 @@ public class GUITests {
 	@Test
 	public void baseInitialization() {
 		UMLClassManager model = new UMLClassManager();
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		assertTrue("Window not null", gui.getWindow() != null);
 		assertTrue("Controller not null", gui.getController() != null);
 		assertTrue("Diagram exists", gui.getDiagram() != null);
@@ -47,7 +47,7 @@ public class GUITests {
 	@Test
 	public void mouseMenuInitializations() {
 		UMLClassManager model = new UMLClassManager();
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		JComponent mouseMenu = gui.getComponent("Mouse Menu");
 		assertTrue("Main mouse menu exists", mouseMenu != null);
 		assertTrue("Main mouse menu is popup menu", mouseMenu instanceof JPopupMenu);
@@ -68,7 +68,7 @@ public class GUITests {
 	@Test
 	public void classMenuInitialization() {
 		UMLClassManager model = new UMLClassManager();
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		JComponent classMenu = gui.getComponent("Class Menu");
 		assertTrue("Class menu exists", classMenu != null);
 		assertTrue("Class menu is popup menu", classMenu instanceof JPopupMenu);
@@ -98,7 +98,7 @@ public class GUITests {
 	@Test
 	public void addClass() {
 		UMLClassManager model = new UMLClassManager();
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		gui.loadData(new String[] {"myclass"});
 		((JMenuItem)gui.getComponent("mouseAddClass")).doClick();
@@ -134,7 +134,7 @@ public class GUITests {
 		// Assuming add class works
 		model.addClass("myclass");
 		model.addClass("secondclass");
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Number of classes prior to remove", 2, model.getClassNames().length);
 		
@@ -165,7 +165,7 @@ public class GUITests {
 		// Assuming add class works
 		model.addClass("myclass");
 		model.addClass("secondclass");
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Number of classes prior to edit", 2, model.getClassNames().length);
 		
@@ -212,7 +212,7 @@ public class GUITests {
 		// Assuming add class works
 		model.addClass("myclass");
 		UMLClass myclass = model.getClass("myclass");
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Number of fields initial", 0, myclass.getFields().size());
 		
@@ -252,7 +252,7 @@ public class GUITests {
 		model.addFields("myclass", "int", "myfield");
 		model.addFields("myclass", "String", "another");
 		UMLClass myclass = model.getClass("myclass");
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Number of fields initial", 2, myclass.getFields().size());
 		
@@ -291,7 +291,7 @@ public class GUITests {
 		model.addFields("myclass", "Object", "myfield");
 		model.addFields("myclass", "double", "another");
 		UMLClass myclass = model.getClass("myclass");
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Number of fields init", 2, myclass.getFields().size());
 		
@@ -332,7 +332,7 @@ public class GUITests {
 		// Assuming add class works
 		model.addClass("myclass");
 		UMLClass myclass = model.getClass("myclass");
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Number of methods initial", 0, myclass.getMethods().size());
 		
@@ -370,7 +370,7 @@ public class GUITests {
 		model.addMethods("myclass", "String", "another", "String par1");
 		model.addMethods("myclass", "String", "another", "");
 		UMLClass myclass = model.getClass("myclass");
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Init number of methods", 3, myclass.getMethods().size());
 		
@@ -402,7 +402,7 @@ public class GUITests {
 		model.addMethods("myclass", "int", "mymethod", "");
 		model.addMethods("myclass", "boolean", "another", "boolean istrue");
 		UMLClass myclass = model.getClass("myclass");
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Init number of methods", 2, myclass.getMethods().size());
 		
@@ -431,7 +431,7 @@ public class GUITests {
 		model.addClass("class1");
 		model.addClass("class2");
 		model.addClass("class3");
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Init number of relationships for class1", "[]", model.listRelationships("class1")[0]);
 		assertEquals("Init number of relationships for class2", "[]", model.listRelationships("class2")[0]);
@@ -476,7 +476,7 @@ public class GUITests {
 		model.addRelationship("class1", "aggregation", "class2");
 		model.addRelationship("class1", "inheritance", "class3");
 		model.addRelationship("class2", "composition", "class3");
-		GUIView gui = new GUIView(new GUIController(model), model);
+		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
 		assertEquals("Init num relationships", 3, model.getRelationships().size());
 		
