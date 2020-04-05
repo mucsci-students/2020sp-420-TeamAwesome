@@ -486,8 +486,8 @@ public class ConsoleTests {
 		assertEquals("edit field valid error stream", "", scrubOut(newErr.toString()));
 		newOut.reset();
 		newErr.reset();
-		assertEquals("edit field valid return code 2", 0, console.execCommand("edit field myclass newfield myfield"));
-		assertEquals("edit field valid output 2", "Changed field \'newfield\' to \'myfield\' in class \'myclass\'.", scrubOut(newOut.toString()));
+		assertEquals("edit field valid return code 2", 0, console.execCommand("edit field myclass mynewfield myfield"));
+		assertEquals("edit field valid output 2", "Changed field \'mynewfield\' to \'myfield\' in class \'myclass\'.", scrubOut(newOut.toString()));
 		assertEquals("edit field valid error stream 2", "", scrubOut(newErr.toString()));
 		
 		// Edit field name with invalid input
