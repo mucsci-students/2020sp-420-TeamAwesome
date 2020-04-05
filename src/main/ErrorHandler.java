@@ -51,7 +51,6 @@ public class ErrorHandler {
 		tempMap.put(407, "Class name entered is invalid.");
 		tempMap.put(408, "Method name entered is invalid.");
 		tempMap.put(409, "Field name entered is invalid.");
-		tempMap.put(410, "Type of relationship not real or unsupported.");
 		return tempMap;
 	}
 	

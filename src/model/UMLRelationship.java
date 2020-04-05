@@ -65,16 +65,19 @@ public class UMLRelationship implements Serializable {
 	 * @return String of format 'className1 DELIMITER className2'
 	 */
 	public static final String GENERATE_STRING(String className1, String type, String className2) {
-		if(type == "aggregation") {
+		// Remove case sensitivity
+		type = type.toLowerCase();
+		
+		if(type.equals("aggregation")) {
 			return className1 + AGGREGATION + className2;
 		}
-		else if(type == "composition") {
+		else if(type.equals("composition")) {
 			return className1 + COMPOSITION + className2;
 		}
-		else if(type == "inheritance") {
+		else if(type.equals("inheritance")) {
 			return className1 + INHERITANCE + className2;
 		}
-		else if(type == "Realization") {
+		else if(type.equals("realization")) {
 			return className1 + REALIZATION + className2;
 		}
 		else {
