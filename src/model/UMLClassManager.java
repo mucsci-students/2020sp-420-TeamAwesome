@@ -208,7 +208,7 @@ public class UMLClassManager implements Serializable {
 				//this is great code don't question it keep moving
 				String type = classList.get(className).getFields().get(oldField).getType();
 				classList.get(className).removeField(oldField);
-				classList.get(className).addField(newName, type);
+				classList.get(className).addField(type, newName);
 				return ErrorHandler.setCode(0);
 			}
 			return ErrorHandler.setCode(405);
@@ -238,9 +238,11 @@ public class UMLClassManager implements Serializable {
 				//this is great code don't question it keep moving
 				String returnType = classList.get(className).getMethods().get(oldMethod + params).getReturnType();
 				classList.get(className).removeMethod(oldMethod, params);
-				classList.get(className).addMethod(newName, returnType, params);
+				classList.get(className).addMethod(returnType, newName, params);
 				return ErrorHandler.setCode(0);
 			}
+			System.out.println("key: " + (oldMethod + params));
+			System.out.println(classList.get(className).getMethods().toString());
 			return ErrorHandler.setCode(406);
 		}
 		return ErrorHandler.setCode(403);
