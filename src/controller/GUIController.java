@@ -77,7 +77,7 @@ public class GUIController extends UMLController {
 	}
 
 	@Override
-	public int addMethod(String className, String methodName, String returnType, String params) {
+	public int addMethod(String className, String returnType, String methodName, String params) {
 		int result = model.addMethods(className, returnType, methodName, params);
 		if(result == 0) {
 			// Notify observer of change

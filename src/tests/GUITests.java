@@ -417,23 +417,23 @@ public class GUITests {
 		
 		controller.addClass("myclass");
 		controller.addMethod("myclass", "int", "mymethod", "");
-		controller.addMethod("myclass", "another", "boolean", "");
+		controller.addMethod("myclass", "boolean", "another", "");
 		controller.addMethod("myclass", "boolean", "another", "boolean istrue");
 		UMLClass myclass = model.getClass("myclass");
 		
 		assertEquals("Init number of methods", 3, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "mymethod", "",  "newmethod"});
+		gui.loadData(new String[] {"myclass", "mymethod", "newmethod", ""});
 		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
 		assertEquals("Edit method name valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods the same", 3, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "newmethod", "", "mymethod"});
+		gui.loadData(new String[] {"myclass", "newmethod", "mymethod", ""});
 		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
 		assertEquals("Edit method name valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods unchanged", 3, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "mymethod", "", "another"});
+		gui.loadData(new String[] {"myclass", "mymethod", "another", ""});
 		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
 		assertNotEquals("Edit method to duplicate name return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods unchanged", 3, myclass.getMethods().size());

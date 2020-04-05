@@ -1,9 +1,12 @@
 // Package name
 package views.components;
 
+import java.awt.BasicStroke;
 import java.awt.Component;
 //System imports
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -27,6 +30,7 @@ import model.UMLRelationship;
 import observe.Observable;
 import observe.Observer;
 import views.GUIView;
+import main.ErrorHandler;
 import main.UMLFileIO;
 
 /**
@@ -116,6 +120,9 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		// Enable better 2D graphics
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		// Get the relationships and draw the relationship between the two classes
 		HashMap<String, UMLRelationship> relations = view.getController().getModel().getRelationships();
@@ -129,6 +136,15 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			GUIClass c1 = guiClasses.get(relation.getClass1().getName());
 			GUIClass c2 = guiClasses.get(relation.getClass2().getName());
 			
+			// Check if line should be dashed
+			if(relation.getType().toLowerCase().equals("realization")) {
+		        BasicStroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 0);
+				g2d.setStroke(dashed);
+			}
+			else {
+				g2d.setStroke(new BasicStroke(1));
+			}
+			
 			// Check to see if the relationship is recursive or not
 			//		Handle drawing differently
 			
@@ -141,10 +157,10 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				int c2centerY = c2.getY() + c2.getHeight()/2;
 				
 				// Draw horizontal line
-				g.drawLine(c1centerX, c1centerY, c2centerX, c1centerY);
+				g2d.drawLine(c1centerX, c1centerY, c2centerX, c1centerY);
 				
 				// Draw vertical line
-				g.drawLine(c2centerX, c1centerY, c2centerX, c2centerY);
+				g2d.drawLine(c2centerX, c1centerY, c2centerX, c2centerY);
 			}
 			// Otherwise do a loop in the shape of approximately:
 			//     ------|
@@ -163,10 +179,10 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				int centerX = c1.getX() + c1.getWidth()/2;
 				int centerY = c1.getY() + c1.getHeight()/2;
 				
-				g.drawLine(centerX, centerY, centerX, farY);
-				g.drawLine(centerX, farY, farX, farY);
-				g.drawLine(farX, farY, farX, centerY);
-				g.drawLine(farX, centerY, centerX, centerY);
+				g2d.drawLine(centerX, centerY, centerX, farY);
+				g2d.drawLine(centerX, farY, farX, farY);
+				g2d.drawLine(farX, farY, farX, centerY);
+				g2d.drawLine(farX, centerY, centerX, centerY);
 			}
 		}
 	}
@@ -495,22 +511,24 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					Object argList = view.promptInput("Parameters (separated by commas):");
 					
 					// Make sure user did not cancel input
-					if(methodName != null) {
-						int result = view.getController().addMethod(prev.getName(), methodName.toString(),
-								returnType.toString(), argList.toString());
+					if(methodName != null && returnType != null && argList != null) {
+						int result = view.getController().addMethod(prev.getName(), returnType.toString(),
+								methodName.toString(), argList.toString());
 						if(result != 0)
 							view.showError(DiagramPanel.this, result);
 					}
+					
+					System.out.println("methods: " + view.getModel().getClass(prev.getName()).getMethods().toString());
 					
 					prev = null;
 				}
 				else if(!isHuman) {
 					// Assumes no params
 					if(data.length == 3) {
-						view.getController().addMethod(data[0], data[2], data[1], "");
+						view.getController().addMethod(data[0], data[1], data[2], "");
 					} 
 					else if(data.length == 4) {
-						view.getController().addMethod(data[0], data[2], data[1], data[3]);
+						view.getController().addMethod(data[0], data[1], data[2], data[3]);
 					}
 				}
 			}
@@ -536,7 +554,10 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						// Make sure user didn't cancel input
 						if(methodName != null) {
 							Method method = view.getModel().getClass(prev.getName()).getMethods().get(methodName);
-							int result = view.getController().removeMethod(prev.getName(), method.getName(), method.getParams());
+							// Strip parameters
+							String methodParams = method.getParams().substring(1, method.getParams().length()-1);
+							System.out.println("method to remove: " + (method.getName() + methodParams));
+							int result = view.getController().removeMethod(prev.getName(), method.getName(), methodParams);
 							if(result != 0)
 								view.showError(DiagramPanel.this, result);
 						}
@@ -582,8 +603,9 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 							// Make sure user didn't cancel
 							if(newMethodName != null) {
 								Method method = view.getModel().getClass(prev.getName()).getMethods().get(methodName);
-								System.out.println("methods: " + view.getModel().getClass(prev.getName()).getMethods().toString());
-								int result = view.getController().editMethod(prev.getName(), method.getName(), newMethodName.toString(), method.getParams());
+								// Strip parameters
+								String methodParams = method.getParams().substring(1, method.getParams().length() -1);
+								int result = view.getController().editMethod(prev.getName(), method.getName(), newMethodName.toString(), methodParams);
 								if(result != 0)
 									view.showError(DiagramPanel.this, result);
 							}
@@ -592,12 +614,12 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					
 					prev = null;
 				}
-				else if(isHuman) {
+				else if(!isHuman) {
 					// Ensure correct length
 					if(data.length != 4) {
 						return;
 					}
-					view.getController().editMethod(data[0], data[1], data[3], data[2]);
+					view.getController().editMethod(data[0], data[1], data[2], data[3]);
 				}
 			}
 		};
@@ -663,7 +685,6 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						Object type = view.promptInput("Relationship Type");
 						// Make sure user didn't cancel input
 						if(destClass != null && type != null) {
-							// TODO
 							int result = view.getController().removeRelationship(prev.getName(), type.toString(), destClass.toString());
 							if(result != 0)
 								view.showError(DiagramPanel.this, result);
