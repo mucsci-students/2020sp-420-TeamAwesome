@@ -14,6 +14,9 @@ public class ErrorHandler {
 	// Map with the relationship: error_code -> String representation of error
 	public static final HashMap<Integer, String> ERROR_TABLE = createErrorTable();
 	
+	// Last stored error code
+	public static int LAST_CODE = 0;
+	
 	// Initializer for ERROR_TABLE
 	private static final HashMap<Integer, String> createErrorTable() {
 		// Create temporary map
@@ -34,6 +37,7 @@ public class ErrorHandler {
 		tempMap.put(200, "Class not added. Duplicate class.");
 		tempMap.put(201, "Class not removed. Class does not exist.");
 		tempMap.put(202, "Relationship is not of a valid type.");
+		tempMap.put(203, "Type is not valid.");
 		tempMap.put(301, "Was unable to create file");
 		tempMap.put(302, "Was unable open file for writing");
 		tempMap.put(303, "Was unable read file");
@@ -59,5 +63,15 @@ public class ErrorHandler {
 		if(ERROR_TABLE.containsKey(code))
 			return "Error " + code + ": " + ERROR_TABLE.get(code);
 		return "No such error found";
+	}
+	
+	/**
+	 * Set the last code and return the passed in code for convenience
+	 * @param code - return code
+	 * @return the passed in code
+	 */
+	public static final int setCode(int code) {
+		LAST_CODE = code;
+		return code;
 	}
 }

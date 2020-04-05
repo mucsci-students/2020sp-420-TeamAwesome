@@ -77,8 +77,8 @@ public class GUIController extends UMLController {
 	}
 
 	@Override
-	public int addMethod(String className, String methodName) {
-		int result = model.addMethods(className, methodName);
+	public int addMethod(String className, String returnType, String methodName, String params) {
+		int result = model.addMethods(className, returnType, methodName, params);
 		if(result == 0) {
 			// Notify observer of change
 			notify("methodChange", model.getClass(className));
@@ -87,8 +87,8 @@ public class GUIController extends UMLController {
 	}
 
 	@Override
-	public int removeMethod(String className, String methodName) {
-		int result = model.removeMethods(className, methodName);
+	public int removeMethod(String className, String methodName, String params) {
+		int result = model.removeMethods(className, methodName, params);
 		if(result == 0) {
 			// Notify observer of change
 			notify("methodChange", model.getClass(className));
@@ -97,8 +97,8 @@ public class GUIController extends UMLController {
 	}
 
 	@Override
-	public int addRelationship(String class1, String class2) {
-		int result = model.addRelationship(class1, class2);
+	public int addRelationship(String class1, String type, String class2) {
+		int result = model.addRelationship(class1, type, class2);
 		if(result == 0) {
 			// Notify observer of change
 			notify("relationshipChange", model);
@@ -107,8 +107,8 @@ public class GUIController extends UMLController {
 	}
 
 	@Override
-	public int removeRelationship(String class1, String class2) {
-		int result = model.removeRelationship(class1, class2);
+	public int removeRelationship(String class1, String type, String class2) {
+		int result = model.removeRelationship(class1, type, class2);
 		if(result == 0) {
 			// Notify observer of change
 			notify("relationshipChange", model);
@@ -137,8 +137,8 @@ public class GUIController extends UMLController {
 	}
 
 	@Override
-	public int editMethod(String className, String oldMethod, String params, String newMethod) {
-		int result = model.editMethods(className, oldMethod, params, newMethod);
+	public int editMethod(String className, String oldMethod, String newMethod, String params) {
+		int result = model.editMethods(className, oldMethod, newMethod, params);
 		if(result == 0) {
 			// Notify observer of change
 			notify("methodChange", model.getClass(className));

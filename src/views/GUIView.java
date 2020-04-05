@@ -3,20 +3,21 @@ package views;
 
 // System imports
 import java.awt.Dimension;
+import java.util.HashMap;
+
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 //Local imports
 import controller.UMLController;
-import controller.GUIController;
 import main.ErrorHandler;
 import main.UMLFileIO;
 import model.UMLClassManager;
 import observe.Observable;
 import views.components.DiagramPanel;
+import views.components.GUIClass;
 
 /**
  * A graphical view of the UML editor
@@ -24,6 +25,7 @@ import views.components.DiagramPanel;
  *
  */
 public class GUIView extends View {
+	private UMLClassManager model;
 	private UMLController controller;
 	private UMLFileIO fileIO;
 	
@@ -31,21 +33,43 @@ public class GUIView extends View {
 	private JFrame window;
 	private DiagramPanel umlDiagram;
 	
-	public GUIView() {
+	/**
+	 * Create a GUI view for a human
+	 * @param controller
+	 * @param model
+	 */
+	public GUIView(UMLController controller, UMLClassManager model) {
+		this(controller, model, true);
+	}
+	
+	/**
+	 * Create a GUI view of the passed in model
+	 * @param controller
+	 * @param model
+	 * @param isHuman
+	 */
+	public GUIView(UMLController controller, UMLClassManager model, boolean isHuman) {
 		// Setup look and feel
 		if(setLook() != 0);
 		
 		// Initialize file IO
 		fileIO = new UMLFileIO();
 
-		// Setup controller
-		controller = new GUIController(new UMLClassManager());
-		controller.addObserver(this);
+		// Setup controller and model
+		this.controller = controller;
+		this.model = model;
+		this.controller.addObserver(this);
 		
 		setupWindow();
-		setupDiagram();
+		setupDiagram(isHuman);
 		
 		window.pack();
+	}
+	
+	/**
+	 * Set the view to be visible
+	 */
+	public void show() {
 		window.setVisible(true);
 	}
 	
@@ -66,9 +90,9 @@ public class GUIView extends View {
 	/**
 	 * Initialize the diagram panel where the model will be represented
 	 */
-	private void setupDiagram() {
+	private void setupDiagram(boolean isHuman) {
 		// Setup a JPanel to display the classes and relationships
-		umlDiagram = new DiagramPanel(this);
+		umlDiagram = new DiagramPanel(this, isHuman);
 		
 		// Add the umlDiagram to the list of listeners for model changes
 		controller.addObserver(umlDiagram);
@@ -123,9 +147,69 @@ public class GUIView extends View {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch(Exception e) {
-			return 110;
+			return ErrorHandler.setCode(110);
 		}
-		return 0;
+		return ErrorHandler.setCode(0);
+	}
+	
+	/**
+	 * Get the component that has the given name
+	 * @param name - name of the component
+	 * @return - associated JComponent
+	 */
+	public JComponent getComponent(String name) {
+		return (JComponent)umlDiagram.findComponent(name);
+	}
+	
+	/**
+	 * Get the component at the specified location
+	 * @param x - x coordinate contained in component
+	 * @param y - y coordinate contained in component
+	 * @return - associated JComponent
+	 */
+	public JComponent getComponent(int x, int y) {
+		return (JComponent)umlDiagram.getComponentAt(x, y);
+	}
+	
+	/**
+	 * Get the entire window instance.
+	 * @return - window JFrame
+	 */
+	public JFrame getWindow() {
+		return window;
+	}
+	
+	/**
+	 * Get the instance of the diagram panel
+	 * @return - diagramPanel
+	 */
+	public DiagramPanel getDiagram() {
+		return umlDiagram;
+	}
+	
+	/**
+	 * Load a list of data to load into the diagram to substitute human input.
+	 * Note - Will only be taken into consideration when GUI is set to non-human mode
+	 * @param data - Data to load for actions
+	 */
+	public void loadData(String[] data) {
+		umlDiagram.setData(data);
+	}
+	
+	/**
+	 * Return the map of added GUIClasses
+	 * @return
+	 */
+	public HashMap<String, GUIClass> getGUIClasses() {
+		return umlDiagram.getGuiClasses();
+	}
+	
+	/**
+	 * Get the view's model
+	 * @return - model
+	 */
+	public UMLClassManager getModel() {
+		return model;
 	}
 
 	@Override
