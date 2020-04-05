@@ -296,7 +296,7 @@ public class ConsoleView extends View {
 					String newName = args[4];
 					String paramlist = ""; 
 					int i = 5;
-					while ( i < args.length-1)
+					while ( i < args.length)
 					{
 						paramlist = paramlist.concat(args[i] + " ");
 						++i;
