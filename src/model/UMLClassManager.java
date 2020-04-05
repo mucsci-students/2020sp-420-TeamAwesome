@@ -241,8 +241,6 @@ public class UMLClassManager implements Serializable {
 				classList.get(className).addMethod(returnType, newName, params);
 				return ErrorHandler.setCode(0);
 			}
-			System.out.println("key: " + (oldMethod + params));
-			System.out.println(classList.get(className).getMethods().toString());
 			return ErrorHandler.setCode(406);
 		}
 		return ErrorHandler.setCode(403);
