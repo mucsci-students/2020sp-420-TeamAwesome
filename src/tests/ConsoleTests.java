@@ -141,7 +141,7 @@ public class ConsoleTests {
 	 * Test the add method output
 	 * NOTE SOME OUTPUT RELIES ON FUNCTIONING MODEL
 	 */
-	//@Test
+	@Test
 	public void addMethodCommand() {
 		// Set System.out/err to catch output text to test
 		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
