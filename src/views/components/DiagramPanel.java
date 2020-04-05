@@ -582,6 +582,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 							// Make sure user didn't cancel
 							if(newMethodName != null) {
 								Method method = view.getModel().getClass(prev.getName()).getMethods().get(methodName);
+								System.out.println("methods: " + view.getModel().getClass(prev.getName()).getMethods().toString());
 								int result = view.getController().editMethod(prev.getName(), method.getName(), newMethodName.toString(), method.getParams());
 								if(result != 0)
 									view.showError(DiagramPanel.this, result);
