@@ -164,7 +164,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				// Draw vertical line
 				g2d.drawLine(c2centerX, c1centerY, c2centerX, c2centerY);
 				
-				// Draw diamond
+				// Draw diamond/arrow
 				int rectLen = 10;
 				int rectX = c2centerX - rectLen/2;
 				int rectY = 0;
@@ -173,18 +173,18 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				if(Math.abs(c2centerY - c1centerY) < c2.getHeight()/2) {
 					rectY = c2centerY - (c2centerY - c1centerY) - rectLen/2;
 					if(c2centerX > c1centerX) {
-						rectX = c2.getX() - rectLen - 2;
+						rectX = c2.getX() - rectLen;
 						angleRotate += 90;
 					}
 					else if (c2centerX < c1centerX) {
-						rectX = c2.getX() + c2.getWidth() + 2;
+						rectX = c2.getX() + c2.getWidth();
 						angleRotate -= 90;
 					}
 				}
 				else if(c2centerY < c1centerY)
-					rectY = c2.getY() + c2.getHeight() + 2;
+					rectY = c2.getY() + c2.getHeight();
 				else {
-					rectY = c2.getY() - rectLen - 2;
+					rectY = c2.getY() - rectLen;
 					angleRotate += 180;
 				}
 				
@@ -200,6 +200,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					g2d.drawRect(rectX, rectY, rectLen, rectLen);
 				}
 				else {
+					g2d.setStroke(new BasicStroke(1));
 					g2d.drawLine(rectX, rectY, rectX + rectLen, rectY);
 					g2d.drawLine(rectX, rectY, rectX, rectY + rectLen);
 				}
@@ -213,7 +214,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			//   
 			else {
 				// How far loop is away from class border
-				int offset = 10;
+				int offset = 20;
 				
 				int farX = c1.getX() + c1.getWidth() + offset;
 				int farY = c1.getY() - offset;
@@ -226,6 +227,29 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				g2d.drawLine(centerX, farY, farX, farY);
 				g2d.drawLine(farX, farY, farX, centerY);
 				g2d.drawLine(farX, centerY, centerX, centerY);
+				
+				int rectLen = 10;
+				int rectX = centerX - rectLen/2;
+				int rectY = c1.getY() - rectLen;
+				int angleRotate = 225;
+				
+				// Rotate rectangle
+				AffineTransform old = g2d.getTransform();
+				g2d.rotate(Math.toRadians(angleRotate), rectX + rectLen/2, rectY + rectLen/2);
+				if(relation.getType().toLowerCase().equals("composition"))
+					g2d.fillRect(rectX, rectY, rectLen, rectLen);
+				else if(relation.getType().equals("aggregation")) {
+					g2d.setColor(Color.WHITE);
+					g2d.fillRect(rectX, rectY, rectLen, rectLen);
+					g2d.setColor(Color.BLACK);
+					g2d.drawRect(rectX, rectY, rectLen, rectLen);
+				}
+				else {
+					g2d.setStroke(new BasicStroke(1));
+					g2d.drawLine(rectX, rectY, rectX + rectLen, rectY);
+					g2d.drawLine(rectX, rectY, rectX, rectY + rectLen);
+				}
+				g2d.setTransform(old);
 			}
 		}
 	}
