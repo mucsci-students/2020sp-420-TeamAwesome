@@ -37,6 +37,7 @@ public class ErrorHandler {
 		tempMap.put(200, "Class not added. Duplicate class.");
 		tempMap.put(201, "Class not removed. Class does not exist.");
 		tempMap.put(202, "Relationship is not of a valid type.");
+		tempMap.put(203, "Type is not valid.");
 		tempMap.put(301, "Was unable to create file");
 		tempMap.put(302, "Was unable open file for writing");
 		tempMap.put(303, "Was unable read file");
