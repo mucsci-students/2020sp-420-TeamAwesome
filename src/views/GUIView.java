@@ -192,7 +192,7 @@ public class GUIView extends View {
 	 * Note - Will only be taken into consideration when GUI is set to non-human mode
 	 * @param data - Data to load for actions
 	 */
-	public void loadData(Object[] data) {
+	public void loadData(String[] data) {
 		umlDiagram.setData(data);
 	}
 	

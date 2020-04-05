@@ -363,12 +363,12 @@ public class GUITests {
 		gui.loadData(new String[] {"myclass", "void", "mymethod", "String overloaded"});
 		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
 		assertEquals("Add overload method return code", 0, ErrorHandler.LAST_CODE);
-		assertEquals("Num methods", 2, myclass.getMethods().size());
+		assertEquals("Num methods", 3, myclass.getMethods().size());
 		
 		gui.loadData(new String[] {"myclass", "void", "*not()real*"});
 		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
 		assertNotEquals("Add method invalid return code", 0, ErrorHandler.LAST_CODE);
-		assertEquals("Num methods", 2, myclass.getMethods().size());
+		assertEquals("Num methods", 3, myclass.getMethods().size());
 	}
 	
 	/**
@@ -417,25 +417,26 @@ public class GUITests {
 		
 		controller.addClass("myclass");
 		controller.addMethod("myclass", "int", "mymethod", "");
+		controller.addMethod("myclass", "another", "boolean", "");
 		controller.addMethod("myclass", "boolean", "another", "boolean istrue");
 		UMLClass myclass = model.getClass("myclass");
 		
-		assertEquals("Init number of methods", 2, myclass.getMethods().size());
+		assertEquals("Init number of methods", 3, myclass.getMethods().size());
 		
 		gui.loadData(new String[] {"myclass", "mymethod", "",  "newmethod"});
 		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
 		assertEquals("Edit method name valid return code", 0, ErrorHandler.LAST_CODE);
-		assertEquals("Num methods the same", 2, myclass.getMethods().size());
+		assertEquals("Num methods the same", 3, myclass.getMethods().size());
 		
 		gui.loadData(new String[] {"myclass", "newmethod", "", "mymethod"});
 		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
 		assertEquals("Edit method name valid return code 2", 0, ErrorHandler.LAST_CODE);
-		assertEquals("Num methods unchanged", 2, myclass.getMethods().size());
+		assertEquals("Num methods unchanged", 3, myclass.getMethods().size());
 		
 		gui.loadData(new String[] {"myclass", "mymethod", "", "another"});
 		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
 		assertNotEquals("Edit method to duplicate name return code", 0, ErrorHandler.LAST_CODE);
-		assertEquals("Num methods unchanged", 2, myclass.getMethods().size());
+		assertEquals("Num methods unchanged", 3, myclass.getMethods().size());
 	}
 	
 	/**
@@ -517,7 +518,7 @@ public class GUITests {
 		
 		gui.loadData(new String[] {"class1", "inheritance", "class3"});
 		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
-		assertNotEquals("Remove invalid return code", 0, ErrorHandler.LAST_CODE);
-		assertEquals("Num relationships post invalid remove", 2, model.getRelationships().size());
+		assertEquals("Remove valid return code 2", 0, ErrorHandler.LAST_CODE);
+		assertEquals("Num relationships post valid remove 2", 1, model.getRelationships().size());
 	}
 }
