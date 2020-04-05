@@ -2,6 +2,7 @@
 package views.components;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Component;
 //System imports
 import java.awt.Graphics;
@@ -12,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -161,6 +163,47 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				
 				// Draw vertical line
 				g2d.drawLine(c2centerX, c1centerY, c2centerX, c2centerY);
+				
+				// Draw diamond
+				int rectLen = 10;
+				int rectX = c2centerX - rectLen/2;
+				int rectY = 0;
+				int angleRotate = 45;
+				
+				if(Math.abs(c2centerY - c1centerY) < c2.getHeight()/2) {
+					rectY = c2centerY - (c2centerY - c1centerY) - rectLen/2;
+					if(c2centerX > c1centerX) {
+						rectX = c2.getX() - rectLen - 2;
+						angleRotate += 90;
+					}
+					else if (c2centerX < c1centerX) {
+						rectX = c2.getX() + c2.getWidth() + 2;
+						angleRotate -= 90;
+					}
+				}
+				else if(c2centerY < c1centerY)
+					rectY = c2.getY() + c2.getHeight() + 2;
+				else {
+					rectY = c2.getY() - rectLen - 2;
+					angleRotate += 180;
+				}
+				
+				// Rotate rectangle
+				AffineTransform old = g2d.getTransform();
+				g2d.rotate(Math.toRadians(angleRotate), rectX + rectLen/2, rectY + rectLen/2);
+				if(relation.getType().toLowerCase().equals("composition"))
+					g2d.fillRect(rectX, rectY, rectLen, rectLen);
+				else if(relation.getType().equals("aggregation")) {
+					g2d.setColor(Color.WHITE);
+					g2d.fillRect(rectX, rectY, rectLen, rectLen);
+					g2d.setColor(Color.BLACK);
+					g2d.drawRect(rectX, rectY, rectLen, rectLen);
+				}
+				else {
+					g2d.drawLine(rectX, rectY, rectX + rectLen, rectY);
+					g2d.drawLine(rectX, rectY, rectX, rectY + rectLen);
+				}
+				g2d.setTransform(old);
 			}
 			// Otherwise do a loop in the shape of approximately:
 			//     ------|
