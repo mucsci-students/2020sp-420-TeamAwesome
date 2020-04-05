@@ -33,7 +33,22 @@ public class GUIView extends View {
 	private JFrame window;
 	private DiagramPanel umlDiagram;
 	
+	/**
+	 * Create a GUI view for a human
+	 * @param controller
+	 * @param model
+	 */
 	public GUIView(UMLController controller, UMLClassManager model) {
+		this(controller, model, true);
+	}
+	
+	/**
+	 * Create a GUI view of the passed in model
+	 * @param controller
+	 * @param model
+	 * @param isHuman
+	 */
+	public GUIView(UMLController controller, UMLClassManager model, boolean isHuman) {
 		// Setup look and feel
 		if(setLook() != 0);
 		
@@ -46,15 +61,16 @@ public class GUIView extends View {
 		this.controller.addObserver(this);
 		
 		setupWindow();
-		setupDiagram();
+		setupDiagram(isHuman);
 		
 		window.pack();
-		window.setVisible(true);
 	}
 	
-	public GUIView() {
-		// TODO
-		// Pass in empty controller and model to other constructor
+	/**
+	 * Set the view to be visible
+	 */
+	public void show() {
+		window.setVisible(true);
 	}
 	
 	/**
@@ -74,9 +90,9 @@ public class GUIView extends View {
 	/**
 	 * Initialize the diagram panel where the model will be represented
 	 */
-	private void setupDiagram() {
+	private void setupDiagram(boolean isHuman) {
 		// Setup a JPanel to display the classes and relationships
-		umlDiagram = new DiagramPanel(this);
+		umlDiagram = new DiagramPanel(this, isHuman);
 		
 		// Add the umlDiagram to the list of listeners for model changes
 		controller.addObserver(umlDiagram);
@@ -131,9 +147,9 @@ public class GUIView extends View {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch(Exception e) {
-			return 110;
+			return ErrorHandler.setCode(110);
 		}
-		return 0;
+		return ErrorHandler.setCode(0);
 	}
 	
 	/**
@@ -142,8 +158,7 @@ public class GUIView extends View {
 	 * @return - associated JComponent
 	 */
 	public JComponent getComponent(String name) {
-		// TODO
-		return null;
+		return (JComponent)umlDiagram.findComponent(name);
 	}
 	
 	/**
@@ -153,8 +168,7 @@ public class GUIView extends View {
 	 * @return - associated JComponent
 	 */
 	public JComponent getComponent(int x, int y) {
-		// TODO
-		return null;
+		return (JComponent)umlDiagram.getComponentAt(x, y);
 	}
 	
 	/**
@@ -162,8 +176,7 @@ public class GUIView extends View {
 	 * @return - window JFrame
 	 */
 	public JFrame getWindow() {
-		// TODO
-		return null;
+		return window;
 	}
 	
 	/**
@@ -171,8 +184,7 @@ public class GUIView extends View {
 	 * @return - diagramPanel
 	 */
 	public DiagramPanel getDiagram() {
-		// TODO
-		return null;
+		return umlDiagram;
 	}
 	
 	/**
@@ -180,8 +192,8 @@ public class GUIView extends View {
 	 * Note - Will only be taken into consideration when GUI is set to non-human mode
 	 * @param data - Data to load for actions
 	 */
-	public void loadData(Object[] data) {
-		// TODO
+	public void loadData(String[] data) {
+		umlDiagram.setData(data);
 	}
 	
 	/**
@@ -189,13 +201,15 @@ public class GUIView extends View {
 	 * @return
 	 */
 	public HashMap<String, GUIClass> getGUIClasses() {
-		// TODO
-		return null;
+		return umlDiagram.getGuiClasses();
 	}
 	
+	/**
+	 * Get the view's model
+	 * @return - model
+	 */
 	public UMLClassManager getModel() {
-		// TODO
-		return null;
+		return model;
 	}
 
 	@Override

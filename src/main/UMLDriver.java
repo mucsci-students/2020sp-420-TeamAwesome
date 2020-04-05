@@ -24,7 +24,7 @@ public class UMLDriver {
 		if(gui) {
 			UMLClassManager model = new UMLClassManager();
 			UMLController controller = new GUIController(model);
-			new GUIView(controller, model);
+			new GUIView(controller, model).show();
 		}
 		else
 			new ConsoleView().start();

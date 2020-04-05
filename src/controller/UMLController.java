@@ -27,6 +27,6 @@ public abstract class UMLController extends Observable {
 	public abstract int removeMethod(String className, String methodName, String params);
 	public abstract int editMethod(String className, String oldMethod, String newMethod, String params);
 	
-	public abstract int addRelationship(String class1, String class2, String type);
-	public abstract int removeRelationship(String class1, String class2, String type);
+	public abstract int addRelationship(String class1, String type, String class2);
+	public abstract int removeRelationship(String class1, String type, String class2);
 }
