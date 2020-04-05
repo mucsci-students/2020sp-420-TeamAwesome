@@ -111,12 +111,16 @@ public class ConsoleTests {
 		
 		// Add field with valid input
 		console.execCommand("add class myclass");
+		newOut.reset();
+		newErr.reset();
 		assertEquals("add field valid return code", 0, console.execCommand("add field myclass mytype myfield"));
 		assertEquals("add field valid error stream", "", scrubOut(newErr.toString()));
 		assertEquals("add field valid out stream", "Added field \'myfield\' to class \'myclass\' of type \'mytype\'.", scrubOut(newOut.toString()));
+		newOut.reset();
+		newErr.reset();
 		
 		// Add field with invalid input
-		assertNotEquals("add field invalid return code", 203, console.execCommand("add field myclass not*re(la fielda"));
+		assertEquals("add field invalid return code", 203, console.execCommand("add field myclass not*re(la fielda"));
 		assertEquals("add field invalid return code 2", 203, console.execCommand("add field myclass 38&32H3 fieldt"));
 		
 		// Add field with wrong number of args
@@ -151,13 +155,15 @@ public class ConsoleTests {
 		
 		// Add method with valid input
 		console.execCommand("add class myclass");
+		newOut.reset();
+		newErr.reset();
 		assertEquals("add method valid return code", 0, console.execCommand("add method myclass int mymethod param"));
 		assertEquals("add method valid error stream", "", scrubOut(newErr.toString()));
 		assertEquals("add method valid out stream", "Added method \'mymethod\' which accepts \'param\' with returnType: \'int\' to class \'myclass\'.", scrubOut(newOut.toString()));
 		
 		// Add method with invalid input
-		assertNotEquals("add method invalid return code", 203, console.execCommand("add method myclass not*re(la"));
-		assertEquals("add method invalid return code 2", 203, console.execCommand("add method myclass 38&32H3"));
+		assertEquals("add method invalid return code", 408, console.execCommand("add method myclass int not*re(la"));
+		assertEquals("add method invalid return code 2", 203, console.execCommand("add method myclass 38&32H3 realname params"));
 		
 		// Add method with wrong number of args
 		assertEquals("add method too few args", 102, console.execCommand("add method myclass"));
@@ -189,6 +195,8 @@ public class ConsoleTests {
 		console.execCommand("add class myclass");
 		console.execCommand("add class another");
 		console.execCommand("add class third");
+		newOut.reset();
+		newErr.reset();
 		
 		// Add relationships with valid input
 		assertEquals("add relationship valid return code", 0, console.execCommand("add relationship myclass aggregation another"));
@@ -206,7 +214,7 @@ public class ConsoleTests {
 		// ERROR CODE WILL CHANGE ONCE THE FUNCTIONALITY HAS BEEN WRITTEN AND A RETURN CODE HAS BEEN ASSIGNED
 		assertEquals("add relationship class not exist return code", 107, console.execCommand("add relationship notarealclass aggregation another"));
 		assertEquals("add relationship class not exist return code", 107, console.execCommand("add relationship notarealclass aggregation another"));
-		assertEquals("add relationship type not exist return code", 410, console.execCommand("add relationship myclass notreal another"));
+		assertEquals("add relationship type not exist return code", 202, console.execCommand("add relationship myclass notreal another"));
 		
 		// Add relationships with bad arg count
 		assertEquals("Add relationship with too many args", 102, console.execCommand("add relationship myclass aggregation another morestuff yay"));
@@ -241,6 +249,8 @@ public class ConsoleTests {
 		
 		// Remove class with valid input
 		console.execCommand("add class normal");
+		newOut.reset();
+		newErr.reset();
 		assertEquals("remove class valid return code", 0, console.execCommand("remove class normal"));
 		assertEquals("remove class valid error stream", "", scrubOut(newErr.toString()));
 		assertEquals("remove class valid out stream", "Removed class \'normal\'.", scrubOut(newOut.toString()));
@@ -248,7 +258,7 @@ public class ConsoleTests {
 		console.execCommand("add class myclass");
 		
 		// remove class with invalid input
-		assertNotEquals("remove class invalid return code", 201, console.execCommand("remove class not*re(la"));
+		assertEquals("remove class invalid return code", 201, console.execCommand("remove class not*re(la"));
 		assertEquals("remove class invalid return code 2", 201, console.execCommand("remove class 38&32H3"));
 		
 		// remove class with wrong number of args
@@ -281,6 +291,8 @@ public class ConsoleTests {
 		ConsoleView console = new ConsoleView();
 		console.execCommand("add class myclass");
 		console.execCommand("add field myclass typet myfield");
+		newOut.reset();
+		newErr.reset();
 		
 		// Remove field with valid input
 		assertEquals("remove field valid return code", 0, console.execCommand("remove field myclass myfield"));
@@ -288,7 +300,7 @@ public class ConsoleTests {
 		assertEquals("remove field valid out stream", "Removed field \'myfield\' from class \'myclass\'.", scrubOut(newOut.toString()));
 		
 		// Remove field with invalid input
-		assertNotEquals("remove field invalid return code", 405, console.execCommand("remove field myclass not*re(la"));
+		assertEquals("remove field invalid return code", 405, console.execCommand("remove field myclass not*re(la"));
 		assertEquals("remove field invalid return code 2", 405, console.execCommand("remove field myclass 38&32H3"));
 		
 		// Remove field with wrong number of args
@@ -322,6 +334,8 @@ public class ConsoleTests {
 		ConsoleView console = new ConsoleView();
 		console.execCommand("add class myclass");
 		console.execCommand("add method myclass int mymethod param");
+		newOut.reset();
+		newErr.reset();
 		
 		// Remove method with valid input
 		assertEquals("remove method valid return code", 0, console.execCommand("remove method myclass mymethod param"));
@@ -329,8 +343,8 @@ public class ConsoleTests {
 		assertEquals("remove method valid out stream", "Removed method \'mymethod\' ( param ) from class \'myclass\'.", scrubOut(newOut.toString()));
 		
 		// Remove method with invalid input
-		assertNotEquals("remove method invalid return code", 406, console.execCommand("remove method myclass not*re(la"));
-		assertEquals("remove method invalid return code 2", 403, console.execCommand("remove method notReal mymethod"));
+		assertEquals("remove method invalid return code", 406, console.execCommand("remove method myclass int not*re(la"));
+		assertEquals("remove method invalid return code 2", 403, console.execCommand("remove method notReal int mymethod"));
 		
 		// Remove method with wrong number of args
 		assertEquals("remove method too few args", 102, console.execCommand("remove method myclass"));
@@ -362,15 +376,19 @@ public class ConsoleTests {
 		console.execCommand("add class myclass");
 		console.execCommand("add class another");
 		console.execCommand("add class third");
+		console.execCommand("add relationship myclass aggregation another");
+		console.execCommand("add relationship another composition third");
+		newOut.reset();
+		newErr.reset();
 		
 		// Remove relationships with valid input
 		assertEquals("remove relationship valid return code", 0, console.execCommand("remove relationship myclass aggregation another"));
-		assertEquals("remove relationship valid output", "Removed aggregation relationship between \'another\' and class \'myclass\'.", scrubOut(newOut.toString()));
+		assertEquals("remove relationship valid output", "Removed aggregation relationship between \'another\' and \'myclass\'.", scrubOut(newOut.toString()));
 		assertEquals("remove relationship valid error stream", "", newErr.toString());
 		newOut.reset();
 		newErr.reset();
 		assertEquals("remove relationship 2 valid return code", 0, console.execCommand("remove relationship another composition third"));
-		assertEquals("remove relationship 2 valid output", "Removed composition relationship between \'third\' and class \'another\'.", scrubOut(newOut.toString()));
+		assertEquals("remove relationship 2 valid output", "Removed composition relationship between \'third\' and \'another\'.", scrubOut(newOut.toString()));
 		assertEquals("remove relationship 2 valid error stream", "", newErr.toString());
 		newOut.reset();
 		newErr.reset();
@@ -412,7 +430,8 @@ public class ConsoleTests {
 		
 		ConsoleView console = new ConsoleView();
 		console.execCommand("add class myclass");
-		
+		newOut.reset();
+		newErr.reset();
 		
 		// Edit class name with valid input
 		assertEquals("edit class valid return code", 0, console.execCommand("edit class myclass newclass"));
@@ -458,6 +477,8 @@ public class ConsoleTests {
 		ConsoleView console = new ConsoleView();
 		console.execCommand("add class myclass");
 		console.execCommand("add field myclass int myfield");
+		newOut.reset();
+		newErr.reset();
 		
 		// Edit field name with valid input
 		assertEquals("edit field valid return code", 0, console.execCommand("edit field myclass myfield mynewfield"));
@@ -504,6 +525,8 @@ public class ConsoleTests {
 		ConsoleView console = new ConsoleView();
 		console.execCommand("add class myclass");
 		console.execCommand("add method myclass int mymethod param");
+		newOut.reset();
+		newErr.reset();
 		
 		// Edit method name with valid input
 		assertEquals("edit method valid return code", 0, console.execCommand("edit method myclass mymethod mynewmethod param"));

@@ -105,7 +105,7 @@ public class ConsoleView extends View {
 				if (result == 0)
 				{
 					//successfully added class
-				System.out.println("Added class \'" + className + "\'.'");
+				System.out.println("Added class \'" + className + "\'.");
 				}
 				}
 				else {
@@ -132,19 +132,22 @@ public class ConsoleView extends View {
 			else if (args[1].equals("method"))
 			{
 				
-				if(args.length >= 6) {
+				if(args.length >= 5) {
 					//takes at least six arguments of add method class1 returnType methodName (x amount of params)
 					//combine all params into a paramlist to pass to controller
 					String paramlist = ""; 
 					int i = 5;
-					while ( i < args.length-1)
+					while ( i < args.length)
 					{
 						paramlist = paramlist.concat(args[i] + " ");
 						++i;
 					}
+					// Remove trailing whitespace
+					paramlist = paramlist.trim();
+					
 					result = controller.addMethod(args[2], args[3], args[4], paramlist);
 					//adds valid methodName to given exisiting class
-					System.out.println("Added method \'" + args[4] + "\' which accepts\'"+ paramlist + "\' with returnType: \'" + args[3] + "\' to class \'" + args[2] + "\'.");
+					System.out.println("Added method \'" + args[4] + "\' which accepts \'"+ paramlist + "\' with returnType: \'" + args[3] + "\' to class \'" + args[2] + "\'.");
 				}
 				else {
 					//invalid amount of arguments
@@ -157,7 +160,7 @@ public class ConsoleView extends View {
 				if(args.length == 5) {
 					//takes exactly 5 arguments in order of add relationship class1 type class2
 					result = controller.addRelationship(args[2], args[3],  args[4]);
-					System.out.println("Added" + args[3] +  " relationship from \'" + args[2] + "\' to \'" + args[4] + "\'.");
+					System.out.println("Added " + args[3] +  " relationship from \'" + args[2] + "\' to \'" + args[4] + "\'.");
 				}
 				else {
 					//invalid number arguments
@@ -211,7 +214,7 @@ public class ConsoleView extends View {
 					//take all params after args[3] and concat into a param list
 					String paramlist = ""; 
 					int i = 4;
-					while ( i < args.length-1)
+					while ( i < args.length)
 					{
 						paramlist = paramlist.concat(args[i] + " ");
 						++i;
@@ -231,7 +234,7 @@ public class ConsoleView extends View {
 				if(args.length == 5) {
 					//takes exaclty 5 arguments; remove, relationship, classname1, type, classname2
 					result = controller.removeRelationship(args[2], args[3], args[4]);
-					System.out.println("Removed " + args[3] + " relationship between class \'" + args[4] + "\' and class \'" + args[2] + "\'.");
+					System.out.println("Removed " + args[3] + " relationship between \'" + args[4] + "\' and \'" + args[2] + "\'.");
 				}
 				else {
 					//invalid amount of params
@@ -277,16 +280,16 @@ public class ConsoleView extends View {
 					result = ((CommandController) controller).editField(className, oldName, newName);
 					if(result == 0)
 						System.out.println("Changed field \'" + oldName + "\' to \'" + newName + "\' in class \'" + className + "\'.");
-					else {
-						//invalid param count
-						return 102;
-					}
+				}
+				else {
+					//invalid param count
+					return 102;
 				}
 			}
 			//edit method..method 
 			else if (args[1].equals("method"))
 			{
-				if(args.length >= 6) {
+				if(args.length >= 5) {
 					// takes at least 5 arguments; edit, method, classname, oldname, newName, params
 					String className = args[2];
 					String oldName = args[3];
