@@ -157,7 +157,7 @@ public class ConsoleView extends View {
 				if(args.length == 5) {
 					//takes exactly 5 arguments in order of add relationship class1 type class2
 					result = controller.addRelationship(args[2], args[3],  args[4]);
-					System.out.println("Added" + args[3] +  " relationship from\'" + args[2] + "\' to \'" + args[4] + "\'.");
+					System.out.println("Added" + args[3] +  " relationship from \'" + args[2] + "\' to \'" + args[4] + "\'.");
 				}
 				else {
 					//invalid number arguments

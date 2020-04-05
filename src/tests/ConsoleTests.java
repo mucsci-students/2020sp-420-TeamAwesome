@@ -116,8 +116,8 @@ public class ConsoleTests {
 		assertEquals("add field valid out stream", "Added field \'myfield\' to class \'myclass\' of type \'mytype\'.", scrubOut(newOut.toString()));
 		
 		// Add field with invalid input
-		assertNotEquals("add field invalid return code", 0, console.execCommand("add field myclass not*re(la"));
-		assertEquals("add field invalid return code 2", 407, console.execCommand("add field myclass 38&32H3"));
+		assertNotEquals("add field invalid return code", 203, console.execCommand("add field myclass not*re(la fielda"));
+		assertEquals("add field invalid return code 2", 203, console.execCommand("add field myclass 38&32H3 fieldt"));
 		
 		// Add field with wrong number of args
 		assertEquals("add field too many args", 102, console.execCommand("add field myclass another another field"));
@@ -156,8 +156,8 @@ public class ConsoleTests {
 		assertEquals("add method valid out stream", "Added method \'mymethod\' which accepts \'param\' with returnType: \'int\' to class \'myclass\'.", scrubOut(newOut.toString()));
 		
 		// Add method with invalid input
-		assertNotEquals("add method invalid return code", 0, console.execCommand("add method myclass not*re(la"));
-		assertEquals("add method invalid return code 2", 407, console.execCommand("add method myclass 38&32H3"));
+		assertNotEquals("add method invalid return code", 203, console.execCommand("add method myclass not*re(la"));
+		assertEquals("add method invalid return code 2", 203, console.execCommand("add method myclass 38&32H3"));
 		
 		// Add method with wrong number of args
 		assertEquals("add method too few args", 102, console.execCommand("add method myclass"));
@@ -204,8 +204,8 @@ public class ConsoleTests {
 		
 		// Add relationships with invalid input
 		// ERROR CODE WILL CHANGE ONCE THE FUNCTIONALITY HAS BEEN WRITTEN AND A RETURN CODE HAS BEEN ASSIGNED
-		assertEquals("add relationship class not exist return code", 109, console.execCommand("add relationship notarealclass aggregation another"));
-		assertEquals("add relationship class not exist return code", 109, console.execCommand("add relationship notarealclass aggregation another"));
+		assertEquals("add relationship class not exist return code", 107, console.execCommand("add relationship notarealclass aggregation another"));
+		assertEquals("add relationship class not exist return code", 107, console.execCommand("add relationship notarealclass aggregation another"));
 		assertEquals("add relationship type not exist return code", 410, console.execCommand("add relationship myclass notreal another"));
 		
 		// Add relationships with bad arg count
@@ -248,8 +248,8 @@ public class ConsoleTests {
 		console.execCommand("add class myclass");
 		
 		// remove class with invalid input
-		assertNotEquals("remove class invalid return code", 0, console.execCommand("remove class not*re(la"));
-		assertEquals("remove class invalid return code 2", 407, console.execCommand("remove class 38&32H3"));
+		assertNotEquals("remove class invalid return code", 201, console.execCommand("remove class not*re(la"));
+		assertEquals("remove class invalid return code 2", 201, console.execCommand("remove class 38&32H3"));
 		
 		// remove class with wrong number of args
 		assertEquals("remove class too many args", 102, console.execCommand("remove class myclass another"));
@@ -288,8 +288,8 @@ public class ConsoleTests {
 		assertEquals("remove field valid out stream", "Removed field \'myfield\' from class \'myclass\'.", scrubOut(newOut.toString()));
 		
 		// Remove field with invalid input
-		assertNotEquals("remove field invalid return code", 0, console.execCommand("remove field myclass not*re(la"));
-		assertEquals("remove field invalid return code 2", 407, console.execCommand("remove field myclass 38&32H3"));
+		assertNotEquals("remove field invalid return code", 405, console.execCommand("remove field myclass not*re(la"));
+		assertEquals("remove field invalid return code 2", 405, console.execCommand("remove field myclass 38&32H3"));
 		
 		// Remove field with wrong number of args
 		assertEquals("remove field too many args", 102, console.execCommand("remove field myclass another field"));
@@ -329,8 +329,8 @@ public class ConsoleTests {
 		assertEquals("remove method valid out stream", "Removed method \'mymethod\' ( param ) from class \'myclass\'.", scrubOut(newOut.toString()));
 		
 		// Remove method with invalid input
-		assertNotEquals("remove method invalid return code", 407, console.execCommand("remove method myclass not*re(la"));
-		assertEquals("remove method invalid return code 2", 407, console.execCommand("remove method myclass 38&32H3"));
+		assertNotEquals("remove method invalid return code", 406, console.execCommand("remove method myclass not*re(la"));
+		assertEquals("remove method invalid return code 2", 403, console.execCommand("remove method notReal mymethod"));
 		
 		// Remove method with wrong number of args
 		assertEquals("remove method too few args", 102, console.execCommand("remove method myclass"));
@@ -377,9 +377,9 @@ public class ConsoleTests {
 		
 		// Remove relationships with invalid input
 		// ERROR CODE WILL CHANGE ONCE THE FUNCTIONALITY HAS BEEN WRITTEN AND A RETURN CODE HAS BEEN ASSIGNED
-		assertEquals("remove relationship class not exist return code", 109, console.execCommand("remove relationship notarealclass aggregation another"));
-		assertEquals("remove relationship class not exist return code", 109, console.execCommand("remove relationship notarealclass aggregation another"));
-		assertEquals("remove relationship type not exist return code", 410, console.execCommand("remove relationship myclass notreal another"));
+		assertEquals("remove relationship class not exist return code", 107, console.execCommand("remove relationship notarealclass aggregation another"));
+		assertEquals("remove relationship class not exist return code", 107, console.execCommand("remove relationship another aggregation notarealclass"));
+		assertEquals("remove relationship type not exist return code", 108, console.execCommand("remove relationship myclass notreal another"));
 		
 		// Remove relationships with bad arg count
 		assertEquals("remove relationship with too many args", 102, console.execCommand("remove relationship myclass aggregation another morestuff yay"));
@@ -470,8 +470,8 @@ public class ConsoleTests {
 		assertEquals("edit field valid error stream 2", "", scrubOut(newErr.toString()));
 		
 		// Edit field name with invalid input
-		assertEquals("edit field invalid return code", 407, console.execCommand("edit field myclass myfield 1%%%*asd29_newfield"));
-		assertEquals("edit field invalid return code 2", 407, console.execCommand("edit field myclass myfield __%___newfield"));
+		assertEquals("edit field invalid return code", 409, console.execCommand("edit field myclass myfield 1%%%*asd29_newfield"));
+		assertEquals("edit field invalid return code 2", 409, console.execCommand("edit field myclass myfield __%___newfield"));
 		
 		// Edit field name with invalid argument count
 		assertEquals("edit field too many args 1", 102, console.execCommand("edit field myclass myfield newfield another"));
@@ -516,8 +516,8 @@ public class ConsoleTests {
 		assertEquals("edit method valid error stream 2", "", scrubOut(newErr.toString()));
 		
 		// Edit method name with invalid input
-		assertEquals("edit method invalid return code", 407, console.execCommand("edit method myclass mymethod 1%%%*asd29_newmethod"));
-		assertEquals("edit method invalid return code 2", 407, console.execCommand("edit method myclass mymethod __%___newmethod"));
+		assertEquals("edit method invalid return code", 408, console.execCommand("edit method myclass mymethod 1%%%*asd29_newmethod"));
+		assertEquals("edit method invalid return code 2", 408, console.execCommand("edit method myclass mymethod __%___newmethod"));
 		
 		// Edit method name with invalid argument count
 		assertEquals("edit method too few args", 102, console.execCommand("edit method myclass"));
