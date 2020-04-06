@@ -3,21 +3,26 @@ package model;
 import java.io.Serializable;
 
 public class UMLRelationship implements Serializable {
-	public static final String DELIMITER = " --- ";
+	public static final String AGGREGATION = " ----<> ";
+	public static final String COMPOSITION = " ----<=> ";
+	public static final String INHERITANCE = " ----> ";
+	public static final String REALIZATION = " - - - -> ";
 	
 	// Version ID for serialization
 	private static final long serialVersionUID = 1L;
 	
 	private UMLClass class1;
 	private UMLClass class2;
+	private String type;
 	
 	/** Create relationship between class1 and class2
 	 * @param class1
 	 * @param class2
 	 */
-	public UMLRelationship(UMLClass class1, UMLClass class2) {
+	public UMLRelationship(UMLClass class1, String type, UMLClass class2) {
 		this.class1 = class1;
 		this.class2 = class2;
+		this.type = type;
 	}
 
 	/**
@@ -37,6 +42,14 @@ public class UMLRelationship implements Serializable {
 	}
 	
 	/**
+	 * pulls the relationship type
+	 * @return the type of the relationship
+	 */
+	public String getType() {
+		return this.type;
+	}
+	
+	/**
 	 * Checks to see if className is part of the relationship
 	 * @param className
 	 * @return
@@ -51,7 +64,24 @@ public class UMLRelationship implements Serializable {
 	 * @param className2
 	 * @return String of format 'className1 DELIMITER className2'
 	 */
-	public static final String GENERATE_STRING(String className1, String className2) {
-		return className1 + DELIMITER + className2;
+	public static final String GENERATE_STRING(String className1, String type, String className2) {
+		// Remove case sensitivity
+		type = type.toLowerCase();
+		
+		if(type.equals("aggregation")) {
+			return className1 + AGGREGATION + className2;
+		}
+		else if(type.equals("composition")) {
+			return className1 + COMPOSITION + className2;
+		}
+		else if(type.equals("inheritance")) {
+			return className1 + INHERITANCE + className2;
+		}
+		else if(type.equals("realization")) {
+			return className1 + REALIZATION + className2;
+		}
+		else {
+			return "Invalid Type";
+		}
 	}
 }

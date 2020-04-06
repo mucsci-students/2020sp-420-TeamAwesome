@@ -1,7 +1,7 @@
 package model;
 
 // System imports
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.io.Serializable;
 
 // Local imports
@@ -17,8 +17,9 @@ public class UMLClass implements Serializable {
 	
 	private String name;
 	public static final String [] types = {"int", "double", "float", "short", "long", "boolean", "String"};
-	private ArrayList<String> fields;
-	private ArrayList<String> methods;
+	private HashMap<String, Field> fields;
+	// Key = methodName + params
+	private HashMap<String, Method> methods;
 	
 	// Coordinates of class, for GUI use only
 	private int x;
@@ -31,24 +32,26 @@ public class UMLClass implements Serializable {
 	 */
 	public UMLClass(String name) {
 		this.name = name;
-		fields = new ArrayList<String>();
-		methods = new ArrayList<String>();
+		fields = new HashMap<String, Field>();
+		methods = new HashMap<String, Method>();
 	}
 	
 	/**
 	 * Adds a field to to ArrayList field
 	 * @param field name of field to be added
 	 */
-	public void addField(String field) {
-		fields.add(field);
+	public void addField(String type, String field) {
+		Field newField = new Field(type, field);
+		fields.put(field, newField);
 	}
 	
 	/**
 	 * Adds a method to ArrayList methods
 	 * @param method the name of the method to be added
 	 */
-	public void addMethod(String method) {
-		methods.add(method);
+	public void addMethod(String returnType, String method, String params) {
+		Method newMethod = new Method(returnType, method, params);
+		methods.put(method + params, newMethod);
 	}
 	
 	/**
@@ -56,15 +59,15 @@ public class UMLClass implements Serializable {
 	 * @param field name of field to be removed
 	 */
 	public void removeField(String field) {
-		fields.remove(fields.indexOf(field));
+		fields.remove(field);
 	}
 	
 	/**
 	 * Removes a method from ArrayList methods
-	 * @param method the name of the method to be removeded
+	 * @param method the name of the method to be removed
 	 */
-	public void removeMethod(String method) {
-		methods.remove(methods.indexOf(method));
+	public void removeMethod(String method, String params) {
+		methods.remove(method + params);
 	}
 	
 	/**
@@ -88,8 +91,8 @@ public class UMLClass implements Serializable {
 	 * @param methodName
 	 * @return - true if class has method
 	 */
-	public boolean hasMethod(String methodName) {
-		return methods.contains(methodName);
+	public boolean hasMethod(String methodName, String params) {
+		return methods.containsKey(methodName + params);
 	}
 	
 	/**
@@ -98,7 +101,7 @@ public class UMLClass implements Serializable {
 	 * @return - true if class has field
 	 */
 	public boolean hasField(String fieldName) {
-		return fields.contains(fieldName);
+		return fields.containsKey(fieldName);
 	}
 	
 	/**
@@ -147,7 +150,7 @@ public class UMLClass implements Serializable {
 	 * Get the fields that are in the class
 	 * @return - fields
 	 */
-	public ArrayList<String> getFields() {
+	public HashMap<String, Field> getFields() {
 		return fields;
 	}
 
@@ -155,7 +158,7 @@ public class UMLClass implements Serializable {
 	 * Get the methods that are in the class
 	 * @return - methods
 	 */
-	public ArrayList<String> getMethods() {
+	public HashMap<String, Method> getMethods() {
 		return methods;
 	}
 }
