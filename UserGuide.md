@@ -5,14 +5,14 @@
 
 The Unified Modeling Language (UML) is a general-purpose, developmental, modeling language made for software engineers. It provides a standardized visualization the design of a system. UMLEditor is intended to allow the user to create, edit, and visualize the basic functions of UML.
 
-
 ### Functionality
-Using our UMLEditor tool you can
-* Add/remove/rename classes
-* Add/remove/rename fields
-* Add/remove/rename methods
-* Add/remove relationships between classes
-
+UMLEditor can
+* Add/remove/rename 
+  * classes
+  * fields
+  * methods
+  * relationships (between classes)
+* Save/Load files 
 
 ### <div align="center"> Getting Started </div>
 
@@ -34,12 +34,35 @@ After installation of Apache Maven, and Linux Bash Shell, or if you already have
 3. Extract the files and create a folder. 
 
 
-#### How to run
+#### How to Run
 1. Open a terminal. Type `cmd` in your windows search bar and hit `enter`. 
 3. Type `bash` and hit `enter`.
 4. Navigate to the directory where you have UMLEditor. If you are unfamiliar with how to do so see [Command Prompt Basic Commands](https://www.digitalcitizen.life/command-prompt-how-use-basic-commands /2020sp-420-TeamAwesome).
 5. Type `./run-uml-console.sh` for a console view or `./run-uml-gui.sh` for a GUI view
-6. Type `help` to see a list of commands and descriptions 
 
-### How to Use
-Once UMLeditor is running type "help" and hit enter to print out a list of valid commands and their descriptions.
+### Console Examples Function 
+Once UMLeditor is running type `help` and hit enter to print out a list of valid commands and their descriptions.
+
+<img src="file:///C:/Users/benba/Pictures/UMLEditor%20images/help,%20console.PNG">
+
+##### Classes 
+Creating a field is in the form `add class <className>` . Here we create classes. Rename one, then remove it. Listing the classes to illustrate progress.
+
+<img src="file:///C:/Users/benba/Pictures/UMLEditor%20images/Class,%20Console.PNG">
+
+##### Fields
+
+Creating a field is in the form `add field <className> <fieldName> <type>` . Here we create two fields one of type int and one of type string. Rename one, then remove it. Listing the classes to illustrate progress.
+
+<img src="file:///C:/Users/benba/Pictures/UMLEditor%20images/Fields,%20Console.PNG">
+
+##### Relationships
+##### Methods
+##### Quite
+
+
+
+
+ 
+
+
