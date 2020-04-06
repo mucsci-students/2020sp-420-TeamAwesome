@@ -1,56 +1,60 @@
-# UMLEditor
-## Version 1.5.0
-### Motivation
-This UML Editor was created as per the course requirements of 420 Software Engineering at Millersville University during the Spring of 2020. 
 
-### Functionality
-Using our UMLEditor tool you can
-* Add/remove/rename classes
-* Add/remove/rename fields
-* Add/remove/rename methods
-* Add/remove relationships between classes
+#<div align="center"> <span style="color:#07ABF5"> UMLEditor </span> </div> 
 
-### How to Run
-Steps  
-1. Install Maven  
-	a. Link: https://mkyong.com/maven/how-to-install-maven-in-windows/  
-2. Install Bash  
-	a. Link: https://itsfoss.com/install-bash-on-windows/ 
-3. Open console window capable of running bash
-4. Type "./run-uml-console.sh" for a console view or "./run-uml-gui.sh" for a GUI view and hit enter
+Unified Modeling Language (UML) is a general-purpose, developmental, modeling language made for software engineers. It provides a standardized visualization the design of a system. UMLEditor is intended to allow the user to create, edit, and visualize the basic functions of UML.
 
-### View Options
-Prompted to select console view or GUI view after startup.
-
-### How to Use
-Once UMLeditor is running type "help" and hit enter to print out a list of valid commands and their descriptions.
+### <span style="color:#07ABF5"> Motivation </span>
+UMLEditor was created as per the course requirements of 420 Software Engineering at Millersville University during the Spring of 2020. 
 
 
-### Contributors
-TeamAwesome
+## <span style="color:#07ABF5"> Installation Requirements </span> 
+There are two installation requirements for running UMLEditor. Apache Maven, and Linux Bash Shell. Below are outsourced links to for guides on how to install Maven and Bash on windows.   
+ 
+* [Install Maven](https://mkyong.com/maven/how-to-install-maven-in-windows/)  
+
+* [Install Bash](https://itsfoss.com/install-bash-on-windows/)  	
+
+###  <span style="color:#07ABF5"> How to Run </span>
+
+After installation of Apache Maven, and Linux Bash Shell, or if you already have them installed. There are a few further steps to run the program. 
+
+1. Download UMLEditor on [GitHub](https://github.com/mucsci-students/2020sp-420-TeamAwesome) 
+2. Open a terminal
+3. Type `bash`
+4. Navigate to the directory where you have UMLEditor
+5. Type `./run-uml-console.sh` for a console view or `./run-uml-gui.sh` for a GUI view
+6. Type `help` to see a list of commands and descriptions 
+
+### <span style="color:#07ABF5"> Authors </span>
+TeamAwesome:
 - Ryan Haas
 - Anthony Mason
 - Dylan Wagner
 - Benjamin Mullins
 
-### MIT License
-Copyright (c) [2020] Ryan Hass, Anythony Mason Dylan Ragner, Benjamin Mullins
+### <span style="color:#07ABF5"> Contributing </span>
+TeamAwesome is ecstatic about outside contributions. If you wish to contribute please read through our [Contributing Guide](https://github.com/mucsci-students/2020sp-420-TeamAwesome/blob/develop/CONTRIBUTING.md).
 
+The [Contributing Guide](https://github.com/mucsci-students/2020sp-420-TeamAwesome/blob/develop/CONTRIBUTING.md) includes the following sections: 
+ * Asking Questions 
+ * Providing Feedback 
+ * Reporting Issues 
+ * Existing Issues 
+ * Writing Bug Reports
+ * Feature Quests. 
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Make sure any contributions follow the guidelines laid out in our [Code of Conduct](https://github.com/mucsci-students/2020sp-420-TeamAwesome/blob/develop/CODE_OF_CONDUCT.md).
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+### <span style="color:#07ABF5"> Code of Conduct </span>
+This project has adopted it's own Code of Conduct. For more information see [Code of Conduct](https://github.com/mucsci-students/2020sp-420-TeamAwesome/blob/develop/CODE_OF_CONDUCT.md). 
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+The [Code of Conduct](https://github.com/mucsci-students/2020sp-420-TeamAwesome/blob/develop/CODE_OF_CONDUCT.md) includes sections on:
+* Pledge
+* Standards
+* Responsibilities
+* Scope
+* Enforcement
+* Attribution
+
+### <span style="color:#07ABF5"> License </span>
+Licensed under the [MIT License](https://github.com/mucsci-students/2020sp-420-TeamAwesome/blob/develop/LICENSE).
