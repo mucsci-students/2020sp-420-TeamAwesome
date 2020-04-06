@@ -46,21 +46,33 @@ Once UMLeditor is running type `help` and hit enter to print out a list of valid
 <img src="file:///C:/Users/benba/Pictures/UMLEditor%20images/help,%20console.PNG">
 
 ##### Classes 
-Creating a field is in the form `add class <className>` . Here we create classes. Rename one, then remove it. Listing the classes to illustrate progress.
 
-<img src="file:///C:/Users/benba/Pictures/UMLEditor%20images/Class,%20Console.PNG">
+Creating a class is in the form `add class <className>` . Here we create classes. Rename one, then remove it. Listing the classes to illustrate progress.
+
+<img src="  .PNG"> <!-- class console--> 
 
 ##### Fields
 
-Creating a field is in the form `add field <className> <fieldName> <type>` . Here we create two fields one of type int and one of type string. Rename one, then remove it. Listing the classes to illustrate progress.
+Creating a field is in the form `add field <className> <fieldName> <type>` . Here we create two fields one of type int and one of type string. Rename one, then remove it. Listing the fields to illustrate progress.
 
-<img src="file:///C:/Users/benba/Pictures/UMLEditor%20images/Fields,%20Console.PNG">
+<img src="  .PNG"> <!-- field console--> 
 
 ##### Relationships
+
+Creating a relationship is in the form `add relationship <className1> <relationshipName> <className2>`. Here we create a relationship between two classes. Rename it, then remove it. Listing the relationships to illustrate progress.
+
+<img src="  .PNG"> <!-- Relationship console-->
+
 ##### Methods
+
+Creating a method is in the form `add method <className1> <returnType> <parameterList>`. Here we create a method with return type int.Listing the methods to illustrate progress.
+
+<img src="  .PNG"> <!-- method console-->
+
 ##### Quite
 
-
+Typing `quite` will exit the program.
+ 
 
 
  
