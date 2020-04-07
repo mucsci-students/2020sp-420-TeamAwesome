@@ -1,5 +1,5 @@
 
-#<div align="center"> UMLEditor UserGuide </div>
+# <div align="center"> UMLEditor UserGuide </div>
 
 ### What is UMLEditor?
 
