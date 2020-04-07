@@ -37,7 +37,7 @@ After installation of Apache Maven, and Linux Bash Shell, or if you already have
 #### How to Run
 1. Open a terminal. Type `cmd` in your windows search bar and hit `enter`. 
 3. Type `bash` and hit `enter`.
-4. Navigate to the directory where you have UMLEditor. If you are unfamiliar with how to do so see [Command Prompt Basic Commands](https://www.digitalcitizen.life/command-prompt-how-use-basic-commands /2020sp-420-TeamAwesome).
+4. Navigate to the directory where you have UMLEditor. If you are unfamiliar with how to do so see [Command Prompt Basic Commands](https://www.digitalcitizen.life/command-prompt-how-use-basic-commands/2020sp-420-TeamAwesome).
 5. Type `./run-uml-console.sh` for a console view or `./run-uml-gui.sh` for a Graphical User Interface (GUI) view
 
 ### Console Example Functions 
