@@ -27,7 +27,7 @@ There are two installation requirements for running UMLEditor. Apache Maven, and
 
 After installation of Apache Maven, and Linux Bash Shell, or if you already have them installed. There are a few further steps to run the program. 
 
-1. Download UMLEditor on [GitHub](https://github.com/mucsci-students/2020sp-420-TeamAwesome) <img src="file:///C:/Users/benba/Pictures/UMLEditor%20images/Download.PNG" width="1000" height="600">
+1. Download UMLEditor on [GitHub](https://github.com/mucsci-students/2020sp-420-TeamAwesome) <img src="pictures/UMLEditor%20images/Download.PNG" width="1000" height="600">
 
 2. click the <img src="file:///C:/Users/benba/Pictures/UMLEditor%20images/Capture.PNG" width="100" height="30"> button in the right hand corner.  To download the zip file.   
 
