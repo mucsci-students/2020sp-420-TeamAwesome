@@ -49,13 +49,13 @@ Once UMLeditor is running type `help` and hit enter to print out a list of valid
 
 ##### Classes 
 
-Creating a class is in the form `add class <className>` . Here we create classes. Rename one, then remove it. Listing the classes to illustrate progress.
+Creating a class is in the form `add class <className>`. Here we create two classes. Rename one, then remove it. Listing the classes to illustrate progress.
 
 <img src="pictures/UMLEditor%20images/Class%2C%20Console.PNG">
 
 ##### Fields
 
-Creating a field is in the form `add field <className> <fieldName> <type>` . Here we create two fields one of type int and one of type string. Rename one, then remove it. Listing the fields to illustrate progress.
+Creating a field is in the form `add field <className> <fieldName> <type>`. Here we create two fields one of type int and one of type string. Rename one, then remove it. Listing the fields to illustrate progress.
 
 <img src="pictures/UMLEditor%20images/Fields%2C%20Console.PNG">
 
