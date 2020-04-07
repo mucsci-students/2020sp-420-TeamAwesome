@@ -1,5 +1,5 @@
 // Package name
-package main;
+package core;
 
 // System imports
 import java.util.HashMap;

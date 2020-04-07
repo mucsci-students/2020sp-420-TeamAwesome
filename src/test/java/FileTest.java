@@ -1,14 +1,12 @@
-package tests;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import main.UMLFileIO;
+import core.UMLFileIO;
 
-public class FileTests {
+public class FileTest {
 	@Test
 	public void fileTest() {
 		UMLFileIO fileIOTest = new UMLFileIO();

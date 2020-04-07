@@ -25,6 +25,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import core.ErrorHandler;
+import core.UMLFileIO;
 import model.Method;
 // Local imports
 import model.UMLClass;
@@ -32,8 +34,6 @@ import model.UMLRelationship;
 import observe.Observable;
 import observe.Observer;
 import views.GUIView;
-import main.ErrorHandler;
-import main.UMLFileIO;
 
 /**
  * A JPanel to display the UMLClasses and relationships
