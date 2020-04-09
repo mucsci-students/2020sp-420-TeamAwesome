@@ -1,10 +1,8 @@
-// Package name
-package tests;
-
 // System imports
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -19,7 +17,7 @@ import views.ConsoleView;
  * 
  * @author Ryan
  */
-public class ConsoleTests {
+public class ConsoleTest {
 	/**
 	 * Create environment and don't do anything to it
 	 */

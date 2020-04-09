@@ -1,5 +1,5 @@
 // Package name
-package main;
+package core;
 
 import controller.GUIController;
 import controller.UMLController;

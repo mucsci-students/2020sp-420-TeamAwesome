@@ -12,8 +12,8 @@ import javax.swing.UIManager;
 
 //Local imports
 import controller.UMLController;
-import main.ErrorHandler;
-import main.UMLFileIO;
+import core.ErrorHandler;
+import core.UMLFileIO;
 import model.UMLClassManager;
 import observe.Observable;
 import views.components.DiagramPanel;

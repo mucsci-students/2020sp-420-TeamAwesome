@@ -11,7 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import main.ErrorHandler;
+import core.ErrorHandler;
 
 /**
  * For adding and removing classes from the UML diagram

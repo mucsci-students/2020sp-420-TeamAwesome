@@ -1,6 +1,3 @@
-// Package name
-package tests;
-
 import static org.junit.Assert.assertEquals;
 // System imports
 import static org.junit.Assert.assertTrue;
@@ -17,7 +14,7 @@ import model.UMLRelationship;
  * 
  * @author Anthony
  */
-public class ClassManagerTests {
+public class ClassManagerTest {
 	/*
 	 * Create a new instance of ClassManager with an empty list 
 	 */

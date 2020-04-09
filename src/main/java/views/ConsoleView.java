@@ -8,8 +8,8 @@ import java.util.Scanner;
 // Local imports
 import controller.CommandController;
 import controller.UMLController;
-import main.ErrorHandler;
-import main.UMLFileIO;
+import core.ErrorHandler;
+import core.UMLFileIO;
 import model.UMLClassManager;
 import observe.Observable;
 

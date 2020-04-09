@@ -1,11 +1,8 @@
-// Package name
-package tests;
-
 // System imports
 import org.junit.Test;
 
 import controller.GUIController;
-import main.ErrorHandler;
+import core.ErrorHandler;
 import model.UMLClass;
 import model.UMLClassManager;
 
@@ -28,7 +25,7 @@ import views.GUIView;
  * @author Ryan
  *
  */
-public class GUITests {
+public class GUITest {
 	/**
 	 * Create the GUI environment and the environment is initialized
 	 */
