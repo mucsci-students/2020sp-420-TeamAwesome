@@ -98,6 +98,10 @@ public class GUIClass extends JPanel {
 		
 		// Update the box bounds
 		updateBounds();
+		
+		// Update fields and methods
+		updateFields();
+		updateMethods();
 	}
 	
 	/**
