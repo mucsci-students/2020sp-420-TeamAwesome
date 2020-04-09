@@ -18,7 +18,7 @@ public class FileTest {
 		
 		assertTrue("File not Null", fileIOTest.getFile() != null);
 		assertTrue("Varible created in fileIO is set", fileIOTest.fileSet());
-		assertTrue("File exists", fileIOTest.fileExists());
+		assertFalse("File exists", fileIOTest.fileExists());
 		String testString = "12ik	fafugh348 ";
 		
 		
