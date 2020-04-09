@@ -13,8 +13,8 @@ public class FileTest {
 		assertTrue("Blank instance", fileIOTest.getFile() == null);
 		assertFalse("Varible created in fileIO is not set", fileIOTest.fileSet());
 		
-		int result = fileIOTest.setFile(getTempDir() + "test1.text");
-		assertEquals("Made sure file exists.", result,0);
+		int result = fileIOTest.setFile("test1.text");
+		assertEquals("Made sure file exists.", 0, result);
 		
 		assertTrue("File not Null", fileIOTest.getFile() != null);
 		assertTrue("Varible created in fileIO is set", fileIOTest.fileSet());
@@ -23,22 +23,12 @@ public class FileTest {
 		
 		
 		result = fileIOTest.writeToFile(testString);
-		assertEquals("Wrote to file successfully.", result,0);
+		assertEquals("Wrote to file successfully.", 0, result);
 		Object[] readResult = fileIOTest.readFile();
-		assertEquals("Read file equals the test", readResult[0], testString);
-		assertEquals("Sucessfully executed", readResult[1], 0);
+		assertEquals("Read file equals the test", testString, readResult[0]);
+		assertEquals("Sucessfully executed", 0, readResult[1]);
 		
 		// Clean up created file
 		fileIOTest.getFile().delete();
-	}
-
-	/**
-	 * Get the system temp directory for temporary file creation
-	 * @return - String of absolute path to temp directory
-	 */
-	public static String getTempDir() {
-		String prop = "java.io.tmpdir";
-		String tempDir = System.getProperty(prop);
-		return tempDir;
 	}
 }
