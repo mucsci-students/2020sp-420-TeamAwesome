@@ -21,13 +21,6 @@ public class UMLFileIO {
      */
 	public int setFile (String filePath)  {
 		saveFile = new File (filePath); // creates a reference
-		if(saveFile.exists() == false){
-			try {
-				saveFile.createNewFile();
-			} catch (IOException e) {
-				return 301;
-			}
-		}	
 		return 0;
 	}
 	 
@@ -36,6 +29,15 @@ public class UMLFileIO {
      * @param text text to write to file
      */
 	public int writeToFile (String text)  {
+		// If the file doesn't exist try to create
+		if(saveFile.exists() == false){
+			try {
+				saveFile.createNewFile();
+			} catch (IOException e) {
+				return 301;
+			}
+		}	
+		
 		FileWriter writer;
 		try {
 			writer = new FileWriter(saveFile);
@@ -51,6 +53,11 @@ public class UMLFileIO {
      *@return - an Object array of the format [readMessage, return code]
      */
 	public Object[] readFile()  {
+		// Ensure file exists
+		if(!fileSet() || !fileExists()) {
+			return new Object[] {"", 105};
+		}
+		
 		Scanner sc;
 		try {
 			sc = new Scanner(saveFile);
