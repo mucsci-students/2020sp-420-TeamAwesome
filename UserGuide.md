@@ -42,7 +42,7 @@ After installation of Apache Maven, and Linux Bash Shell, or if you already have
 
 ### Console Example Functions 
 
-#### Help Menue
+#### Help Menu
 Once UMLeditor is running type `help` and hit enter to print out a list of valid commands and their descriptions.
 
 <img src="pictures/UMLEditor%20images/help%2C%20console.PNG">
