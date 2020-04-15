@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JFileChooser;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -56,6 +58,25 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	// Menus
 	private JPopupMenu mouseMenu;
 	private JPopupMenu classMenu;
+	
+	//Menu titles bar for testing main menu interaction
+	private JMenuBar mainMenuBar;
+	private JMenu mainFile; //save loading and exporting
+	private JMenu mainActions; //everything else
+	private JMenuItem mainRemoveClass;
+	private JMenuItem mainEditClass;
+	private JMenuItem mainAddField;
+	private JMenuItem mainRemoveField;
+	private JMenuItem mainEditField;
+	private JMenuItem mainAddMethod;
+	private JMenuItem mainRemoveMethod;
+	private JMenuItem mainEditMethod;
+	private JMenuItem mainAddRelationship;
+	private JMenuItem mainRemoveRelationship;
+	private JMenuItem mainAddClass;
+	private JMenuItem mainSaveFile;
+	private JMenuItem mainLoadFile;
+	
 	
 	// MenuItems for generic mouse menu
 	private JMenuItem mouseAddClass;
@@ -308,7 +329,67 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		classMenu.addSeparator();
 		classMenu.add(classAddRelationship);
 		classMenu.add(classRemoveRelationship);
+		
+		
+		// Initialize the main menu items
+		mainAddClass = createMenuItem("Add Class", "mainAddClass");
+		mainSaveFile = createMenuItem("Save to File", "mainSave");
+		mainLoadFile = createMenuItem("Load File", "mainLoad");
+
+		
+		//main Bar initialization
+		mainMenuBar = new JMenuBar();
+		mainMenuBar.setName("mainMenuBar");
+		
+		//main menu initialization
+		mainFile = new JMenu("file");
+		mainActions = new JMenu("actions");
+		mainFile.setName("mainFile");
+		mainActions.setName("mainActions");
+		
+		// Add menu items to mouse menu
+		mainFile.add(mainAddClass);
+		mainFile.addSeparator();
+		mainFile.add(mainSaveFile);
+		mainFile.add(mainLoadFile);
+		
+		//main menu items initialization 
+		mainRemoveClass = createMenuItem("Remove Class", "mainRemoveClass");
+		mainEditClass = createMenuItem("Edit Class Name", "mainEditClass");
+				
+		mainAddField = createMenuItem("Add Field", "mainAddField");
+		mainRemoveField = createMenuItem("Remove Field", "mainRemoveField");
+		mainEditField = createMenuItem("Edit Field Name", "mainEditField");
+
+		mainAddMethod = createMenuItem("Add Method", "mainAddMethod");
+		mainRemoveMethod = createMenuItem("Remove Method", "mainRemoveMethod");
+		mainEditMethod = createMenuItem("Edit Method Name", "mainEditMethod");
+				
+		mainAddRelationship = createMenuItem("Add Relationship", "mainAddRelationship");
+		mainRemoveRelationship = createMenuItem("Remove Relationship", "mainRemoveRelationship");
+		
+		// Add items to mainActions
+		mainActions.add(mainRemoveClass);
+		mainActions.add(mainEditClass);
+		mainActions.addSeparator();
+		mainActions.add(mainAddField);
+		mainActions.add(mainRemoveField);
+		mainActions.add(mainEditField);
+		mainActions.addSeparator();
+		mainActions.add(mainAddMethod);
+		mainActions.add(mainRemoveMethod);
+		mainActions.add(mainEditMethod);
+		mainActions.addSeparator();
+		mainActions.add(mainAddRelationship);
+		mainActions.add(mainRemoveRelationship);
+		
+		mainMenuBar.add(mainFile);
+		mainMenuBar.add(mainActions);
+		view.getWindow().setJMenuBar(mainMenuBar);
+		
+		
 	}
+	
 	
 	/**
 	 * Get a menu item with the specified label and set its name
