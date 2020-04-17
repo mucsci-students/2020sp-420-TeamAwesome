@@ -52,11 +52,12 @@ public class GUITest {
 		// Test MenuItems' initialization
 		Component[] mouseMenuChildren = mouseMenu.getComponents();
 		assertTrue("Main mouse menu not empty", mouseMenuChildren.length != 0);
-		assertEquals("Main mouse menu number of items", 4, mouseMenuChildren.length);
+		assertEquals("Main mouse menu number of items", 5, mouseMenuChildren.length);
 		assertEquals("Main mouse menu first child class add", "mouseAddClass" , ((JMenuItem)mouseMenuChildren[0]).getName());
 		assertTrue("Main mouse menu second child separator", mouseMenuChildren[1] instanceof JSeparator);
 		assertEquals("Main mouse menu third child save", "mouseSave" , ((JMenuItem)mouseMenuChildren[2]).getName());
 		assertEquals("Main mouse menu fourth child load", "mouseLoad" , ((JMenuItem)mouseMenuChildren[3]).getName());
+		assertEquals("Main mouse menu fifth child load", "mouseExport" , ((JMenuItem)mouseMenuChildren[4]).getName());
 	}
 	
 	/**
