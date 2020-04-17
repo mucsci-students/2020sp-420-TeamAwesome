@@ -1094,6 +1094,14 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			return mouseMenu;
 		if(classMenu.getName().equals(name))
 			return classMenu;
+		if(mainMenuBar.getName().equals(name))
+			return mainMenuBar;
+		
+		// Check the main menu
+		for(int i = 0; i < mainMenuBar.getMenuCount(); i++) {
+			if(mainMenuBar.getMenu(i).getName().equals(name))
+				return mainMenuBar.getMenu(i);
+		}
 		
 		// Check main self children
 		for(Component c : getComponents()) {
@@ -1110,6 +1118,20 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		}
 		for(Component c : classMenu.getComponents()) {
 			if(c.getName() != null && c.getName().equals(name)) {
+				return c;
+			}
+		}
+		
+		for(int i = 0; i < mainFile.getItemCount(); i++) {
+			Component c = mainFile.getItem(i);
+			if(c != null && c.getName() != null && c.getName().equals(name)) {
+				return c;
+			}
+		}
+		
+		for(int i = 0; i < mainActions.getItemCount(); i++) {
+			Component c = mainActions.getItem(i);
+			if(c != null && c.getName() != null && c.getName().equals(name)) {
 				return c;
 			}
 		}

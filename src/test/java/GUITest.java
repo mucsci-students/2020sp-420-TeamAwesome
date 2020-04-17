@@ -11,7 +11,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import java.awt.Component;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 import javax.swing.JComponent;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
@@ -96,27 +101,37 @@ public class GUITest {
 	public void mainMenuInitialization() {
 		UMLClassManager model = new UMLClassManager();
 		GUIView gui = new GUIView(new GUIController(model), model, false);
-		JComponent MainMenu = gui.getComponent("Main Menu");
-		assertTrue("Main menu exists", MainMenu != null);
-		assertTrue("Main menu is popup menu", MainMenu instanceof JPopupMenu);
+		JComponent MainMenu = gui.getComponent("mainMenuBar");
+		assertTrue("Main menu bar exists", MainMenu != null);
+		assertTrue("Main menu is menubar", MainMenu instanceof JMenuBar);
 		
-		//Test the MainMenu initialization
-		Component[] MainMenuChildren = MainMenu.getComponents();
-		assertTrue("Main menu not empty", MainMenuChildren.length != 0);
-		assertEquals("Main menu number of items", 13, MainMenuChildren.length);
-		assertEquals("Main menu first child", "mainRemoveClass" , ((JMenuItem)MainMenuChildren[0]).getName());
-		assertEquals("Main menu second child", "mainEditClass", ((JMenuItem)MainMenuChildren[1]).getName());
-		assertTrue("Main menu third child separator", MainMenuChildren[2] instanceof JSeparator);
-		assertEquals("Main menu fourth child", "mainAddField" , ((JMenuItem)MainMenuChildren[3]).getName());
-		assertEquals("Main menu child 5", "mainRemoveField" , ((JMenuItem)MainMenuChildren[4]).getName());
-		assertEquals("Main menu child 6", "mainEditField" , ((JMenuItem)MainMenuChildren[5]).getName());
-		assertTrue("Main menu child 7 separator", MainMenuChildren[6] instanceof JSeparator);
-		assertEquals("Main menu child 8", "mainAddMethod" , ((JMenuItem)MainMenuChildren[7]).getName());
-		assertEquals("Main menu child 9", "mainRemoveMethod" , ((JMenuItem)MainMenuChildren[8]).getName());
-		assertEquals("Main menu child 10", "mainEditMethod" , ((JMenuItem)MainMenuChildren[9]).getName());
-		assertTrue("Main menu child 11 separator", MainMenuChildren[10] instanceof JSeparator);
-		assertEquals("Main menu child 12", "mainAddRelationship" , ((JMenuItem)MainMenuChildren[11]).getName());
-		assertEquals("Main menu child 13", "mainRemoveRelationship" , ((JMenuItem)MainMenuChildren[12]).getName());
+		//Test the MainMenu initialization of components
+		assertTrue("Main File menu not empty", ((JMenu)gui.getComponent("mainFile")).getItemCount() != 0);
+		assertEquals("Main File menu number of items", 4, ((JMenu)gui.getComponent("mainFile")).getItemCount());
+		assertEquals("Main File menu first child", "mainAddClass" , ((JMenu)gui.getComponent("mainFile")).getItem(0).getName());
+		// JSeparator's seem to be represented as null menuitems
+		assertTrue("Main File menu second child separator", ((JMenu)gui.getComponent("mainFile")).getItem(1) == null);
+		assertEquals("Main File menu third child", "mainSave", ((JMenu)gui.getComponent("mainFile")).getItem(2).getName());
+		assertEquals("Main File menu fourth child", "mainLoad" , ((JMenu)gui.getComponent("mainFile")).getItem(3).getName());
+		
+		assertTrue("Main action menu not empty", ((JMenu)gui.getComponent("mainActions")).getItemCount() != 0);
+		assertEquals("Main action menu number of items", 13, ((JMenu)gui.getComponent("mainActions")).getItemCount());
+		assertEquals("Main menu actions child 1", "mainRemoveClass" , ((JMenu)gui.getComponent("mainActions")).getItem(0).getName());
+		assertEquals("Main menu actions child 2", "mainEditClass" , ((JMenu)gui.getComponent("mainActions")).getItem(1).getName());
+		// JSeparator's seem to be represented as null menuitems
+		assertTrue("Main menu actions child 3 separator", ((JMenu)gui.getComponent("mainActions")).getItem(2) == null);
+		assertEquals("Main menu actions child 4", "mainAddField" , ((JMenu)gui.getComponent("mainActions")).getItem(3).getName());
+		assertEquals("Main menu actions child 5", "mainRemoveField" , ((JMenu)gui.getComponent("mainActions")).getItem(4).getName());
+		assertEquals("Main menu actions child 6", "mainEditField" , ((JMenu)gui.getComponent("mainActions")).getItem(5).getName());
+		// JSeparator's seem to be represented as null menuitems
+		assertTrue("Main menu actions child 7 separator", ((JMenu)gui.getComponent("mainActions")).getItem(6) == null);
+		assertEquals("Main menu actions child 4", "mainAddMethod" , ((JMenu)gui.getComponent("mainActions")).getItem(7).getName());
+		assertEquals("Main menu actions child 5", "mainRemoveMethod" , ((JMenu)gui.getComponent("mainActions")).getItem(8).getName());
+		assertEquals("Main menu actions child 6", "mainEditMethod" , ((JMenu)gui.getComponent("mainActions")).getItem(9).getName());
+		// JSeparator's seem to be represented as null menuitems
+		assertTrue("Main menu actions child 7 separator", ((JMenu)gui.getComponent("mainActions")).getItem(10) == null);
+		assertEquals("Main menu actions child 8", "mainAddRelationship" , ((JMenu)gui.getComponent("mainActions")).getItem(11).getName());
+		assertEquals("Main menu actions child 9", "mainRemoveRelationship" , ((JMenu)gui.getComponent("mainActions")).getItem(12).getName());
 		
 	}
 	
