@@ -15,10 +15,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -62,6 +65,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	private JMenuItem mouseAddClass;
 	private JMenuItem mouseSaveFile;
 	private JMenuItem mouseLoadFile;
+	private JMenuItem mouseExportPNG;
 	
 	// MenuItems for class mouse menu
 	private JMenuItem classRemoveClass;
@@ -268,12 +272,14 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		mouseAddClass = createMenuItem("Add Class", "mouseAddClass");
 		mouseSaveFile = createMenuItem("Save to File", "mouseSave");
 		mouseLoadFile = createMenuItem("Load File", "mouseLoad");
+		mouseExportPNG = createMenuItem("Export to PNG", "mouseExport");
 		
 		// Add menu items to mouse menu
 		mouseMenu.add(mouseAddClass);
 		mouseMenu.addSeparator();
 		mouseMenu.add(mouseSaveFile);
 		mouseMenu.add(mouseLoadFile);
+		mouseMenu.add(mouseExportPNG);
 		
 		// Create the popup menu for when a user right clicks a class
 		// 		NOTE: Displaying this is handled in the GUIView's mouse listeners
@@ -330,6 +336,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		mouseAddClass.addActionListener(addClassAction());
 		mouseSaveFile.addActionListener(saveFileAction());
 		mouseLoadFile.addActionListener(loadFileAction());
+		mouseExportPNG.addActionListener(exportPNGAction());
 		
 		// Setup actions for class menu items
 		classRemoveClass.addActionListener(removeClassAction());
@@ -871,6 +878,49 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					}
 					
 					validate();
+				}
+			}
+		};
+	}
+	
+	/**
+	 * Get an action listener that will export to a PNG file
+	 * @return
+	 */
+	private ActionListener exportPNGAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Create save dialog instance
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setDialogTitle("Export to PNG");
+				
+				
+				// Choose file
+				int result = fileChooser.showSaveDialog(DiagramPanel.this);
+				
+				// Make sure the user didn't cancel the operation
+				if(result == JFileChooser.APPROVE_OPTION) {
+					File exportFile = fileChooser.getSelectedFile();
+					
+					// Check if file name ends with '.png' and if not manually add it
+					if(!exportFile.getPath().endsWith(".png")) {
+						exportFile = new File(exportFile.getAbsolutePath() + ".png");
+					}
+					
+					// Write screen to image
+					// Temp image to copy the drawn screen to
+					BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+					// Graphics for the image
+					Graphics2D graphics = image.createGraphics();
+					// Copy component graphics to image graphics
+					paintAll(graphics);
+					// Export the image
+					try {
+						ImageIO.write(image, "png", exportFile);
+					} catch(IOException er) {
+						view.showError(DiagramPanel.this, 111);
+					}
 				}
 			}
 		};
