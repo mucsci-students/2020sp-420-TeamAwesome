@@ -4,6 +4,7 @@ package views.components;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
+
 //System imports
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -924,6 +925,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 			for(Map.Entry<String, GUIClass> entry : guiClasses.entrySet()) {
 				GUIClass temp = entry.getValue();
 				temp.updateName();
+				guiClasses.remove(temp);
+				guiClasses.put(temp.getName(), temp);
 			}
 		}
 		
