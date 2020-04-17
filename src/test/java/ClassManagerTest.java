@@ -33,7 +33,10 @@ public class ClassManagerTest {
 		manager.addClass("a");
 		manager.addClass("n");
 		manager.addClass("t");
-		assertEquals("List is populated", manager.listClasses(), "[a, n, t]");
+		assertEquals("List is correct size", 3, manager.getClassNames().length);
+		assertEquals("List contains a", "a", manager.getClass("a").getName());
+		assertEquals("List contains n", "n", manager.getClass("n").getName());
+		assertEquals("List contains t", "t", manager.getClass("t").getName());
 		int result = manager.addClass("t");
 		assertEquals("Class already exists", 200, result);
 	}
@@ -52,7 +55,7 @@ public class ClassManagerTest {
 		manager.removeClass("a");
 		manager.removeClass("n");
 		manager.removeClass("t");
-		assertEquals("List is empty", "[]", manager.listClasses());
+		assertEquals("List is empty", 0, manager.getClassNames().length);
 		result = manager.removeClass("c");
 		assertEquals("Class does not exist", 201, result);
 		result = manager.addClass("c");
@@ -79,8 +82,8 @@ public class ClassManagerTest {
 		result = manager.removeMethods("d", "method", "string");
 		assertEquals("Method does not exist", 406, result);
 		manager.addMethods("d", "double", "method", "string");
-		String r = manager.listMethods("d")[0].toString();
-		assertEquals("method is the only method", "[double method(string)]", r);
+		boolean r = manager.getClass("d").hasMethod("method", "string");
+		assertEquals("method is the only method", true, r);
 		result = manager.removeMethods("d", "method", "string");
 		assertEquals("Success", 0, result);
 		result = manager.addMethods("d", "not real", "method", "string");
@@ -107,8 +110,8 @@ public class ClassManagerTest {
 		result = manager.removeFields("d", "field");
 		assertEquals("Field does not exist", 405, result);
 		manager.addFields("d", "double", "field");
-		String r = manager.listFields("d")[0].toString();
-		assertEquals("field is the only field", "[double field]", r);
+		boolean r = manager.getClass("d").hasField("field");
+		assertEquals("field is the only field", true, r);
 		result = manager.removeFields("d", "field");
 		assertEquals("Success", 0, result);
 		result = manager.addFields("d", "not real", "field");
@@ -173,8 +176,8 @@ public class ClassManagerTest {
 		assertEquals("Success", 0, result);
 		result = manager.addRelationship("c", "aggregation", "d");
 		assertEquals("Relationship exists already", 106, result);
-		String r = manager.listRelationships("c")[0].toString();
-		assertEquals("C is related to D", "[c" + UMLRelationship.AGGREGATION + "d]", r);
+		boolean r = manager.getRelationships().containsKey("c" + UMLRelationship.AGGREGATION + "d");
+		assertEquals("C is related to D", true, r);
 		manager.removeClass("c");
 		result = manager.removeRelationship("c","aggregation", "d");
 		assertEquals("One or more classes do not exist", 107, result);

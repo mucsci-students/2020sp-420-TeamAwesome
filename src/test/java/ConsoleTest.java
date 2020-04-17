@@ -553,6 +553,125 @@ public class ConsoleTest {
 	}
 	
 	/**
+	 * Test list command outputs
+	 */
+	@Test
+	public void listCommand() {
+		//list classes & relationships. 2-3 args
+		// Set System.out/err to catch output text to test
+		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
+		final ByteArrayOutputStream newErr = new ByteArrayOutputStream();
+		final PrintStream oldOut = System.out;
+		final PrintStream oldErr = System.out;
+		System.setOut(new PrintStream(newOut));
+		System.setErr(new PrintStream(newErr));
+		
+		ConsoleView console = new ConsoleView();
+		newOut.reset();
+		newErr.reset();
+		
+		// List classes with valid input
+		assertEquals("list classes valid return code", 0, console.execCommand("list classes"));
+		assertEquals("list classes valid output", "", scrubOut(newOut.toString()));
+		assertEquals("list classes valid error stream", "", scrubOut(newErr.toString()));
+		newOut.reset();
+		newErr.reset();
+		console.execCommand("add class myclass");
+		assertEquals("list classes valid return code 2", 0, console.execCommand("list classes myclass"));
+		assertEquals("list classes valid output 2", "-----------\n| myclass |\n-----------", scrubOut(newOut.toString()));
+		assertEquals("list classes valid error stream 2", "", scrubOut(newErr.toString()));
+		newOut.reset();
+		newErr.reset();
+		console.execCommand("add class myclass2");
+		assertEquals("list classes valid return code 3", 0, console.execCommand("list classes myclass myclass2"));
+		assertEquals("list classes valid output 3", "-----------          ------------\n| myclass |          | myclass2 |\n-----------          ------------", scrubOut(newOut.toString()));
+		assertEquals("list classes valid error stream 3", "", scrubOut(newErr.toString()));
+		newOut.reset();
+		newErr.reset();
+		
+		// List classes with invalid input
+		assertEquals("list classes invalid return code", 109, console.execCommand("list classes class"));
+		
+		// List relationships with valid input
+		assertEquals("list relationships valid return code", 0, console.execCommand("list relationships"));
+		assertEquals("list relationships valid output", "", scrubOut(newOut.toString()));
+		assertEquals("list relationships valid error stream", "", scrubOut(newErr.toString()));
+		newOut.reset();
+		newErr.reset();
+		console.execCommand("add relationship myclass aggregation myclass2");
+		assertEquals("list relationships valid return code 2", 0, console.execCommand("list relationships"));
+		assertEquals("list relationships valid output 2", "-----------          ------------\n| myclass | ------<> | myclass2 |\n-----------          ------------", scrubOut(newOut.toString()));
+		assertEquals("list relationships valid error stream 2", "", scrubOut(newErr.toString()));
+		newOut.reset();
+		newErr.reset();
+		console.execCommand("add class class3");
+		console.execCommand("add relationship myclass composition myclass3");
+		assertEquals("list relationships valid return code 3", 0, console.execCommand("list relationships myclass"));
+		assertEquals("list relationships valid output 3", "-----------          ------------\n| myclass | ------<> | myclass2 |\n-----------          "
+		+ "------------\n-----------          ------------\n| myclass | -----<=> | myclass3 |\n-----------          ------------", scrubOut(newOut.toString()));
+		assertEquals("list relationships valid error stream 3", "", scrubOut(newErr.toString()));
+		
+		// List relationships with invalid input
+		assertEquals("list relationships invalid return code", 109, console.execCommand("list relationships class"));
+
+		// List with invalid argument count
+		assertEquals("List too few args", 102, console.execCommand("List"));
+		
+		// Reset the old output streams
+		System.setOut(oldOut);
+		System.setErr(oldErr);
+	}
+	
+	/**
+	 * Test help command output
+	 */
+	@Test
+	public void helpCommand() {
+		//1-2 args
+		// Set System.out/err to catch output text to test
+		final ByteArrayOutputStream newOut = new ByteArrayOutputStream();
+		final ByteArrayOutputStream newErr = new ByteArrayOutputStream();
+		final PrintStream oldOut = System.out;
+		final PrintStream oldErr = System.out;
+		System.setOut(new PrintStream(newOut));
+		System.setErr(new PrintStream(newErr));
+		
+		ConsoleView console = new ConsoleView();
+		console.execCommand("add class myclass");
+		console.execCommand("add method myclass int mymethod param");
+		newOut.reset();
+		newErr.reset();
+		
+		// Help command with valid input
+		assertEquals("help valid return code", 0, console.execCommand("help"));
+		assertEquals("help valid output", "VALID COMMANDS\n---------------------------------\nhelp: prints list of valid commands and descriptions for each.  Typing help <command> describes a specific command.\n"
+		+ "exit: Ends the program.\nquit: Ends the program.\nadd: Can add class with add <class name>.  Also adds fields and methods to specified class in the form add <field/method> <class name> <type/return type> <field/method name> <parameter list>(for methods).  "
+		+ "Add relationship in the form add <relationship> <class 1> <relationship type> <class 2>.\nremove: Can remove class with remove <class name>.  Also removes fields and methods from specified class in the form remove <field/method> <class name> <parameter list>(for methods).  "
+		+ "Remove relationship in the form remove <relationship> <class 1> <relationship type> <class 2>.\nedit: Edit classes with edit class <old class name> <new class name>.  Edit fields and methods with edit <field/method> <source class> "
+		+ "<old name> <new name> <parameter list>(for method).\nlist: Can list all classes with list classes or specific class with list classes <class name>.  These lists take the form of boxes with the class name and its associated attributes inside.  "
+		+ "List all relationships with list relationships or list relationships <class name>.  Takes the form boxes for each class containing their associated attributes with delimiter for relationship type between classes.\n"
+		+ "save: Save the current state of the UML diagram.  If a file has not been set it will prompt the user.\nload: Load the given file into the UML editor", scrubOut(newOut.toString()));
+		assertEquals("help valid error stream", "", scrubOut(newErr.toString()));
+		newOut.reset();
+		newErr.reset();
+		assertEquals("help valid return code 2", 0, console.execCommand("help add"));
+		assertEquals("help valid output 2", "add: Can add class with add <class name>.  Also adds fields and methods to specified class in the form add <field/method> <class name> <type/return type> <field/method name> <parameter list>(for methods).  "
+		+ "Add relationship in the form add <relationship> <class 1> <relationship type> <class 2>.", scrubOut(newOut.toString()));
+		assertEquals("help valid error stream 2", "", scrubOut(newErr.toString()));
+		
+		// Help with invalid input
+		assertEquals("help invalid return code", 101, console.execCommand(""));
+		assertEquals("help invalid return code 2", 104, console.execCommand("h"));
+		
+		// Edit method name with invalid argument count
+		assertEquals("help too many args", 102, console.execCommand("help add class"));
+		
+		// Reset the old output streams
+		System.setOut(oldOut);
+		System.setErr(oldErr);
+	}
+	
+	/**
 	 * Helper function to scrub the output of System.out.println() for comparisons
 	 * and testing of output.
 	 * @param str - String to scrub

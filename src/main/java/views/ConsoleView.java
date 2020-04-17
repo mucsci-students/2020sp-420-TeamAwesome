@@ -202,7 +202,7 @@ public class ConsoleView extends View {
 					System.out.println("Removed field \'" + args[3] + "\' from class \'" + args[2] + "\'.");
 				}
 				else {
-					//invalid arugment amount
+					//invalid argument amount
 					return 102;
 				}
 			}

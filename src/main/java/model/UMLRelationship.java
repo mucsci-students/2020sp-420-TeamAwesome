@@ -3,9 +3,9 @@ package model;
 import java.io.Serializable;
 
 public class UMLRelationship implements Serializable {
-	public static final String AGGREGATION = " ----<> ";
-	public static final String COMPOSITION = " ----<=> ";
-	public static final String INHERITANCE = " ----> ";
+	public static final String AGGREGATION = " ------<> ";
+	public static final String COMPOSITION = " -----<=> ";
+	public static final String INHERITANCE = " -------> ";
 	public static final String REALIZATION = " - - - -> ";
 	
 	// Version ID for serialization
