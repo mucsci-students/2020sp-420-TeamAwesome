@@ -146,4 +146,28 @@ public class GUIController extends UMLController {
 		return result;
 	}
 
+	@Override
+	public String[] listClasses() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void listRelationships() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String[] listClasses(String className) {
+		// TODO Auto-generated method stub
+	return null;	
+	}
+
+	@Override
+	public String[] listRelationships(String className) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

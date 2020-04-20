@@ -269,23 +269,62 @@ public class UMLClassManager implements Serializable {
 	 * Get the list of classes in the UML diagram
 	 * @return String of classes in format "[class1, class2, ...]"
 	 */
-	public String listClasses() {
-		String result = "[";
-		
-		// Iterate through classList
-		int count = 0;
+	public Object[] listClasses() {
+		String[][] result = new String[classList.size()][];;
+		int i = 0;
 		for(Map.Entry<String, UMLClass> entry : classList.entrySet()) {
-			result += entry.getKey();
-			// Only add comma if not the last element
-			if(count++ != classList.size() -1) {
-				result += ", ";
+			result[i] = (String[]) listClasses(entry.getValue().getName());
+		}
+		return new Object[] {result, ErrorHandler.setCode(0)};
+	}
+	
+	/**
+	 * Lists the relationships involving the provided in parameter.
+	 * @param className
+	 * @return return object array where first element is result and the second is an integer for a status code.
+	 */
+	public Object[] listClasses(String className) {
+		int boxWidth = className.length() + 4;
+		int fieldSize = classList.get(className).getFields().size();
+		int methodSize = classList.get(className).getMethods().size();
+		int size = className.length();
+		for(Map.Entry<String, Field> entry : classList.get(className).getFields().entrySet()) {
+			if(entry.getValue().toString().length() > size)
+				size = entry.getValue().toString().length();
+		}
+		for(Map.Entry<String, Method> entry : classList.get(className).getMethods().entrySet()) {
+			if(entry.getValue().toString().length() > size)
+				size = entry.getValue().toString().length();
+		}
+		String[] result = new String[size] ;
+		if(!classList.containsKey(className)) {
+			return new Object[] {null, ErrorHandler.setCode(107)};
+		}
+		else {
+			String top = "";
+			for(int i = 0; i < boxWidth; i++) {
+				top += "-";
+			}
+			result[0] = top;
+			result[result.length -1] = top;
+			result[1] = "| " + className + " |";
+			int i = 2;
+			if(fieldSize > 0) {
+				for(Map.Entry<String, Field> entry : classList.get(className).getFields().entrySet()) {
+					result[i] = "| " + entry.getValue().toString() + " |";
+					i++;
+				}
+			}
+			if(methodSize > 0) {
+				for(Map.Entry<String, Method> entry : classList.get(className).getMethods().entrySet()) {
+					result[i] = "| " + entry.getValue().toString() + " |";
+					i++;
+				}
 			}
 		}
-		
-		result += "]";
-		return result;
+		return new Object[] {result, ErrorHandler.setCode(0)};
 	}
-
+	
 	/**
 	 * makes sure a method or field name is valid.
 	 * @param name name to be checked
@@ -414,33 +453,19 @@ public class UMLClassManager implements Serializable {
 	}
 	
 	/**
+	 * Lists relationships of the entire model
+	 */
+	public void listRelationships() {
+		
+	}
+	
+	/**
 	 * List the relationships the given class has
 	 * @param className
 	 * @return 'tuple' of [string of relationships, return code];
 	 */
-	public Object[] listRelationships(String className) {
-		// Make sure class exists
-		if(!classList.containsKey(className))
-			return new Object[]{"", ErrorHandler.setCode(107)};
-		
-		// Find all relationships with className involved
-		String result = "[";
-		
-		// Loop through all relationships checking if className is in each relationship, if
-		//		it is then add the key to the output
-		for(Map.Entry<String, UMLRelationship> relation : relationships.entrySet()) {
-			// Check if className is in the relationship
-			if(relation.getValue().hasClass(className))
-				result += relation.getKey() +", ";
-		}
-		
-		// Remove last ', ' if it exists
-		if(result.endsWith(", "))
-			result = result.substring(0, result.lastIndexOf(", "));
-		
-		result += "]";
-		
-		return new Object[]{result, ErrorHandler.setCode(0)};
+	public void listRelationships(String className) {
+		 
 	}
 	
 	/**

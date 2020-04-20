@@ -96,4 +96,33 @@ public class CommandController extends UMLController {
 		return result;
 	}
 
+	@Override
+	public String[] listClasses() {
+		Object[] result = getModel().listClasses();
+		if((int)result[1] == 0)
+		notify("listClasses", getModel());
+		return (String[])result[0];
+		
+	}
+
+	@Override
+	public void listRelationships() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String[] listClasses(String className) {
+		Object[] result = getModel().listClasses(className);
+		if((int)result[1] == 0)
+		notify("listClasses", getModel());
+		return (String[])result[0];
+	}
+
+	@Override
+	public String[] listRelationships(String className) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

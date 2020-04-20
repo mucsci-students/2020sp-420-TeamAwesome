@@ -26,7 +26,7 @@ public class ConsoleTest {
 		ConsoleView console = new ConsoleView();
 		assertTrue("Console not null", console.getScanner() != null);
 		assertTrue("Commands not null", console.getValidCommands() != null);
-		assertTrue("Commands not empty", console.getValidCommands().length != 0);
+		assertTrue("Commands not empty", !(console.getValidCommands().isEmpty()));
 		assertTrue("Close console", console.closeConsole() == 0);
 	}
 	
@@ -644,27 +644,34 @@ public class ConsoleTest {
 		
 		// Help command with valid input
 		assertEquals("help valid return code", 0, console.execCommand("help"));
-		assertEquals("help valid output", "VALID COMMANDS\n---------------------------------\nhelp: prints list of valid commands and descriptions for each.  Typing help <command> describes a specific command.\n"
-		+ "exit: Ends the program.\nquit: Ends the program.\nadd: Can add class with add <class name>.  Also adds fields and methods to specified class in the form add <field/method> <class name> <type/return type> <field/method name> <parameter list>(for methods).  "
-		+ "Add relationship in the form add <relationship> <class 1> <relationship type> <class 2>.\nremove: Can remove class with remove <class name>.  Also removes fields and methods from specified class in the form remove <field/method> <class name> <parameter list>(for methods).  "
-		+ "Remove relationship in the form remove <relationship> <class 1> <relationship type> <class 2>.\nedit: Edit classes with edit class <old class name> <new class name>.  Edit fields and methods with edit <field/method> <source class> "
-		+ "<old name> <new name> <parameter list>(for method).\nlist: Can list all classes with list classes or specific class with list classes <class name>.  These lists take the form of boxes with the class name and its associated attributes inside.  "
-		+ "List all relationships with list relationships or list relationships <class name>.  Takes the form boxes for each class containing their associated attributes with delimiter for relationship type between classes.\n"
-		+ "save: Save the current state of the UML diagram.  If a file has not been set it will prompt the user.\nload: Load the given file into the UML editor", scrubOut(newOut.toString()));
+		assertEquals("help valid output", System.lineSeparator() + "VALID COMMANDS"+System.lineSeparator() + "---------------------------------"+ System.lineSeparator()
+		+ "help: Prints out a list of valid commands with descriptions for each command.  Typing help <command> describes a specific command."+ System.lineSeparator()
+		+ "add: Can add class with add <class_name>.  Also adds fields and methods to specified class in the form add <field/method> <class_name> <type/return_type> <field/method_name> <parameter_list>(for methods)."+ System.lineSeparator()
+		+ "     Add relationship in the form add <relationship> <class_name1> <relationship_type> <class_name2>."+ System.lineSeparator()
+		+ "edit: Edit classes with edit class <old_class_name> <new_class_name>.  Edit fields and methods with edit <field/method> <source_class> <old_name> <new_name> <parameter_list>(for method)."+ System.lineSeparator()
+		+ "remove: Can remove class with remove <class_name>.  Also removes fields and methods from specified class in the form remove <field/method> <class_name> <field/method_name> <parameter_list>(for methods)."+ System.lineSeparator()
+		+ "\tRemove relationship in the form remove <relationship> <class_name1> <relationship_type> <class_name2>."+ System.lineSeparator()
+		+ "exit: Quit the program."+ System.lineSeparator()
+		+ "quit: Quit the program."+ System.lineSeparator()
+		+ "save: Save the current state of the UML diagram.  If a file has not been set it will prompt the user."+ System.lineSeparator()
+		+ "load <file_path>: Load the given file into the UML editor."+ System.lineSeparator()
+		+ "list: Can list all classes with list classes or specific class with list classes <class_name>.  These lists take the form of boxes with the class name and its associated attributes inside."+ System.lineSeparator() 
+		+ "      List all relationships with list relationships or list relationships <class_name>.  Takes the form boxes for each class containing their associated attributes with a delimiter for relationship type between classes."+ System.lineSeparator(), newOut.toString());
 		assertEquals("help valid error stream", "", scrubOut(newErr.toString()));
 		newOut.reset();
 		newErr.reset();
 		assertEquals("help valid return code 2", 0, console.execCommand("help add"));
-		assertEquals("help valid output 2", "add: Can add class with add <class name>.  Also adds fields and methods to specified class in the form add <field/method> <class name> <type/return type> <field/method name> <parameter list>(for methods).  "
-		+ "Add relationship in the form add <relationship> <class 1> <relationship type> <class 2>.", scrubOut(newOut.toString()));
+		assertEquals("help valid output 2", System.lineSeparator() + "add: Can add class with add <class_name>.  Also adds fields and methods to specified class in the form add <field/method> <class_name> <type/return_type> <field/method_name> <parameter_list>(for methods)." + System.lineSeparator()
+		+ "     Add relationship in the form add <relationship> <class_name1> <relationship_type> <class_name2>.", newOut.toString());
 		assertEquals("help valid error stream 2", "", scrubOut(newErr.toString()));
 		
 		// Help with invalid input
-		assertEquals("help invalid return code", 101, console.execCommand(""));
 		assertEquals("help invalid return code 2", 104, console.execCommand("h"));
 		
-		// Edit method name with invalid argument count
+		// Help with invalid argument count
 		assertEquals("help too many args", 102, console.execCommand("help add class"));
+		newOut.reset();
+		newErr.reset();
 		
 		// Reset the old output streams
 		System.setOut(oldOut);

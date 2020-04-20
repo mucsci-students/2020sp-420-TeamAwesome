@@ -29,4 +29,12 @@ public abstract class UMLController extends Observable {
 	
 	public abstract int addRelationship(String class1, String type, String class2);
 	public abstract int removeRelationship(String class1, String type, String class2);
+
+	public abstract String[] listClasses();
+
+	public abstract void listRelationships();
+
+	public abstract String[] listClasses(String className);
+
+	public abstract String[] listRelationships(String className);
 }
