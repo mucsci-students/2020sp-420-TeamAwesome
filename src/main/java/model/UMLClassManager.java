@@ -270,10 +270,10 @@ public class UMLClassManager implements Serializable {
 	 * @return String of classes in format "[class1, class2, ...]"
 	 */
 	public Object[] listClasses() {
-		Object[][] result = new String[classList.size()][];;
+		String[][] result = new String[classList.size()][];;
 		int i = 0;
 		for(Map.Entry<String, UMLClass> entry : classList.entrySet()) {
-			result[i] = listClasses(entry.getValue().getName());
+			result[i] = (String[]) listClasses(entry.getValue().getName());
 		}
 		return new Object[] {result, ErrorHandler.setCode(0)};
 	}
@@ -309,7 +309,7 @@ public class UMLClassManager implements Serializable {
 			result[0] = top;
 			result[result.length - 1] = top;
 			result[1] = "|";
-			for(int k = 0; k < padding - 1; k++) {
+			for(int k = 0; k < padding; k++) {
 				result[1] += " ";
 			}
 			result[1] += className;

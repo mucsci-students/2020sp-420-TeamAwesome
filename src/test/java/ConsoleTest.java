@@ -578,7 +578,7 @@ public class ConsoleTest {
 		//newErr.reset();
 		console.execCommand("add class myclass");
 		assertEquals("list classes valid return code 2", 0, console.execCommand("list classes myclass"));
-		assertEquals("list classes valid output 2", "-----------" + System.lineSeparator() + "| myclass |"+ System.lineSeparator() +"-----------", scrubOut(newOut.toString()));
+		assertEquals("list classes valid output 2", "Added class \'myclass\'." +System.lineSeparator() + "-----------" + System.lineSeparator() + "|  myclass |"+ System.lineSeparator() +"-----------" + System.lineSeparator(), newOut.toString());
 		assertEquals("list classes valid error stream 2", "", scrubOut(newErr.toString()));
 		newOut.reset();
 		newErr.reset();

@@ -403,6 +403,7 @@ public class ConsoleView extends View {
 				String className = args[2];
 				if(args[1].equals("classes")) {
 					String[] classBox = controller.listClasses(className);
+
 					for(int i = 0; i < classBox.length; i++) {
 						System.out.println(classBox[i]);
 					}
