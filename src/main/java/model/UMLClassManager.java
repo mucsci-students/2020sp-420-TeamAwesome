@@ -270,10 +270,10 @@ public class UMLClassManager implements Serializable {
 	 * @return String of classes in format "[class1, class2, ...]"
 	 */
 	public Object[] listClasses() {
-		String[][] result = new String[classList.size()][];;
+		Object[][] result = new String[classList.size()][];;
 		int i = 0;
 		for(Map.Entry<String, UMLClass> entry : classList.entrySet()) {
-			result[i] = (String[]) listClasses(entry.getValue().getName());
+			result[i] = listClasses(entry.getValue().getName());
 		}
 		return new Object[] {result, ErrorHandler.setCode(0)};
 	}
@@ -287,37 +287,64 @@ public class UMLClassManager implements Serializable {
 		int boxWidth = className.length() + 4;
 		int fieldSize = classList.get(className).getFields().size();
 		int methodSize = classList.get(className).getMethods().size();
-		int size = className.length();
+		int size = fieldSize + methodSize + 3;
 		for(Map.Entry<String, Field> entry : classList.get(className).getFields().entrySet()) {
-			if(entry.getValue().toString().length() > size)
-				size = entry.getValue().toString().length();
+			if(entry.getValue().toString().length() + 4 > boxWidth)
+				boxWidth = entry.getValue().toString().length() + 4;
 		}
 		for(Map.Entry<String, Method> entry : classList.get(className).getMethods().entrySet()) {
-			if(entry.getValue().toString().length() > size)
-				size = entry.getValue().toString().length();
+			if(entry.getValue().toString().length() + 4 > boxWidth)
+				boxWidth = entry.getValue().toString().length() + 4;
 		}
 		String[] result = new String[size] ;
 		if(!classList.containsKey(className)) {
 			return new Object[] {null, ErrorHandler.setCode(107)};
 		}
 		else {
+			int padding = (boxWidth - className.length()) / 2;
 			String top = "";
 			for(int i = 0; i < boxWidth; i++) {
 				top += "-";
 			}
 			result[0] = top;
-			result[result.length -1] = top;
-			result[1] = "| " + className + " |";
+			result[result.length - 1] = top;
+			result[1] = "|";
+			for(int k = 0; k < padding - 1; k++) {
+				result[1] += " ";
+			}
+			result[1] += className;
+			for(int k = 0; k < padding -1; k++) {
+				result[1] += " ";
+			}
+			result[1] += "|";
 			int i = 2;
 			if(fieldSize > 0) {
 				for(Map.Entry<String, Field> entry : classList.get(className).getFields().entrySet()) {
-					result[i] = "| " + entry.getValue().toString() + " |";
+					int space = (boxWidth - entry.getValue().toString().length()) / 2;
+					result[i] = "|";
+					for(int j = 0; j < space - 1; j++) {
+						result[i] += " ";
+					}
+					result[i] += entry.getValue().toString();
+					for(int j = 0; j < space - 1; j++) {
+						result[i] += " ";
+					}
+					result[i] += "|";
 					i++;
 				}
 			}
 			if(methodSize > 0) {
 				for(Map.Entry<String, Method> entry : classList.get(className).getMethods().entrySet()) {
-					result[i] = "| " + entry.getValue().toString() + " |";
+					int space = (boxWidth - entry.getValue().toString().length()) / 2;
+					result[i] = "|";
+					for(int j = 0; j < space - 1; j++) {
+						result[i] += " ";
+					}
+					result[i] += entry.getValue().toString();
+					for(int j = 0; j < space - 1; j++) {
+						result[i] += " ";
+					}
+					result[i] += "|";
 					i++;
 				}
 			}
