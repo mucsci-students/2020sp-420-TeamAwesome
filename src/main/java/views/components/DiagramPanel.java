@@ -423,7 +423,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		classAddField.addActionListener(addFieldAction());
 		classRemoveField.addActionListener(removeFieldAction());
 		classEditField.addActionListener(editFieldAction());
-		mainRemoveClass.addActionListener(addFieldAction());
+		mainAddField.addActionListener(addFieldAction());
 		mainRemoveField.addActionListener(removeFieldAction());
 		mainEditField.addActionListener(editFieldAction());
 		
@@ -491,7 +491,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				// Make sure a selected class exists
 				if(isHuman && prev == null)
 				{
-					Object originClass = view.promptInput("Enter class to remove:");
+					Object[] classChoices = view.getController().getModel().getClassNames();
+					Object originClass = view.promptSelection("Choose avaliable class:", classChoices);
 					GUIClass temp = guiClasses.get(originClass);
 					if (temp != null)
 						prev = temp;
@@ -530,7 +531,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				//listener for main menu buttons
 				if(isHuman && prev == null)
 				{
-					Object originClass = view.promptInput("Enter class to edit:");
+					Object[] classChoices = view.getController().getModel().getClassNames();
+					Object originClass = view.promptSelection("Choose avaliable class containing class:", classChoices);
 					GUIClass temp = guiClasses.get(originClass);
 					if (temp != null)
 						prev = temp;
@@ -578,7 +580,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				//listener for main menu buttons
 				if(isHuman && prev == null)
 				{
-					Object originClass = view.promptInput("Enter class to add field:");
+					Object[] classChoices = view.getController().getModel().getClassNames();
+					Object originClass = view.promptSelection("Choose avaliable class to add field:", classChoices);
 					GUIClass temp = guiClasses.get(originClass);
 					if (temp != null)
 						prev = temp;
@@ -628,7 +631,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				//listener for main menu buttons
 				if(isHuman && prev == null)
 				{
-					Object originClass = view.promptInput("Please enter class to remove field:");
+					Object[] classChoices = view.getController().getModel().getClassNames();
+					Object originClass = view.promptSelection("Choose class containing field:", classChoices);
 					GUIClass temp = guiClasses.get(originClass);
 					if (temp != null)
 						prev = temp;
@@ -679,7 +683,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				//listener for main menu buttons
 				if(isHuman && prev == null)
 				{
-					Object originClass = view.promptInput("Enter class containing field:");
+					Object[] classChoices = view.getController().getModel().getClassNames();
+					Object originClass = view.promptSelection("Choose class containing field:", classChoices);
 					GUIClass temp = guiClasses.get(originClass);
 					if (temp != null)
 						prev = temp;
@@ -736,7 +741,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				//listener for main menu buttons
 				if(isHuman && prev == null)
 				{
-					Object originClass = view.promptInput("Enter class to add method to:");
+					Object[] classChoices = view.getController().getModel().getClassNames();
+					Object originClass = view.promptSelection("Choose avaliable class:", classChoices);
 					GUIClass temp = guiClasses.get(originClass);
 					if (temp != null)
 						prev = temp;
@@ -794,7 +800,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				//listener for main menu buttons
 				if(isHuman && prev == null)
 				{
-					Object originClass = view.promptInput("Enter class containing method:");
+					Object[] classChoices = view.getController().getModel().getClassNames();
+					Object originClass = view.promptSelection("Choose class containing method:", classChoices);
 					GUIClass temp = guiClasses.get(originClass);
 					if (temp != null)
 						prev = temp;
@@ -852,7 +859,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				//listener for main menu buttons
 				if(isHuman && prev == null)
 				{
-					Object originClass = view.promptInput("Enter class containing method:");
+					Object[] classChoices = view.getController().getModel().getClassNames();
+					Object originClass = view.promptSelection("Choose class containing method:", classChoices);
 					GUIClass temp = guiClasses.get(originClass);
 					if (temp != null)
 						prev = temp;
@@ -911,7 +919,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				//listener for main menu buttons
 				if(isHuman && prev == null)
 				{
-					Object originClass = view.promptInput("Enter origin class:");
+					Object[] classChoices = view.getController().getModel().getClassNames();
+					Object originClass = view.promptSelection("Choose origin class: ", classChoices);
 					GUIClass temp = guiClasses.get(originClass);
 					if (temp != null)
 						prev = temp;
@@ -963,7 +972,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				//listener for main menu buttons
 				if(isHuman && prev == null)
 				{
-					Object originClass = view.promptInput("Enter origin class:");
+					Object[] classChoices = view.getController().getModel().getClassNames();
+					Object originClass = view.promptSelection("Choose origin class: ", classChoices);
 					GUIClass temp = guiClasses.get(originClass);
 					if (temp != null)
 						prev = temp;
