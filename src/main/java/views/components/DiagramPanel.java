@@ -39,7 +39,7 @@ import views.GUIView;
 
 /**
  * A JPanel to display the UMLClasses and relationships
- * @author Ryan
+ * @author 98% Ryan and a tiny bit of Dylan
  *
  */
 public class DiagramPanel extends JPanel implements Observer, MouseListener, MouseMotionListener {
@@ -388,6 +388,11 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		view.getWindow().setJMenuBar(mainMenuBar);
 		
 		
+	}
+	
+	private String[] validRelationships() {
+		String[] relationships = {"aggregation", "composition", "inheritance", "realization"};
+		return relationships;
 	}
 	
 	
@@ -939,7 +944,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						// Get the destination class
 						Object destClass = view.promptSelection("Destination class: ", availableClasses);
 						// Get the type
-						Object type = view.promptInput("Relationship Type");
+						Object type = view.promptSelection("Relationship Type:", validRelationships());
 						// Make sure user didn't cancel input
 						if(destClass != null && type != null) {
 							int result = view.getController().addRelationship(prev.getName(), type.toString(), destClass.toString());
@@ -992,7 +997,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						// Get the destination class
 						Object destClass = view.promptSelection("Destination class: ", availableClasses);
 						// Get the type
-						Object type = view.promptInput("Relationship Type");
+						Object type = view.promptSelection("Relationship Type: ", validRelationships());
 						// Make sure user didn't cancel input
 						if(destClass != null && type != null) {
 							int result = view.getController().removeRelationship(prev.getName(), type.toString(), destClass.toString());
