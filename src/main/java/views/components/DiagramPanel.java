@@ -410,21 +410,37 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		mouseAddClass.addActionListener(addClassAction());
 		mouseSaveFile.addActionListener(saveFileAction());
 		mouseLoadFile.addActionListener(loadFileAction());
+		mainAddClass.addActionListener(addClassAction());
+		mainSaveFile.addActionListener(saveFileAction());
+		mainLoadFile.addActionListener(loadFileAction());
 		
 		// Setup actions for class menu items
 		classRemoveClass.addActionListener(removeClassAction());
 		classEditClass.addActionListener(editClassAction());
+		mainRemoveClass.addActionListener(removeClassAction());
+		mainEditClass.addActionListener(editClassAction());
 		
 		classAddField.addActionListener(addFieldAction());
 		classRemoveField.addActionListener(removeFieldAction());
 		classEditField.addActionListener(editFieldAction());
+		mainRemoveClass.addActionListener(addFieldAction());
+		mainRemoveField.addActionListener(removeFieldAction());
+		mainEditField.addActionListener(editFieldAction());
+		
 		
 		classAddMethod.addActionListener(addMethodAction());
 		classRemoveMethod.addActionListener(removeMethodAction());
 		classEditMethod.addActionListener(editMethodAction());
+		mainAddMethod.addActionListener(addMethodAction());
+		mainRemoveMethod.addActionListener(removeMethodAction());
+		mainEditMethod.addActionListener(editMethodAction());
+		
 		
 		classAddRelationship.addActionListener(addRelationshipAction());
 		classRemoveRelationship.addActionListener(removeRelationshipAction());
+		mainAddRelationship.addActionListener(addRelationshipAction());
+		mainRemoveRelationship.addActionListener(removeRelationshipAction());
+		
 	}
 	
 	/**
@@ -469,8 +485,21 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	private ActionListener removeClassAction() {
 		return new ActionListener() {
 			@Override
+			
+		
 			public void actionPerformed(ActionEvent e) {
 				// Make sure a selected class exists
+				if(isHuman && prev == null)
+				{
+					Object originClass = view.promptInput("Enter class to remove:");
+					GUIClass temp = guiClasses.get(originClass);
+					if (temp != null)
+						prev = temp;
+					else
+					{
+						return;	
+					}
+				}
 				if(prev != null && isHuman) {
 					int result = view.getController().removeClass(prev.getName());
 					if(result != 0)
@@ -497,6 +526,20 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {	
+				
+				//listener for main menu buttons
+				if(isHuman && prev == null)
+				{
+					Object originClass = view.promptInput("Enter class to edit:");
+					GUIClass temp = guiClasses.get(originClass);
+					if (temp != null)
+						prev = temp;
+					else
+					{
+						return;	
+					}
+				}
+				
 				// Make sure a selected class exists
 				if(prev != null && isHuman) {
 					// Prompt the user for a new class name
@@ -531,6 +574,20 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				//listener for main menu buttons
+				if(isHuman && prev == null)
+				{
+					Object originClass = view.promptInput("Enter class to add field:");
+					GUIClass temp = guiClasses.get(originClass);
+					if (temp != null)
+						prev = temp;
+					else
+					{
+						return;	
+					}
+				}
+				
 				// Make sure a selected class exists
 				if(prev != null && isHuman) {
 					// Prompt user for field type
@@ -567,6 +624,20 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				//listener for main menu buttons
+				if(isHuman && prev == null)
+				{
+					Object originClass = view.promptInput("Please enter class to remove field:");
+					GUIClass temp = guiClasses.get(originClass);
+					if (temp != null)
+						prev = temp;
+					else
+					{
+						return;	
+					}
+				}
+				
 				// Make sure a selected class exists
 				if(prev != null && isHuman) {
 					// Get a list of the available field names to remove
@@ -604,6 +675,20 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				//listener for main menu buttons
+				if(isHuman && prev == null)
+				{
+					Object originClass = view.promptInput("Enter class containing field:");
+					GUIClass temp = guiClasses.get(originClass);
+					if (temp != null)
+						prev = temp;
+					else
+					{
+						return;	
+					}
+				}
+				
 				// Make sure a selected class exists
 				if(prev != null && isHuman) {
 					// Get a list of the available field names to edit
@@ -647,6 +732,20 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				//listener for main menu buttons
+				if(isHuman && prev == null)
+				{
+					Object originClass = view.promptInput("Enter class to add method to:");
+					GUIClass temp = guiClasses.get(originClass);
+					if (temp != null)
+						prev = temp;
+					else
+					{
+						return;	
+					}
+				}
+				
 				// Make sure a selected class exists
 				if(prev != null && isHuman) {
 					// Prompt user for return type
@@ -691,6 +790,20 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				//listener for main menu buttons
+				if(isHuman && prev == null)
+				{
+					Object originClass = view.promptInput("Enter class containing method:");
+					GUIClass temp = guiClasses.get(originClass);
+					if (temp != null)
+						prev = temp;
+					else
+					{
+						return;	
+					}
+				}
+				
 				// Make sure a selected class exists
 				if(prev != null && isHuman) {
 					// Get a list of the available field names to remove
@@ -735,6 +848,19 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				//listener for main menu buttons
+				if(isHuman && prev == null)
+				{
+					Object originClass = view.promptInput("Enter class containing method:");
+					GUIClass temp = guiClasses.get(originClass);
+					if (temp != null)
+						prev = temp;
+					else
+					{
+						return;	
+					}
+				}
 				// Make sure a selected class exists
 				if(prev != null && isHuman) {
 					// Get a list of the available method names to edit
@@ -781,6 +907,19 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				//listener for main menu buttons
+				if(isHuman && prev == null)
+				{
+					Object originClass = view.promptInput("Enter origin class:");
+					GUIClass temp = guiClasses.get(originClass);
+					if (temp != null)
+						prev = temp;
+					else
+					{
+						return;	
+					}
+				}
 				// Make sure a selected class exists
 				if(prev != null && isHuman) {
 					// Get a list of available second classes
@@ -820,6 +959,19 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				//listener for main menu buttons
+				if(isHuman && prev == null)
+				{
+					Object originClass = view.promptInput("Enter origin class:");
+					GUIClass temp = guiClasses.get(originClass);
+					if (temp != null)
+						prev = temp;
+					else
+					{
+						return;	
+					}
+				}
 				// Make sure a selected class exists
 				if(prev != null && isHuman) {
 					// Get a list of available second classes
