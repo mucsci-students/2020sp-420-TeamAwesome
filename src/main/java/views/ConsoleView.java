@@ -1,18 +1,18 @@
 package views;
 
+import java.util.ArrayList;
 // System imports
-import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
+
 
 // Local imports
 import controller.CommandController;
 import controller.UMLController;
 import core.ErrorHandler;
 import core.UMLFileIO;
-import model.UMLClass;
+//import model.UMLClass;
 import model.UMLClassManager;
 import observe.Observable;
 
@@ -22,7 +22,7 @@ public class ConsoleView extends View {
 	private UMLFileIO fileIO;
 	
 	// All valid commands
-	private LinkedHashMap<String, String> validCommands;
+	private LinkedHashMap<String, String[]> validCommands;
 	
 	/**
 	 * Initialize required variables for console
@@ -35,7 +35,7 @@ public class ConsoleView extends View {
 		controller = new CommandController(new UMLClassManager());
 		controller.addObserver(this);
 		
-		validCommands = new LinkedHashMap<String, String>();
+		validCommands = new LinkedHashMap<String, String[]>();
 		populateValidCommands();
 	}
 	
@@ -390,26 +390,60 @@ public class ConsoleView extends View {
 			// Expects minimum of 2 args and maximum of 3 args.
 			if(args.length == 2) {
 				if(args[1].equals("classes")) {
-					String[] listBox = controller.listClasses();
-					for(int i = 0; i < listBox.length; i++) {
-						System.out.println(listBox[i]);
+					ArrayList<String[]> listBoxes = controller.printClasses();
+					if(listBoxes == null) {
+						System.out.println("There are no classes to display.");
+					}
+					else {
+						for(String[] s : listBoxes) {
+							for(String t : s) {
+								System.out.println(t);
+							}
+							System.out.println();
+						}
 					}
 				}
 				else if(args[1].equals("relationships")) {
-					controller.listRelationships();
+					ArrayList<ArrayList<String[]>> rBoxes = controller.printRelationships();
+					if(rBoxes == null) {
+						System.out.print("There are no relationships to display.");
+					}
+					else {
+						for(ArrayList<String[]> a : rBoxes) {
+							for(String[] s : a) {
+								for(String r : s) {
+									System.out.println(r);
+								}
+								System.out.println();
+							}
+						}
+					}
 				}
 			} else if(args.length == 3) {
 				//Expect arg[2] to be class name
-				String className = args[2];
 				if(args[1].equals("classes")) {
-					String[] classBox = controller.listClasses(className);
-
-					for(int i = 0; i < classBox.length; i++) {
-						System.out.println(classBox[i]);
+					String[] box = controller.printClasses(args[2]);
+					if(box == null) {
+						result = 109;
+					}
+					else {
+						for(String s : box)
+							System.out.println(s);
 					}
 				}
 				else if(args[1].equals("relationships")) {
-					controller.listRelationships(className);
+					ArrayList<String[]> rList = controller.printRelationships(args[2]);
+					if(rList == null) {
+						result = 109;
+					}
+					else {
+						for(String[] a : rList) {
+							for(String s : a) {
+								System.out.println(s);
+							}
+							System.out.println();
+						}
+					}
 				}
 			} else{
 				return 102;
@@ -455,8 +489,11 @@ public class ConsoleView extends View {
 	
 	private void commandHelp(String command) {
 		System.out.println();
-		String desc = validCommands.get(command);
-		System.out.printf("%-40s", desc);
+		String[] desc = validCommands.get(command);
+		for(String s : desc) {
+			System.out.println(s);
+			System.out.println();
+		}
 	}
 	/**
 	 * Fills validCommands with the command name and a description
@@ -466,25 +503,25 @@ public class ConsoleView extends View {
 	 * 		list_description_lines = an array of strings where each item is a new line to print out as a description
 	 */
 	private void populateValidCommands() {
-		validCommands.put("help", "help: Prints out a list of valid commands with descriptions for each command.  Typing help <command> describes a specific command.");
-		validCommands.put("add", "add: Can add class with add <class_name>.  Also adds fields and methods to specified class in the form add <field/method> <class_name> <type/return_type> <field/method_name> <parameter_list>(for methods)." + System.lineSeparator()
-		+ "     Add relationship in the form add <relationship> <class_name1> <relationship_type> <class_name2>.");
-		validCommands.put("edit", "edit: Edit classes with edit class <old_class_name> <new_class_name>.  Edit fields and methods with edit <field/method> <source_class> <old_name> <new_name> <parameter_list>(for method).");
-		validCommands.put("remove", "remove: Can remove class with remove <class_name>.  Also removes fields and methods from specified class in the form remove <field/method> <class_name> <field/method_name> <parameter_list>(for methods)." + System.lineSeparator()
-		+ "\tRemove relationship in the form remove <relationship> <class_name1> <relationship_type> <class_name2>.");
-		validCommands.put("exit", "exit: Quit the program.");
-		validCommands.put("quit", "quit: Quit the program.");
-		validCommands.put("save", "save: Save the current state of the UML diagram.  If a file has not been set it will prompt the user.");
-		validCommands.put("load", "load <file_path>: Load the given file into the UML editor.");
-		validCommands.put("list", "list: Can list all classes with list classes or specific class with list classes <class_name>.  These lists take the form of boxes with the class name and its associated attributes inside." + System.lineSeparator()
-		+ "      List all relationships with list relationships or list relationships <class_name>.  Takes the form boxes for each class containing their associated attributes with a delimiter for relationship type between classes.");
+		validCommands.put("help", new String [] {"help: Prints out a list of valid commands with descriptions for each command.", "Typing help <command> describes a specific command."});
+		validCommands.put("add", new String[] {"add: Can add class with:", "add <class_name>.","Also adds fields and methods to specified class in the form:", "add <field/method> <class_name> <type/return_type> <field/method_name> <parameter_list>(for methods).",
+		"Add relationship in the form:", "add <relationship> <class_name1> <relationship_type> <class_name2>."});
+		validCommands.put("edit", new String[ ]{"edit: Edit classes with:", "edit class <old_class_name> <new_class_name>.","Edit fields and methods with:", "edit <field/method> <source_class> <old_name> <new_name> <parameter_list>(for method)."});
+		validCommands.put("remove", new String[] {"remove: Can remove class with:", "remove <class_name>.", "Also removes fields and methods from specified class in the form:", "remove <field/method> <class_name> <field/method_name> <parameter_list>(for methods).",
+		"Remove relationships in the form:", "remove <relationship> <class_name1> <relationship_type> <class_name2>."});
+		validCommands.put("exit", new String[] {"exit: Quit the program."});
+		validCommands.put("quit", new String[] {"quit: Quit the program."});
+		validCommands.put("save", new String[] {"save: Save the current state of the UML diagram.  If a file has not been set it will prompt the user."});
+		validCommands.put("load", new String[] {"load <file_path>: Load the given file into the UML editor."});
+		validCommands.put("list", new String[] {"list: Can list all classes with:", "list classes", "or specific class with:", "list classes <class_name>.", "These lists take the form of boxes with the class name and its associated attributes inside.",
+		"List all relationships with:", "list relationships", "or", "list relationships <class_name>.", "Takes the form boxes for each class containing their associated attributes with a delimiter for relationship type between classes."});
 	}
 	
 	/**
 	 * Get the list of valid commands
 	 * @return validCommands
 	 */
-	public LinkedHashMap<String, String> getValidCommands() {
+	public LinkedHashMap<String, String[]> getValidCommands() {
 		return validCommands;
 	}
 	
@@ -497,8 +534,11 @@ public class ConsoleView extends View {
 		System.out.println("---------------------------------");
 		
 		// For every key in dictionary print corresponding description
-		for(Map.Entry<String, String> entry : validCommands.entrySet()) {
-			System.out.println(entry.getValue());
+		for(Map.Entry<String, String[]> entry : validCommands.entrySet()) {
+			for(String s : entry.getValue()) {
+				System.out.println(s);
+				System.out.println();
+			}
 		}
 	}
 

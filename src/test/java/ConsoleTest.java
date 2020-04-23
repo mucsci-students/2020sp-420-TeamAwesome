@@ -2,7 +2,6 @@
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -571,21 +570,22 @@ public class ConsoleTest {
 		newErr.reset();
 		
 		// List classes with valid input
-		//assertEquals("list classes valid return code", 0, console.execCommand("list classes"));
-		//assertEquals("list classes valid output", "", scrubOut(newOut.toString()));
-		//assertEquals("list classes valid error stream", "", scrubOut(newErr.toString()));
-		//newOut.reset();
-		//newErr.reset();
+		assertEquals("list classes valid return code", 0, console.execCommand("list classes"));
+		assertEquals("list classes valid output", "There are no classes to display." + System.lineSeparator(), newOut.toString());
+		assertEquals("list classes valid error stream", "", newErr.toString());
+		newOut.reset();
+		newErr.reset();
 		console.execCommand("add class myclass");
 		assertEquals("list classes valid return code 2", 0, console.execCommand("list classes myclass"));
-		assertEquals("list classes valid output 2", "Added class \'myclass\'." +System.lineSeparator() + "-----------" + System.lineSeparator() + "|  myclass |"+ System.lineSeparator() +"-----------" + System.lineSeparator(), newOut.toString());
-		assertEquals("list classes valid error stream 2", "", scrubOut(newErr.toString()));
+		assertEquals("list classes valid output 2", "Added class \'myclass\'." + System.lineSeparator() + "+-------+" + System.lineSeparator() + "|myclass|"+ System.lineSeparator() +"+-------+" + System.lineSeparator(), newOut.toString());
+		assertEquals("list classes valid error stream 2", "", newErr.toString());
 		newOut.reset();
 		newErr.reset();
 		console.execCommand("add class myclass2");
-		assertEquals("list classes valid return code 3", 0, console.execCommand("list classes myclass myclass2"));
-		assertEquals("list classes valid output 3", "-----------          ------------\n| myclass |          | myclass2 |\n-----------          ------------", scrubOut(newOut.toString()));
-		assertEquals("list classes valid error stream 3", "", scrubOut(newErr.toString()));
+		assertEquals("list classes valid return code 3", 0, console.execCommand("list classes"));
+		assertEquals("list classes valid output 3", "Added class \'myclass2\'." + System.lineSeparator() + "+-------+" + System.lineSeparator() + "|myclass|" + System.lineSeparator() + "+-------+"+ System.lineSeparator()
+		+ System.lineSeparator() + "+--------+" + System.lineSeparator() + "|myclass2|" + System.lineSeparator() + "+--------+" + System.lineSeparator() + System.lineSeparator(), newOut.toString());
+		assertEquals("list classes valid error stream 3", "", newErr.toString());
 		newOut.reset();
 		newErr.reset();
 		
@@ -594,28 +594,36 @@ public class ConsoleTest {
 		
 		// List relationships with valid input
 		assertEquals("list relationships valid return code", 0, console.execCommand("list relationships"));
-		assertEquals("list relationships valid output", "", scrubOut(newOut.toString()));
-		assertEquals("list relationships valid error stream", "", scrubOut(newErr.toString()));
+		assertEquals("list relationships valid output", "There are no relationships to display.", newOut.toString());
+		assertEquals("list relationships valid error stream", "", newErr.toString());
 		newOut.reset();
 		newErr.reset();
 		console.execCommand("add relationship myclass aggregation myclass2");
 		assertEquals("list relationships valid return code 2", 0, console.execCommand("list relationships"));
-		assertEquals("list relationships valid output 2", "-----------          ------------\n| myclass | ------<> | myclass2 |\n-----------          ------------", scrubOut(newOut.toString()));
-		assertEquals("list relationships valid error stream 2", "", scrubOut(newErr.toString()));
+		assertEquals("list relationships valid output 2", "Added aggregation relationship from 'myclass' to 'myclass2'." + System.lineSeparator()
+		+ "+-------+"  + System.lineSeparator() + "|myclass|" + System.lineSeparator() + "+-------+" + System.lineSeparator() + System.lineSeparator()
+		+ " |" + System.lineSeparator()	+ " |" + System.lineSeparator()	+ " |" + System.lineSeparator()	+ "< >" + System.lineSeparator()
+		+ System.lineSeparator() +	"+--------+" + System.lineSeparator() +	"|myclass2|" + System.lineSeparator() +	"+--------+"
+		+ System.lineSeparator() + System.lineSeparator(), newOut.toString());
+		assertEquals("list relationships valid error stream 2", "", newErr.toString());
 		newOut.reset();
 		newErr.reset();
 		console.execCommand("add class class3");
 		console.execCommand("add relationship myclass composition myclass3");
 		assertEquals("list relationships valid return code 3", 0, console.execCommand("list relationships myclass"));
-		assertEquals("list relationships valid output 3", "-----------          ------------\n| myclass | ------<> | myclass2 |\n-----------          "
-		+ "------------\n-----------          ------------\n| myclass | -----<=> | myclass3 |\n-----------          ------------", scrubOut(newOut.toString()));
-		assertEquals("list relationships valid error stream 3", "", scrubOut(newErr.toString()));
+		assertEquals("list relationships valid output 3", "Added class 'class3'." + System.lineSeparator()
+		+"Added composition relationship from 'myclass' to 'myclass3'." + System.lineSeparator()
+		+ "+-------+"  + System.lineSeparator() + "|myclass|" + System.lineSeparator() + "+-------+" + System.lineSeparator() + System.lineSeparator()
+		+ " |" + System.lineSeparator()	+ " |" + System.lineSeparator()	+ " |" + System.lineSeparator()	+ "< >" + System.lineSeparator()
+		+ System.lineSeparator() +	"+--------+" + System.lineSeparator() +	"|myclass2|" + System.lineSeparator() +	"+--------+"
+		+ System.lineSeparator() + System.lineSeparator(), newOut.toString());
+		assertEquals("list relationships valid error stream 3", "", newErr.toString());
 		
 		// List relationships with invalid input
 		assertEquals("list relationships invalid return code", 109, console.execCommand("list relationships class"));
 
 		// List with invalid argument count
-		assertEquals("List too few args", 102, console.execCommand("List"));
+		assertEquals("List too few args", 102, console.execCommand("list"));
 		
 		// Reset the old output streams
 		System.setOut(oldOut);
@@ -644,26 +652,50 @@ public class ConsoleTest {
 		
 		// Help command with valid input
 		assertEquals("help valid return code", 0, console.execCommand("help"));
-		assertEquals("help valid output", System.lineSeparator() + "VALID COMMANDS"+System.lineSeparator() + "---------------------------------"+ System.lineSeparator()
-		+ "help: Prints out a list of valid commands with descriptions for each command.  Typing help <command> describes a specific command."+ System.lineSeparator()
-		+ "add: Can add class with add <class_name>.  Also adds fields and methods to specified class in the form add <field/method> <class_name> <type/return_type> <field/method_name> <parameter_list>(for methods)."+ System.lineSeparator()
-		+ "     Add relationship in the form add <relationship> <class_name1> <relationship_type> <class_name2>."+ System.lineSeparator()
-		+ "edit: Edit classes with edit class <old_class_name> <new_class_name>.  Edit fields and methods with edit <field/method> <source_class> <old_name> <new_name> <parameter_list>(for method)."+ System.lineSeparator()
-		+ "remove: Can remove class with remove <class_name>.  Also removes fields and methods from specified class in the form remove <field/method> <class_name> <field/method_name> <parameter_list>(for methods)."+ System.lineSeparator()
-		+ "\tRemove relationship in the form remove <relationship> <class_name1> <relationship_type> <class_name2>."+ System.lineSeparator()
-		+ "exit: Quit the program."+ System.lineSeparator()
-		+ "quit: Quit the program."+ System.lineSeparator()
-		+ "save: Save the current state of the UML diagram.  If a file has not been set it will prompt the user."+ System.lineSeparator()
-		+ "load <file_path>: Load the given file into the UML editor."+ System.lineSeparator()
-		+ "list: Can list all classes with list classes or specific class with list classes <class_name>.  These lists take the form of boxes with the class name and its associated attributes inside."+ System.lineSeparator() 
-		+ "      List all relationships with list relationships or list relationships <class_name>.  Takes the form boxes for each class containing their associated attributes with a delimiter for relationship type between classes."+ System.lineSeparator(), newOut.toString());
-		assertEquals("help valid error stream", "", scrubOut(newErr.toString()));
+		assertEquals("help valid output", System.lineSeparator() + "VALID COMMANDS"+System.lineSeparator() + "---------------------------------" + System.lineSeparator()
+		+ "help: Prints out a list of valid commands with descriptions for each command." + System.lineSeparator() + System.lineSeparator()
+		+ "Typing help <command> describes a specific command." + System.lineSeparator() + System.lineSeparator()
+		+ "add: Can add class with:" + System.lineSeparator() + System.lineSeparator()
+		+ "add <class_name>." + System.lineSeparator() + System.lineSeparator()
+		+ "Also adds fields and methods to specified class in the form:" + System.lineSeparator() + System.lineSeparator()
+		+ "add <field/method> <class_name> <type/return_type> <field/method_name> <parameter_list>(for methods)." + System.lineSeparator() + System.lineSeparator()
+		+ "Add relationship in the form:" + System.lineSeparator() + System.lineSeparator()
+		+ "add <relationship> <class_name1> <relationship_type> <class_name2>." + System.lineSeparator() + System.lineSeparator()
+		+ "edit: Edit classes with:" + System.lineSeparator() + System.lineSeparator()
+		+ "edit class <old_class_name> <new_class_name>." + System.lineSeparator() + System.lineSeparator()
+		+ "Edit fields and methods with:" + System.lineSeparator() + System.lineSeparator()
+		+ "edit <field/method> <source_class> <old_name> <new_name> <parameter_list>(for method)." + System.lineSeparator() + System.lineSeparator()
+		+ "remove: Can remove class with:" + System.lineSeparator() + System.lineSeparator()
+		+ "remove <class_name>." + System.lineSeparator() + System.lineSeparator()
+		+ "Also removes fields and methods from specified class in the form:" + System.lineSeparator() + System.lineSeparator()
+		+ "remove <field/method> <class_name> <field/method_name> <parameter_list>(for methods)." + System.lineSeparator() + System.lineSeparator()
+		+ "Remove relationships in the form:" + System.lineSeparator() + System.lineSeparator()
+		+ "remove <relationship> <class_name1> <relationship_type> <class_name2>." + System.lineSeparator() + System.lineSeparator()
+		+ "exit: Quit the program." + System.lineSeparator() + System.lineSeparator()
+		+ "quit: Quit the program." + System.lineSeparator() + System.lineSeparator()
+		+ "save: Save the current state of the UML diagram.  If a file has not been set it will prompt the user." + System.lineSeparator() + System.lineSeparator()
+		+ "load <file_path>: Load the given file into the UML editor." + System.lineSeparator() + System.lineSeparator()
+		+ "list: Can list all classes with:" + System.lineSeparator() + System.lineSeparator()
+		+ "list classes" + System.lineSeparator() + System.lineSeparator()
+		+ "or specific class with:" + System.lineSeparator() + System.lineSeparator()
+		+ "list classes <class_name>." + System.lineSeparator() + System.lineSeparator()
+		+ "These lists take the form of boxes with the class name and its associated attributes inside." + System.lineSeparator() + System.lineSeparator() 
+		+ "List all relationships with:" + System.lineSeparator() + System.lineSeparator()
+		+ "list relationships" + System.lineSeparator() + System.lineSeparator()
+		+ "or" + System.lineSeparator() + System.lineSeparator()
+		+ "list relationships <class_name>." + System.lineSeparator() + System.lineSeparator()
+		+ "Takes the form boxes for each class containing their associated attributes with a delimiter for relationship type between classes." + System.lineSeparator() + System.lineSeparator(), newOut.toString());
+		assertEquals("help valid error stream", "", newErr.toString());
 		newOut.reset();
 		newErr.reset();
 		assertEquals("help valid return code 2", 0, console.execCommand("help add"));
-		assertEquals("help valid output 2", System.lineSeparator() + "add: Can add class with add <class_name>.  Also adds fields and methods to specified class in the form add <field/method> <class_name> <type/return_type> <field/method_name> <parameter_list>(for methods)." + System.lineSeparator()
-		+ "     Add relationship in the form add <relationship> <class_name1> <relationship_type> <class_name2>.", newOut.toString());
-		assertEquals("help valid error stream 2", "", scrubOut(newErr.toString()));
+		assertEquals("help valid output 2",  System.lineSeparator() + "add: Can add class with:" + System.lineSeparator() + System.lineSeparator()
+		+ "add <class_name>." + System.lineSeparator()+ System.lineSeparator()
+		+ "Also adds fields and methods to specified class in the form:" + System.lineSeparator()+ System.lineSeparator()
+		+ "add <field/method> <class_name> <type/return_type> <field/method_name> <parameter_list>(for methods)." + System.lineSeparator()+ System.lineSeparator()
+		+ "Add relationship in the form:" + System.lineSeparator()+ System.lineSeparator()
+		+ "add <relationship> <class_name1> <relationship_type> <class_name2>." + System.lineSeparator()+ System.lineSeparator(), newOut.toString());
+		assertEquals("help valid error stream 2", "", newErr.toString());
 		
 		// Help with invalid input
 		assertEquals("help invalid return code 2", 104, console.execCommand("h"));

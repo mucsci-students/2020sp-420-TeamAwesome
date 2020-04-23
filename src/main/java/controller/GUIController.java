@@ -1,6 +1,8 @@
 // Package name
 package controller;
 
+import java.util.ArrayList;
+
 // System imports
 
 
@@ -147,27 +149,42 @@ public class GUIController extends UMLController {
 	}
 
 	@Override
-	public String[] listClasses() {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<String[]> printClasses() {
+		ArrayList<String[]> result = model.printClasses();
+		if(result != null) {
+			// Notify observer of change
+			notify("printClasses", model);
+		}
+		return result;
 	}
 
 	@Override
-	public void listRelationships() {
-		// TODO Auto-generated method stub
-		
+	public ArrayList<ArrayList<String[]>> printRelationships() {
+		ArrayList<ArrayList<String[]>> result =model.printRelationships();
+		if(result != null)
+			// Notify observer of change
+			notify("printRelationships", model);
+		return result;
 	}
 
 	@Override
-	public String[] listClasses(String className) {
-		// TODO Auto-generated method stub
-	return null;	
+	public String[] printClasses(String className) {
+		String[] result = model.printClasses(className);
+		if(result != null) {
+			// Notify observer of change
+			notify("printClasses", model);
+		}
+		return result;	
 	}
 
 	@Override
-	public String[] listRelationships(String className) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<String[]> printRelationships(String className) {
+		ArrayList<String[]> result = model.printRelationships(className);
+		if(result != null) {
+			// Notify observer of change
+			notify("printRelationships", model);
+		}
+		return result;
 	}
 
 }

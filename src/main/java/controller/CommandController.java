@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.ArrayList;
+
 import model.UMLClassManager;
 
 public class CommandController extends UMLController {
@@ -97,32 +99,36 @@ public class CommandController extends UMLController {
 	}
 
 	@Override
-	public String[] listClasses() {
-		Object[] result = getModel().listClasses();
-		if((int)result[1] == 0)
-		notify("listClasses", getModel());
-		return (String[])result[0];
+	public ArrayList<String[]> printClasses() {
+		ArrayList<String[]> result = getModel().printClasses();
+		if(result != null)
+			notify("printClasses", getModel());
+		return result;
 		
 	}
 
 	@Override
-	public void listRelationships() {
-		// TODO Auto-generated method stub
-		
+	public ArrayList<ArrayList<String[]>> printRelationships() {
+		ArrayList<ArrayList<String[]>> result = getModel().printRelationships();
+		if(result != null)
+			notify("printRelationships", getModel());
+		return result;
 	}
 
 	@Override
-	public String[] listClasses(String className) {
-		Object[] result = getModel().listClasses(className);
-		if((int)result[1] == 0)
-		notify("listClasses", getModel());
-		return (String[])result[0];
+	public String[] printClasses(String className) {
+		String[] result = getModel().printClasses(className);
+		if(result != null)
+			notify("printClasses", getModel());
+		return result;
 	}
 
 	@Override
-	public String[] listRelationships(String className) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<String[]> printRelationships(String className) {
+		ArrayList<String[]> result = getModel().printRelationships(className);
+		if(result != null)
+			notify("printRelationships", getModel());
+		return result;
 	}
 
 }

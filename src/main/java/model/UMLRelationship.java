@@ -84,4 +84,24 @@ public class UMLRelationship implements Serializable {
 			return "Invalid Type";
 		}
 	}
+	
+	/**
+	 * converts the relationship type to a vertical representation for console
+	 * @return String array where each index is a character in the relationship type
+	 */
+	public String[] vertType() {
+		String lowerType = this.type.toLowerCase();
+		if(lowerType.equals("aggregation")) {
+			return new String[] {" |", " |", " |", "< >"};
+		}
+		else if(lowerType.equals("composition")) {
+			return new String[] {" |", " |", " |", "<=>"};
+		}
+		else if(lowerType.equals("inheritance")){
+			return new String[] {" |", " |", " |", "> <"};
+		}
+		else {
+			return new String[] {" |", " ", " ", " |", "> <"};
+		}
+	}
 }

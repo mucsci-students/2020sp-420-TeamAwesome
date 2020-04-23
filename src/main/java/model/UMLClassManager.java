@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 //System imports
 import java.util.LinkedHashMap; 
 import java.util.Map;
@@ -269,13 +270,17 @@ public class UMLClassManager implements Serializable {
 	 * Get the list of classes in the UML diagram
 	 * @return String of classes in format "[class1, class2, ...]"
 	 */
-	public Object[] listClasses() {
-		String[][] result = new String[classList.size()][];;
-		int i = 0;
-		for(Map.Entry<String, UMLClass> entry : classList.entrySet()) {
-			result[i] = (String[]) listClasses(entry.getValue().getName());
+	public ArrayList<String[]> printClasses() {
+		if(classList.isEmpty()) {
+			return null;
 		}
-		return new Object[] {result, ErrorHandler.setCode(0)};
+		else {
+			ArrayList<String[]> result = new ArrayList<String[]>();
+			for(Map.Entry<String, UMLClass> entry : classList.entrySet()) {
+				result.add(printClasses(entry.getValue().getName()));
+			}
+			return result;
+		}
 	}
 	
 	/**
@@ -283,73 +288,55 @@ public class UMLClassManager implements Serializable {
 	 * @param className
 	 * @return return object array where first element is result and the second is an integer for a status code.
 	 */
-	public Object[] listClasses(String className) {
-		int boxWidth = className.length() + 4;
-		int fieldSize = classList.get(className).getFields().size();
-		int methodSize = classList.get(className).getMethods().size();
-		int size = fieldSize + methodSize + 3;
-		for(Map.Entry<String, Field> entry : classList.get(className).getFields().entrySet()) {
-			if(entry.getValue().toString().length() + 4 > boxWidth)
-				boxWidth = entry.getValue().toString().length() + 4;
-		}
-		for(Map.Entry<String, Method> entry : classList.get(className).getMethods().entrySet()) {
-			if(entry.getValue().toString().length() + 4 > boxWidth)
-				boxWidth = entry.getValue().toString().length() + 4;
-		}
-		String[] result = new String[size] ;
+	public String[] printClasses(String className) {
 		if(!classList.containsKey(className)) {
-			return new Object[] {null, ErrorHandler.setCode(107)};
+			return null;
 		}
 		else {
-			int padding = (boxWidth - className.length()) / 2;
-			String top = "";
+			ArrayList<String> boxString = new ArrayList<String>();
+			String[] fields = listFields(className);
+			String[] methods = listMethods(className);
+			int boxWidth = className.length();
+			boxString.add(className);
+			if(fields != null) {
+				for(String s : fields) {
+					boxString.add(s);
+					if(s.length() > boxWidth) {
+						boxWidth = s.length();
+					}
+				}
+			}
+			if(methods != null) {
+				for(String s : methods) {
+					boxString.add(s);
+					if(s.length() > boxWidth) {
+						boxWidth = s.length();
+					}
+				}
+			}
+			String top = "+";
 			for(int i = 0; i < boxWidth; i++) {
 				top += "-";
 			}
-			result[0] = top;
-			result[result.length - 1] = top;
-			result[1] = "|";
-			for(int k = 0; k < padding; k++) {
-				result[1] += " ";
-			}
-			result[1] += className;
-			for(int k = 0; k < padding -1; k++) {
-				result[1] += " ";
-			}
-			result[1] += "|";
-			int i = 2;
-			if(fieldSize > 0) {
-				for(Map.Entry<String, Field> entry : classList.get(className).getFields().entrySet()) {
-					int space = (boxWidth - entry.getValue().toString().length()) / 2;
-					result[i] = "|";
-					for(int j = 0; j < space - 1; j++) {
-						result[i] += " ";
+			top += "+";
+			boxString.add(0, top);
+			
+			String[] classBox = new String[boxString.size() + 1];
+			String border = boxString.get(0);
+			classBox[0] = border;
+			for(int i = 1; i < boxString.size(); i++) {
+					classBox[i] = "|";
+					String spaces = "";
+					for(int j = boxString.get(i).length(); j < top.length() - 2; j++) {
+						spaces += " ";
 					}
-					result[i] += entry.getValue().toString();
-					for(int j = 0; j < space - 1; j++) {
-						result[i] += " ";
-					}
-					result[i] += "|";
-					i++;
-				}
+					classBox[i] += (spaces.substring(0, spaces.length()/2) + boxString.get(i) + spaces.substring(spaces.length()/2));
+					classBox[i] += "|";
 			}
-			if(methodSize > 0) {
-				for(Map.Entry<String, Method> entry : classList.get(className).getMethods().entrySet()) {
-					int space = (boxWidth - entry.getValue().toString().length()) / 2;
-					result[i] = "|";
-					for(int j = 0; j < space - 1; j++) {
-						result[i] += " ";
-					}
-					result[i] += entry.getValue().toString();
-					for(int j = 0; j < space - 1; j++) {
-						result[i] += " ";
-					}
-					result[i] += "|";
-					i++;
-				}
-			}
+			classBox[classBox.length - 1] = border;
+			return classBox;
 		}
-		return new Object[] {result, ErrorHandler.setCode(0)};
+		
 	}
 	
 	/**
@@ -379,49 +366,49 @@ public class UMLClassManager implements Serializable {
 	/**
 	 * List the fields of the given class
 	 * @param className
-	 * @return 'tuple' of [string of fields, return code];
+	 * @return String array of all fields;
 	 */
-	public Object[] listFields(String className) {
-		// Make sure class exists
-		if(!classList.containsKey(className)) {
-			return new Object[] {"", ErrorHandler.setCode(109)};
+	private String[] listFields(String className) {
+		//instance of className
+		UMLClass inst = getClass(className);
+		// Make sure fields exists
+		if(inst.getFields().size() == 0) {
+			return null;
 		}
 		else {
-			UMLClass inst = getClass(className);
-			String temp = "[";
+			//Set up string array and loop through fields to populate.
+			String[] result = new String[inst.getFields().size()];
+			int i = 0;
 			for(Map.Entry<String, Field> entry : inst.getFields().entrySet()) {
-				Field finst = entry.getValue();
-				temp += finst.getType() + " " + finst.getName() + ", ";
+				result[i] = entry.getValue().toString();
+				i++;
 			}
-			temp = temp.substring(0, temp.lastIndexOf(", "));
-			temp += "]";
-			
-			return new Object[]{temp, ErrorHandler.setCode(0)};
+			return result;
 		}
 	}
 	
 	/**
 	 * List the methods of the given class
 	 * @param className
-	 * @return 'tuple' of [string of methods, return code];
+	 * @return String array of all methods;
 	 */
-	public Object[] listMethods(String className) {
-		// Make sure class exists
-				if(!classList.containsKey(className)) {
-					return new Object[] {"", ErrorHandler.setCode(109)};
-				}
-				else {
-					UMLClass inst = getClass(className);
-					String temp = "[";
-					for(Map.Entry<String, Method> entry : inst.getMethods().entrySet()) {
-						Method finst = entry.getValue();
-						temp += finst.getReturnType() + " " + finst.getName() + finst.getParams() + ", ";
-					}
-					temp = temp.substring(0, temp.lastIndexOf(", "));
-					temp += "]";
-					
-					return new Object[]{temp, ErrorHandler.setCode(0)};
-				}
+	private String[] listMethods(String className) {
+		//instance of className
+		UMLClass inst = getClass(className);
+		// Make sure methods exists
+		if(inst.getMethods().size() == 0) {
+			return null;
+		}
+		else {
+			//set up string array by itterating through methods
+			String[] result = new String[inst.getMethods().size()];
+			int i = 0;
+			for(Map.Entry<String, Method> entry : inst.getMethods().entrySet()) {
+				result[i] = entry.getValue().toString();
+				i++;
+			}
+			return result;
+		}
 	}
 	
 	/**
@@ -482,8 +469,22 @@ public class UMLClassManager implements Serializable {
 	/**
 	 * Lists relationships of the entire model
 	 */
-	public void listRelationships() {
-		
+	public ArrayList<ArrayList<String[]>> printRelationships() {
+		if(relationships.isEmpty()) {
+			return null;
+		}
+		else {
+			ArrayList<ArrayList<String[]>> result = new ArrayList<ArrayList<String[]>>();
+			for(Map.Entry<String, UMLRelationship> entry : relationships.entrySet()) {
+				String name2 = entry.getValue().getClass2().getName();
+				for(Map.Entry<String, UMLRelationship> r : relationships.entrySet()) {
+					if(!name2.equals(r.getValue().getClass1().getName())) {
+						result.add(printRelationships(r.getValue().getClass1().getName()));
+					}
+				}
+			}
+			return result;
+		}
 	}
 	
 	/**
@@ -491,8 +492,21 @@ public class UMLClassManager implements Serializable {
 	 * @param className
 	 * @return 'tuple' of [string of relationships, return code];
 	 */
-	public void listRelationships(String className) {
-		 
+	public ArrayList<String[]> printRelationships(String className) {
+		 if(!classList.containsKey(className)) {
+			 return null;
+		 }
+		 else {
+			 ArrayList<String[]> result = new ArrayList<String[]>();
+			 for(Map.Entry<String, UMLRelationship> entry : relationships.entrySet()) {
+					if(entry.getValue().hasClass(className)) {
+						result.add(printClasses(entry.getValue().getClass1().getName()));
+						result.add(entry.getValue().vertType());
+						result.add(printClasses(entry.getValue().getClass2().getName()));
+					}
+				}
+			 return result;
+		 }
 	}
 	
 	/**
