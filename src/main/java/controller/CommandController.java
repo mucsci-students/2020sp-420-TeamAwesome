@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.ArrayList;
+
 import model.UMLClassManager;
 
 public class CommandController extends UMLController {
@@ -93,6 +95,39 @@ public class CommandController extends UMLController {
 		int result = getModel().removeRelationship(class1, type, class2);
 		if(result == 0)
 			notify("removeRelationship", getModel());
+		return result;
+	}
+
+	@Override
+	public ArrayList<String[]> printClasses() {
+		ArrayList<String[]> result = getModel().printClasses();
+		if(result != null)
+			notify("printClasses", getModel());
+		return result;
+		
+	}
+
+	@Override
+	public ArrayList<ArrayList<String[]>> printRelationships() {
+		ArrayList<ArrayList<String[]>> result = getModel().printRelationships();
+		if(result != null)
+			notify("printRelationships", getModel());
+		return result;
+	}
+
+	@Override
+	public String[] printClasses(String className) {
+		String[] result = getModel().printClasses(className);
+		if(result != null)
+			notify("printClasses", getModel());
+		return result;
+	}
+
+	@Override
+	public ArrayList<String[]> printRelationships(String className) {
+		ArrayList<String[]> result = getModel().printRelationships(className);
+		if(result != null)
+			notify("printRelationships", getModel());
 		return result;
 	}
 
