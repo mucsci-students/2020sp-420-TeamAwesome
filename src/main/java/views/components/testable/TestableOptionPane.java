@@ -20,4 +20,8 @@ public class TestableOptionPane extends JOptionPane {
 	public TestableOptionPane(String desiredResult) {
 		result = desiredResult;
 	}
+	
+	public String showInputDialog() {
+		return null;
+	}
 }
