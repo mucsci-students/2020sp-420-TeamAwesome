@@ -16,4 +16,8 @@ jobs:
     - name: Build with Maven
       run: 
         mvn -B package --file pom.xml
-        bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }}
+    - name: Code Coverage
+      uses: codecov/codecov-action@v1.0.6
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
