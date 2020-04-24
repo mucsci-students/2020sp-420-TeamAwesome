@@ -1,7 +1,5 @@
 package controller;
 
-import java.util.ArrayList;
-
 import model.UMLClassManager;
 import observe.Observable;
 
@@ -31,12 +29,4 @@ public abstract class UMLController extends Observable {
 	
 	public abstract int addRelationship(String class1, String type, String class2);
 	public abstract int removeRelationship(String class1, String type, String class2);
-
-	public abstract ArrayList<String[]> printClasses();
-
-	public abstract ArrayList<ArrayList<String[]>> printRelationships();
-
-	public abstract String[] printClasses(String className);
-
-	public abstract ArrayList<String[]> printRelationships(String className);
 }

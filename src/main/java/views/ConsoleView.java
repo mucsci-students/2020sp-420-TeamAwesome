@@ -390,7 +390,7 @@ public class ConsoleView extends View {
 			// Expects minimum of 2 args and maximum of 3 args.
 			if(args.length == 2) {
 				if(args[1].equals("classes")) {
-					ArrayList<String[]> listBoxes = controller.printClasses();
+					ArrayList<String[]> listBoxes = ((CommandController)controller).printClasses();
 					if(listBoxes == null) {
 						System.out.println("There are no classes to display.");
 					}
@@ -404,7 +404,7 @@ public class ConsoleView extends View {
 					}
 				}
 				else if(args[1].equals("relationships")) {
-					ArrayList<ArrayList<String[]>> rBoxes = controller.printRelationships();
+					ArrayList<ArrayList<String[]>> rBoxes = ((CommandController)controller).printRelationships();
 					if(rBoxes == null) {
 						System.out.print("There are no relationships to display.");
 					}
@@ -422,7 +422,7 @@ public class ConsoleView extends View {
 			} else if(args.length == 3) {
 				//Expect arg[2] to be class name
 				if(args[1].equals("classes")) {
-					String[] box = controller.printClasses(args[2]);
+					String[] box = ((CommandController)controller).printClasses(args[2]);
 					if(box == null) {
 						result = 109;
 					}
@@ -432,7 +432,7 @@ public class ConsoleView extends View {
 					}
 				}
 				else if(args[1].equals("relationships")) {
-					ArrayList<String[]> rList = controller.printRelationships(args[2]);
+					ArrayList<String[]> rList = ((CommandController)controller).printRelationships(args[2]);
 					if(rList == null) {
 						result = 109;
 					}

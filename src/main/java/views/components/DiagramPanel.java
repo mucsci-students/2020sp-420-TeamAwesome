@@ -31,7 +31,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import core.ErrorHandler;
 import core.UMLFileIO;
 import model.Method;
 // Local imports
@@ -80,7 +79,6 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	private JMenuItem mainAddClass;
 	private JMenuItem mainSaveFile;
 	private JMenuItem mainLoadFile;
-	
 	
 	// MenuItems for generic mouse menu
 	private JMenuItem mouseAddClass;
@@ -349,8 +347,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		mainMenuBar.setName("mainMenuBar");
 		
 		//main menu initialization
-		mainFile = new JMenu("file");
-		mainActions = new JMenu("actions");
+		mainFile = new JMenu("File");
+		mainActions = new JMenu("Actions");
 		mainFile.setName("mainFile");
 		mainActions.setName("mainActions");
 		
@@ -481,6 +479,16 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 				
 				// Make sure user did not cancel input
 				if(className != null) {
+					// Check if source is from the main menu, if so then offset the location
+					if(e.getSource() == mainAddClass) {
+						mouseX = 0;
+						mouseY = 0;
+						Component temp;
+						while((temp = findComponentAt(mouseX, mouseY)) != null && temp != DiagramPanel.this) {
+							mouseX += 10;
+							mouseY += 10;
+						}
+					}
 					int result = view.getController().addClass(className.toString(), mouseX, mouseY);
 					if(result != 0 && isHuman)
 						view.showError(DiagramPanel.this, result);

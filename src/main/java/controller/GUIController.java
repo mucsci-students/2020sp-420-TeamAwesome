@@ -1,10 +1,7 @@
 // Package name
 package controller;
 
-import java.util.ArrayList;
-
 // System imports
-
 
 // Local imports
 import model.UMLClass;
@@ -147,44 +144,4 @@ public class GUIController extends UMLController {
 		}
 		return result;
 	}
-
-	@Override
-	public ArrayList<String[]> printClasses() {
-		ArrayList<String[]> result = model.printClasses();
-		if(result != null) {
-			// Notify observer of change
-			notify("printClasses", model);
-		}
-		return result;
-	}
-
-	@Override
-	public ArrayList<ArrayList<String[]>> printRelationships() {
-		ArrayList<ArrayList<String[]>> result = model.printRelationships();
-		if(result != null)
-			// Notify observer of change
-			notify("printRelationships", model);
-		return result;
-	}
-
-	@Override
-	public String[] printClasses(String className) {
-		String[] result = model.printClasses(className);
-		if(result != null) {
-			// Notify observer of change
-			notify("printClasses", model);
-		}
-		return result;	
-	}
-
-	@Override
-	public ArrayList<String[]> printRelationships(String className) {
-		ArrayList<String[]> result = model.printRelationships(className);
-		if(result != null) {
-			// Notify observer of change
-			notify("Relationships", model);
-		}
-		return result;
-	}
-
 }
