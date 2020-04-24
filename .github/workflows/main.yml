@@ -1,0 +1,24 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Maven tests with Codecov
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        uses: action/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./target/jacoco-report/jacoco.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
