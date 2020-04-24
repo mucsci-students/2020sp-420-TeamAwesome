@@ -1,6 +1,9 @@
 // Package name
 package views.components.testable;
 
+import java.awt.Component;
+
+import javax.swing.Icon;
 // System imports
 import javax.swing.JOptionPane;
 
@@ -21,7 +24,12 @@ public class TestableOptionPane extends JOptionPane {
 		result = desiredResult;
 	}
 	
-	public String showInputDialog() {
-		return null;
+	public String showInputDialog(Component parent, String message) {
+		return result;
 	}
+	
+	 public String showInputDialog(Component parentComponent, String message, 
+			 String title, int messageType, Icon icon, Object[] selectionValues, Object initialSelectionValue) {
+		 return result;
+	 }
 }

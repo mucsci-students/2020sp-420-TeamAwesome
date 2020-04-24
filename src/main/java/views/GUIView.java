@@ -101,9 +101,9 @@ public class GUIView extends View {
 	 * @param message - The message directing the user what to enter
 	 * @return - User entered String
 	 */
-	public Object promptInput(String message) {
+	public Object promptInput(String message, JOptionPane optionPane) {
 		// Prompt the user for input and return the input
-		return JOptionPane.showInputDialog(window, message);
+		return optionPane.showInputDialog(window, message);
 	}
 	
 	/**
@@ -111,9 +111,9 @@ public class GUIView extends View {
 	 * @param message - The message directing the user what to enter
 	 * @return - User entered String
 	 */
-	public Object promptSelection(String message, Object[] options) {
+	public Object promptSelection(String message, Object[] options, JOptionPane optionPane) {
 		// Prompt the user for input with a list of selections and return the input
-		return JOptionPane.showInputDialog(window, message, "Selection", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		return optionPane.showInputDialog(window, message, "Selection", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 	}
 	
 	/**
