@@ -475,7 +475,6 @@ public class UMLClassManager implements Serializable {
 		}
 		else {
 			ArrayList<ArrayList<String[]>> result = new ArrayList<ArrayList<String[]>>();
-			String name2 = entry.getValue().getClass2().getName();
 			for(Map.Entry<String, UMLRelationship> r : relationships.entrySet()) {
 				String name2 = r.getValue().getClass2().getName();
 				if(!name2.equals(r.getValue().getClass1().getName())) {
