@@ -467,7 +467,7 @@ public class UMLClassManager implements Serializable {
 	}
 	
 	/**
-	 * Lists relationships of the entire model
+	 * Prints relationships of the entire model
 	 */
 	public ArrayList<ArrayList<String[]>> printRelationships() {
 		if(relationships.isEmpty()) {
@@ -549,6 +549,36 @@ public class UMLClassManager implements Serializable {
 		}
 		
 		return ErrorHandler.setCode(109);
+	}
+	
+	/**
+	 * List the relationships the given class has
+	 * @param className
+	 * @return 'tuple' of [string of relationships, return code];
+	 */
+	public Object[] listRelationships(String className) {
+		// Make sure class exists
+		if(!classList.containsKey(className))
+			return new Object[]{"", ErrorHandler.setCode(107)};
+		
+		// Find all relationships with className involved
+		String result = "[";
+		
+		// Loop through all relationships checking if className is in each relationship, if
+		//		it is then add the key to the output
+		for(Map.Entry<String, UMLRelationship> relation : relationships.entrySet()) {
+			// Check if className is in the relationship
+			if(relation.getValue().hasClass(className))
+				result += relation.getKey() +", ";
+		}
+		
+		// Remove last ', ' if it exists
+		if(result.endsWith(", "))
+			result = result.substring(0, result.lastIndexOf(", "));
+		
+		result += "]";
+		
+		return new Object[]{result, ErrorHandler.setCode(0)};
 	}
 	
 	/**
