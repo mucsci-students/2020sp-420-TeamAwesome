@@ -3,9 +3,9 @@ package model;
 import java.io.Serializable;
 
 public class UMLRelationship implements Serializable {
-	public static final String AGGREGATION = " ----<> ";
-	public static final String COMPOSITION = " ----<=> ";
-	public static final String INHERITANCE = " ----> ";
+	public static final String AGGREGATION = " ------<> ";
+	public static final String COMPOSITION = " -----<=> ";
+	public static final String INHERITANCE = " -------> ";
 	public static final String REALIZATION = " - - - -> ";
 	
 	// Version ID for serialization
@@ -82,6 +82,26 @@ public class UMLRelationship implements Serializable {
 		}
 		else {
 			return "Invalid Type";
+		}
+	}
+	
+	/**
+	 * converts the relationship type to a vertical representation for console
+	 * @return String array where each index is a character in the relationship type
+	 */
+	public String[] vertType() {
+		String lowerType = this.type.toLowerCase();
+		if(lowerType.equals("aggregation")) {
+			return new String[] {" |", " |", " |", "< >"};
+		}
+		else if(lowerType.equals("composition")) {
+			return new String[] {" |", " |", " |", "<=>"};
+		}
+		else if(lowerType.equals("inheritance")){
+			return new String[] {" |", " |", " |", "> <"};
+		}
+		else {
+			return new String[] {" |", " ", " ", " |", "> <"};
 		}
 	}
 }
