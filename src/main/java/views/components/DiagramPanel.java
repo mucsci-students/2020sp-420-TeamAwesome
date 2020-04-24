@@ -80,7 +80,6 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	private JMenuItem mainSaveFile;
 	private JMenuItem mainLoadFile;
 	
-	
 	// MenuItems for generic mouse menu
 	private JMenuItem mouseAddClass;
 	private JMenuItem mouseSaveFile;

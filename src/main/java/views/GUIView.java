@@ -13,7 +13,6 @@ import javax.swing.UIManager;
 //Local imports
 import controller.UMLController;
 import core.ErrorHandler;
-import core.UMLFileIO;
 import model.UMLClassManager;
 import observe.Observable;
 import views.components.DiagramPanel;
@@ -27,7 +26,6 @@ import views.components.GUIClass;
 public class GUIView extends View {
 	private UMLClassManager model;
 	private UMLController controller;
-	private UMLFileIO fileIO;
 	
 	// Window elements
 	private JFrame window;
@@ -51,9 +49,6 @@ public class GUIView extends View {
 	public GUIView(UMLController controller, UMLClassManager model, boolean isHuman) {
 		// Setup look and feel
 		if(setLook() != 0);
-		
-		// Initialize file IO
-		fileIO = new UMLFileIO();
 
 		// Setup controller and model
 		this.controller = controller;

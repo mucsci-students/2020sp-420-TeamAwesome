@@ -11,8 +11,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import java.awt.Component;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
