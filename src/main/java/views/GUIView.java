@@ -17,6 +17,7 @@ import model.UMLClassManager;
 import observe.Observable;
 import views.components.DiagramPanel;
 import views.components.GUIClass;
+import views.components.testable.TestableOptionPane;
 
 /**
  * A graphical view of the UML editor
@@ -30,6 +31,9 @@ public class GUIView extends View {
 	// Window elements
 	private JFrame window;
 	private DiagramPanel umlDiagram;
+	
+	// Option pane
+	private JOptionPane optionPane;
 	
 	/**
 	 * Create a GUI view for a human
@@ -55,8 +59,18 @@ public class GUIView extends View {
 		this.model = model;
 		this.controller.addObserver(this);
 		
+		// Setup options
+		if(isHuman) {
+			// Set to a regular JOptionPane if human
+			setOptionPane(new JOptionPane());
+		}
+		// Set to a blank test pane otherwise (to avoid null pointers)
+		else {
+			setOptionPane(new TestableOptionPane(""));
+		}
+		
 		setupWindow();
-		setupDiagram(isHuman);
+		setupDiagram();
 		
 		window.pack();
 	}
@@ -85,9 +99,9 @@ public class GUIView extends View {
 	/**
 	 * Initialize the diagram panel where the model will be represented
 	 */
-	private void setupDiagram(boolean isHuman) {
+	private void setupDiagram() {
 		// Setup a JPanel to display the classes and relationships
-		umlDiagram = new DiagramPanel(this, isHuman);
+		umlDiagram = new DiagramPanel(this);
 		
 		// Add the umlDiagram to the list of listeners for model changes
 		controller.addObserver(umlDiagram);
@@ -101,7 +115,8 @@ public class GUIView extends View {
 	 * @param message - The message directing the user what to enter
 	 * @return - User entered String
 	 */
-	public Object promptInput(String message, JOptionPane optionPane) {
+	@SuppressWarnings("static-access")
+	public Object promptInput(String message) {
 		// Prompt the user for input and return the input
 		return optionPane.showInputDialog(window, message);
 	}
@@ -111,7 +126,8 @@ public class GUIView extends View {
 	 * @param message - The message directing the user what to enter
 	 * @return - User entered String
 	 */
-	public Object promptSelection(String message, Object[] options, JOptionPane optionPane) {
+	@SuppressWarnings("static-access")
+	public Object promptSelection(String message, Object[] options) {
 		// Prompt the user for input with a list of selections and return the input
 		return optionPane.showInputDialog(window, message, "Selection", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 	}
@@ -121,9 +137,10 @@ public class GUIView extends View {
 	 * @param parent - Parent component, can be null
 	 * @param errorCode
 	 */
+	@SuppressWarnings("static-access")
 	public void showError(JComponent parent, int errorCode) {
 		// Create error message
-		JOptionPane.showMessageDialog(parent, ErrorHandler.toString(errorCode), "Error", JOptionPane.ERROR_MESSAGE);
+		optionPane.showMessageDialog(parent, ErrorHandler.toString(errorCode), "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
 	/**
@@ -183,15 +200,6 @@ public class GUIView extends View {
 	}
 	
 	/**
-	 * Load a list of data to load into the diagram to substitute human input.
-	 * Note - Will only be taken into consideration when GUI is set to non-human mode
-	 * @param data - Data to load for actions
-	 */
-	public void loadData(String[] data) {
-		umlDiagram.setData(data);
-	}
-	
-	/**
 	 * Return the map of added GUIClasses
 	 * @return
 	 */
@@ -205,6 +213,14 @@ public class GUIView extends View {
 	 */
 	public UMLClassManager getModel() {
 		return model;
+	}
+	
+	/**
+	 * Set the option pane for prompts
+	 * @param pane - option pane instance
+	 */
+	public void setOptionPane(JOptionPane pane) {
+		this.optionPane = pane;
 	}
 
 	@Override
