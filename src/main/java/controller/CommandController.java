@@ -98,7 +98,6 @@ public class CommandController extends UMLController {
 		return result;
 	}
 
-	@Override
 	public ArrayList<String[]> printClasses() {
 		ArrayList<String[]> result = getModel().printClasses();
 		if(result != null)
@@ -107,7 +106,6 @@ public class CommandController extends UMLController {
 		
 	}
 
-	@Override
 	public ArrayList<ArrayList<String[]>> printRelationships() {
 		ArrayList<ArrayList<String[]>> result = getModel().printRelationships();
 		if(result != null)
@@ -115,7 +113,6 @@ public class CommandController extends UMLController {
 		return result;
 	}
 
-	@Override
 	public String[] printClasses(String className) {
 		String[] result = getModel().printClasses(className);
 		if(result != null)
@@ -123,7 +120,6 @@ public class CommandController extends UMLController {
 		return result;
 	}
 
-	@Override
 	public ArrayList<String[]> printRelationships(String className) {
 		ArrayList<String[]> result = getModel().printRelationships(className);
 		if(result != null)
