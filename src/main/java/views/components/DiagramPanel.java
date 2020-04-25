@@ -84,6 +84,7 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 	private JMenuItem mainAddClass;
 	private JMenuItem mainSaveFile;
 	private JMenuItem mainLoadFile;
+	private JMenuItem mainExportPNG;
 	
 	// MenuItems for generic mouse menu
 	private JMenuItem mouseAddClass;
@@ -340,7 +341,7 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 		mainAddClass = createMenuItem("Add Class", "mainAddClass");
 		mainSaveFile = createMenuItem("Save to File", "mainSave");
 		mainLoadFile = createMenuItem("Load File", "mainLoad");
-
+		mainExportPNG = createMenuItem("Export to PNG", "mainExport");
 		
 		//main Bar initialization
 		mainMenuBar = view.isHuman() ? new JMenuBar() : new TestableMenuBar();
@@ -363,6 +364,8 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 		mainFile.addSeparator();
 		mainFile.add(mainSaveFile);
 		mainFile.add(mainLoadFile);
+		mainFile.addSeparator();
+		mainFile.add(mainExportPNG);
 		
 		//main menu items initialization 
 		mainRemoveClass = createMenuItem("Remove Class", "mainRemoveClass");
@@ -433,6 +436,7 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 		mainAddClass.addActionListener(addClassAction());
 		mainSaveFile.addActionListener(saveFileAction());
 		mainLoadFile.addActionListener(loadFileAction());
+		mainExportPNG.addActionListener(exportPNGAction());
 		mouseExportPNG.addActionListener(exportPNGAction());
 		
 		// Setup actions for class menu items
