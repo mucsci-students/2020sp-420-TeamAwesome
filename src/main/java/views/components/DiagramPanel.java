@@ -80,6 +80,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	private JMenuItem mainAddClass;
 	private JMenuItem mainSaveFile;
 	private JMenuItem mainLoadFile;
+	private JMenuItem mainExportPNG;
 	
 	
 	// MenuItems for generic mouse menu
@@ -342,7 +343,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		mainAddClass = createMenuItem("Add Class", "mainAddClass");
 		mainSaveFile = createMenuItem("Save to File", "mainSave");
 		mainLoadFile = createMenuItem("Load File", "mainLoad");
-
+		mainExportPNG = createMenuItem("Export to PNG", "mainExport");
 		
 		//main Bar initialization
 		mainMenuBar = new JMenuBar();
@@ -359,6 +360,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		mainFile.addSeparator();
 		mainFile.add(mainSaveFile);
 		mainFile.add(mainLoadFile);
+		mainFile.addSeparator();
+		mainFile.add(mainExportPNG);
 		
 		//main menu items initialization 
 		mainRemoveClass = createMenuItem("Remove Class", "mainRemoveClass");
@@ -426,6 +429,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		mainAddClass.addActionListener(addClassAction());
 		mainSaveFile.addActionListener(saveFileAction());
 		mainLoadFile.addActionListener(loadFileAction());
+		mainExportPNG.addActionListener(exportPNGAction());
 		mouseExportPNG.addActionListener(exportPNGAction());
 		
 		// Setup actions for class menu items
