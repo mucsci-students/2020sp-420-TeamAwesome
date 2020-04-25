@@ -3,7 +3,6 @@ package views.components.testable;
 
 // System imports
 import java.awt.Component;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -27,7 +26,6 @@ public class TestableOptionPane {
 	 * @param desiredResult - as many values as you want the input dialog to return
 	 */
 	public TestableOptionPane(String... desiredResults) {
-		System.out.println("Desired Results: " + Arrays.toString(desiredResults));
 		results = new LinkedList<String>();
 		// Add all desired results to the queue
 		Collections.addAll(results, desiredResults);

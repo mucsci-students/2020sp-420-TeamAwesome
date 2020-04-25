@@ -213,25 +213,26 @@ public class GUITest {
 		// Assuming add class works
 		controller.addClass("myclass");
 		controller.addClass("secondclass");
+		controller.addClass("thirdclass");
 		
-		assertEquals("Number of classes prior to remove", 2, model.getClassNames().length);
+		assertEquals("Number of classes prior to remove", 3, model.getClassNames().length);
 		
 		gui.setOptionPane(new TestableOptionPane("myclass"));
 		((JMenuItem)gui.getComponent("classRemoveClass")).doClick();
 		assertEquals("Remove class normal exit code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove class normal exist check", null, model.getClass("myclass"));
-		assertEquals("Number of classes after normal remove", 1, model.getClassNames().length);
+		assertEquals("Number of classes after normal remove", 2, model.getClassNames().length);
 		
 		gui.setOptionPane(new TestableOptionPane("secondclass"));
 		((JMenuItem)gui.getComponent("classRemoveClass")).doClick();
 		assertEquals("Remove class normal exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove class normal exist check 2", null, model.getClass("secondclass"));
-		assertEquals("Number of classes after normal remove 2", 0, model.getClassNames().length);
+		assertEquals("Number of classes after normal remove 2", 1, model.getClassNames().length);
 		
 		gui.setOptionPane(new TestableOptionPane("notreal")); // Like birds
 		((JMenuItem)gui.getComponent("classRemoveClass")).doClick();
 		assertNotEquals("Remove class not exist", 0, ErrorHandler.LAST_CODE);
-		assertEquals("Number of classes after invalid remove", 0, model.getClassNames().length);
+		assertEquals("Number of classes after invalid remove", 1, model.getClassNames().length);
 	}
 
 	/**
@@ -634,7 +635,7 @@ public class GUITest {
 		assertEquals("Number of methods initial", 0, myclass.getMethods().size());
 		
 		// Adding method 'int noparams() {}'
-		gui.setOptionPane(new TestableOptionPane("myclass", "int", "noparams"));
+		gui.setOptionPane(new TestableOptionPane("myclass", "int", "noparams", ""));
 		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
 		assertEquals("Add method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Add method valid num methods", 1, myclass.getMethods().size());
@@ -650,7 +651,7 @@ public class GUITest {
 		assertEquals("Add overload method return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods", 3, myclass.getMethods().size());
 		
-		gui.setOptionPane(new TestableOptionPane("myclass", "void", "*not()real*"));
+		gui.setOptionPane(new TestableOptionPane("myclass", "void", "*not()real*", ""));
 		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
 		assertNotEquals("Add method invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods", 3, myclass.getMethods().size());
@@ -688,7 +689,7 @@ public class GUITest {
 		assertEquals("Add overload method return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods", 3, myclass.getMethods().size());
 		
-		gui.setOptionPane(new TestableOptionPane("myclass", "void", "*not()real*"));
+		gui.setOptionPane(new TestableOptionPane("myclass", "void", "*not()real*", ""));
 		((JMenuItem)gui.getComponent("mainAddMethod")).doClick();
 		assertNotEquals("Add method invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods", 3, myclass.getMethods().size());
@@ -712,7 +713,7 @@ public class GUITest {
 		assertEquals("Init number of methods", 3, myclass.getMethods().size());
 		
 		// Remove mymethod with no params
-		gui.setOptionPane(new TestableOptionPane("myclass", "mymethod"));
+		gui.setOptionPane(new TestableOptionPane("myclass", "mymethod", ""));
 		((JMenuItem)gui.getComponent("classRemoveMethod")).doClick();
 		assertEquals("Remove method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods post remove", 2, myclass.getMethods().size());
@@ -723,7 +724,7 @@ public class GUITest {
 		assertEquals("Remove overload method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods post overload remove", 1, myclass.getMethods().size());
 		
-		gui.setOptionPane(new TestableOptionPane("myclass", "d*e$n0#"));
+		gui.setOptionPane(new TestableOptionPane("myclass", "d*e$n0#", ""));
 		((JMenuItem)gui.getComponent("classRemoveMethod")).doClick();
 		assertNotEquals("Remove method invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove invalid method nothing removed", 1, myclass.getMethods().size());
@@ -848,27 +849,27 @@ public class GUITest {
 		//assertEquals("Init number of relationships for class3", "[]", model.listRelationships("class3")[0]);
 		assertEquals("Init number total relationships", 0, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "aggregation", "class2"));
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
 		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
 		assertEquals("Add relationship valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships after valid add", 1, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class2", "inheritance", "class3"));
+		gui.setOptionPane(new TestableOptionPane("class2", "class3", "inheritance"));
 		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
 		assertEquals("Add relationship valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "not real", "class3"));
+		gui.setOptionPane(new TestableOptionPane("class1", "class3", "not real"));
 		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
 		assertNotEquals("Add relationship invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "aggregation", "class2"));
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
 		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
 		assertNotEquals("Add relationship duplicate return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "aggregation", "notreal"));
+		gui.setOptionPane(new TestableOptionPane("class1", "notreal", "aggregation"));
 		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
 		assertNotEquals("Add relationship invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
@@ -892,27 +893,27 @@ public class GUITest {
 		assertEquals("Init number of relationships for class3", "[]", model.listRelationships("class3")[0]);
 		assertEquals("Init number total relationships", 0, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "aggregation", "class2"));
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
 		((JMenuItem)gui.getComponent("mainAddRelationship")).doClick();
 		assertEquals("Add relationship valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships after valid add", 1, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class2", "inheritance", "class3"));
+		gui.setOptionPane(new TestableOptionPane("class2", "class3", "inheritance"));
 		((JMenuItem)gui.getComponent("mainAddRelationship")).doClick();
 		assertEquals("Add relationship valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "not real", "class3"));
+		gui.setOptionPane(new TestableOptionPane("class1", "class3", "not real"));
 		((JMenuItem)gui.getComponent("mainAddRelationship")).doClick();
 		assertNotEquals("Add relationship invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "aggregation", "class2"));
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
 		((JMenuItem)gui.getComponent("mainAddRelationship")).doClick();
 		assertNotEquals("Add relationship duplicate return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "aggregation", "notreal"));
+		gui.setOptionPane(new TestableOptionPane("class1", "notreal", "aggregation"));
 		((JMenuItem)gui.getComponent("mainAddRelationship")).doClick();
 		assertNotEquals("Add relationship invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
@@ -937,22 +938,21 @@ public class GUITest {
 		
 		assertEquals("Init num relationships", 3, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "aggregation", "class2"));
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
 		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
-		System.out.println("RETURN CODE: " + ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post remove", 2, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "aggregation", "class2"));
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
 		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
 		assertNotEquals("Remove invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post invalid remove", 2, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class2", "notrealtype", "class3"));
+		gui.setOptionPane(new TestableOptionPane("class2", "class3", "notrealtype"));
 		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
 		assertNotEquals("Remove invalid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post invalid remove 2", 2, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "inheritance", "class3"));
+		gui.setOptionPane(new TestableOptionPane("class1", "class3", "inheritance"));
 		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
 		assertEquals("Remove valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post valid remove 2", 1, model.getRelationships().size());
@@ -976,22 +976,22 @@ public class GUITest {
 		
 		assertEquals("Init num relationships", 3, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "aggregation", "class2"));
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
 		((JMenuItem)gui.getComponent("mainRemoveRelationship")).doClick();
 		assertEquals("Remove valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post remove", 2, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "aggregation", "class2"));
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
 		((JMenuItem)gui.getComponent("mainRemoveRelationship")).doClick();
 		assertNotEquals("Remove invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post invalid remove", 2, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class2", "notrealtype", "class3"));
+		gui.setOptionPane(new TestableOptionPane("class2", "class3", "notrealtype"));
 		((JMenuItem)gui.getComponent("mainRemoveRelationship")).doClick();
 		assertNotEquals("Remove invalid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post invalid remove 2", 2, model.getRelationships().size());
 		
-		gui.setOptionPane(new TestableOptionPane("class1", "inheritance", "class3"));
+		gui.setOptionPane(new TestableOptionPane("class1", "class3", "inheritance"));
 		((JMenuItem)gui.getComponent("mainRemoveRelationship")).doClick();
 		assertEquals("Remove valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post valid remove 2", 1, model.getRelationships().size());

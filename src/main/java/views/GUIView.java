@@ -149,7 +149,7 @@ public class GUIView extends View {
 	@SuppressWarnings("static-access")
 	public void showError(JComponent parent, int errorCode) {
 		// Create error message
-		optionPane.showMessageDialog(parent, ErrorHandler.toString(errorCode), "Error", JOptionPane.ERROR_MESSAGE);
+		optionPane.showMessageDialog(parent, ErrorHandler.toString(errorCode), "Error", JOptionPane.ERROR_MESSAGE, testOP);
 	}
 	
 	/**

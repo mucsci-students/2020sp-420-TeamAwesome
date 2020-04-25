@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
+import core.ErrorHandler;
 import core.UMLFileIO;
 import model.Method;
 // Local imports
@@ -487,7 +488,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					return;
 				
 				// Make sure a selected class exists
-				if(prev == null)
+				if(prev == null || e.getSource() == mainRemoveField)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose avaliable class:", classChoices);
@@ -496,6 +497,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
@@ -523,7 +525,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					return;
 				
 				//listener for main menu buttons
-				if(prev == null)
+				if(prev == null || e.getSource() == mainEditClass)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose avaliable class containing class:", classChoices);
@@ -532,6 +534,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
@@ -565,7 +568,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					return;
 				
 				//listener for main menu buttons
-				if(prev == null)
+				if(prev == null || e.getSource() == mainAddField)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose avaliable class to add field:", classChoices);
@@ -574,6 +577,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
@@ -609,7 +613,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					return;
 				
 				//listener for main menu buttons
-				if(prev == null)
+				if(prev == null || e.getSource() == mainRemoveField)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose class containing field:", classChoices);
@@ -618,6 +622,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
@@ -654,7 +659,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					return;
 				
 				//listener for main menu buttons
-				if(prev == null)
+				if(prev == null || e.getSource() == mainEditField)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose class containing field:", classChoices);
@@ -663,6 +668,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
@@ -705,7 +711,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					return;
 				
 				//listener for main menu buttons
-				if(prev == null)
+				if(prev == null || e.getSource() == mainAddMethod)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose avaliable class:", classChoices);
@@ -714,6 +720,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
@@ -753,7 +760,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					return;
 				
 				//listener for main menu buttons
-				if(prev == null)
+				if(prev == null || e.getSource() == mainRemoveMethod)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose class containing method:", classChoices);
@@ -762,6 +769,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
@@ -775,9 +783,13 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					// Make sure user didn't cancel input
 					if(methodName != null) {
 						Method method = view.getModel().getClass(prev.getName()).getMethods().get(methodName);
+						// Make sure method exists
+						if(method == null) {
+							view.showError(DiagramPanel.this, ErrorHandler.setCode(406));
+							return;
+						}
 						// Strip parameters
 						String methodParams = method.getParams().substring(1, method.getParams().length()-1);
-						System.out.println("method to remove: " + (method.getName() + methodParams));
 						int result = view.getController().removeMethod(prev.getName(), method.getName(), methodParams);
 						if(result != 0)
 							view.showError(DiagramPanel.this, result);
@@ -803,7 +815,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					return;
 				
 				//listener for main menu buttons
-				if(prev == null)
+				if(prev == null || e.getSource() == mainEditMethod)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose class containing method:", classChoices);
@@ -812,6 +824,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
@@ -857,7 +870,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					return;
 				
 				//listener for main menu buttons
-				if(prev == null)
+				if(prev == null || e.getSource() == mainAddRelationship)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose origin class: ", classChoices);
@@ -866,6 +879,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
@@ -905,7 +919,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					return;
 				
 				//listener for main menu buttons
-				if(prev == null)
+				if(prev == null || e.getSource() == mainRemoveRelationship)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose origin class: ", classChoices);
@@ -914,6 +928,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
@@ -930,7 +945,6 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					// Make sure user didn't cancel input
 					if(destClass != null && type != null) {
 						int result = view.getController().removeRelationship(prev.getName(), type.toString(), destClass.toString());
-						System.out.println("RESULT INLINE: " + result);
 						if(result != 0)
 							view.showError(DiagramPanel.this, result);
 					}
@@ -1114,10 +1128,14 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		}
 		else if(tag.equals("classChange")) {
 			// Update names
-			// Have to loop through all since the name changed
-			for(Map.Entry<String, GUIClass> entry : guiClasses.entrySet()) {
-				GUIClass temp = entry.getValue();
-				temp.updateName();
+			// Because you can't edit the name field you have to remove and readd the class
+			// But you can't remove/add in the middle of a loop so you have to readd all classes
+			// Remove all classes
+			guiClasses.forEach((k, v) -> remove(v));
+			guiClasses.clear();
+			// Add them back
+			for(Object className : view.getModel().getClassNames()) {
+				updated(null, "addClass", view.getModel().getClass((String)className));
 			}
 		}
 		

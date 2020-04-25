@@ -26,5 +26,8 @@ public class JOptionPaneWrapper {
 	 }
 	 
 	 public static void showMessageDialog(Component parentComponent, Object message, String title, 
-			 int messageType) {}
+			 int messageType, TestableOptionPane top) {
+		 if(top == null)
+			 JOptionPane.showMessageDialog(parentComponent, message, title, messageType);
+	 }
 }
