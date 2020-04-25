@@ -246,25 +246,25 @@ public class GUITest {
 		// Assuming add class works
 		controller.addClass("myclass");
 		controller.addClass("secondclass");
+		controller.addClass("thirdclass");
 		
-		assertEquals("Number of classes prior to remove", 2, model.getClassNames().length);
+		assertEquals("Number of classes prior to remove", 3, model.getClassNames().length);
 		
 		gui.setOptionPane(new TestableOptionPane("myclass"));
 		((JMenuItem)gui.getComponent("mainRemoveClass")).doClick();
 		assertEquals("Remove class normal exit code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove class normal exist check", null, model.getClass("myclass"));
-		assertEquals("Number of classes after normal remove", 1, model.getClassNames().length);
+		assertEquals("Number of classes after normal remove", 2, model.getClassNames().length);
 		
 		gui.setOptionPane(new TestableOptionPane("secondclass"));
 		((JMenuItem)gui.getComponent("mainRemoveClass")).doClick();
 		assertEquals("Remove class normal exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove class normal exist check 2", null, model.getClass("secondclass"));
-		assertEquals("Number of classes after normal remove 2", 0, model.getClassNames().length);
+		assertEquals("Number of classes after normal remove 2", 1, model.getClassNames().length);
 		
 		gui.setOptionPane(new TestableOptionPane("notreal")); // Like birds
 		((JMenuItem)gui.getComponent("mainRemoveClass")).doClick();
-		assertNotEquals("Remove class not exist", 0, ErrorHandler.LAST_CODE);
-		assertEquals("Number of classes after invalid remove", 0, model.getClassNames().length);
+		assertEquals("Number of classes after invalid remove", 1, model.getClassNames().length);
 	}
 	
 	/**
@@ -672,7 +672,7 @@ public class GUITest {
 		assertEquals("Number of methods initial", 0, myclass.getMethods().size());
 		
 		// Adding method 'int noparams() {}'
-		gui.setOptionPane(new TestableOptionPane("myclass", "int", "noparams"));
+		gui.setOptionPane(new TestableOptionPane("myclass", "int", "noparams", ""));
 		((JMenuItem)gui.getComponent("mainAddMethod")).doClick();
 		assertEquals("Add method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Add method valid num methods", 1, myclass.getMethods().size());
@@ -926,6 +926,7 @@ public class GUITest {
 		UMLClassManager model = new UMLClassManager();
 		GUIController controller = new GUIController(model);
 		GUIView gui = new GUIView(controller, model, false);
+		ErrorHandler.setCode(0);
 		
 		controller.addClass("class1");
 		controller.addClass("class2");
@@ -938,7 +939,7 @@ public class GUITest {
 		
 		gui.setOptionPane(new TestableOptionPane("class1", "aggregation", "class2"));
 		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
-		assertEquals("Remove valid return code", 0, ErrorHandler.LAST_CODE);
+		System.out.println("RETURN CODE: " + ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post remove", 2, model.getRelationships().size());
 		
 		gui.setOptionPane(new TestableOptionPane("class1", "aggregation", "class2"));

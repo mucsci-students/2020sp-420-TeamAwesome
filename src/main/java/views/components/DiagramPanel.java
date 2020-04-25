@@ -481,9 +481,11 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	private ActionListener removeClassAction() {
 		return new ActionListener() {
 			@Override
-			
-		
 			public void actionPerformed(ActionEvent e) {
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				// Make sure a selected class exists
 				if(prev == null)
 				{
@@ -516,6 +518,9 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {	
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
 				
 				//listener for main menu buttons
 				if(prev == null)
@@ -555,6 +560,9 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
 				
 				//listener for main menu buttons
 				if(prev == null)
@@ -596,7 +604,10 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
 				if(prev == null)
 				{
@@ -638,6 +649,10 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
 				if(prev == null)
 				{
@@ -685,7 +700,10 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
 				if(prev == null)
 				{
@@ -730,7 +748,10 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
 				if(prev == null)
 				{
@@ -777,7 +798,10 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
 				if(prev == null)
 				{
@@ -828,7 +852,10 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
 				if(prev == null)
 				{
@@ -873,7 +900,10 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
 				if(prev == null)
 				{
@@ -900,6 +930,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					// Make sure user didn't cancel input
 					if(destClass != null && type != null) {
 						int result = view.getController().removeRelationship(prev.getName(), type.toString(), destClass.toString());
+						System.out.println("RESULT INLINE: " + result);
 						if(result != 0)
 							view.showError(DiagramPanel.this, result);
 					}
@@ -958,6 +989,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
 				// Prompt for file
 				File loadFile = view.getFile("JSON", ".json", "Load File", JFileChooser.OPEN_DIALOG);
 				
