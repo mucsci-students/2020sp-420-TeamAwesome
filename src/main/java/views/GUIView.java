@@ -20,6 +20,7 @@ import model.UMLClassManager;
 import observe.Observable;
 import views.components.DiagramPanel;
 import views.components.GUIClass;
+import views.components.testable.JOptionPaneWrapper;
 import views.components.testable.TestableFileChooser;
 import views.components.testable.TestableOptionPane;
 
@@ -37,7 +38,8 @@ public class GUIView extends View {
 	private DiagramPanel umlDiagram;
 	
 	// Option pane
-	private JOptionPane optionPane;
+	private JOptionPaneWrapper optionPane;
+	private TestableOptionPane testOP;
 	
 	// File chooser
 	private JFileChooser fileChooser;
@@ -65,11 +67,11 @@ public class GUIView extends View {
 		this.controller = controller;
 		this.model = model;
 		this.controller.addObserver(this);
-		
+
 		// Setup options
+		optionPane = new JOptionPaneWrapper();
 		if(isHuman) {
-			// Set to a regular JOptionPane if human
-			setOptionPane(new JOptionPane());
+			// Set to a regular file chooser
 			setFileChooser(new JFileChooser());
 		}
 		// Set to a blank test pane otherwise (to avoid null pointers)
@@ -124,10 +126,9 @@ public class GUIView extends View {
 	 * @param message - The message directing the user what to enter
 	 * @return - User entered String
 	 */
-	@SuppressWarnings("static-access")
 	public Object promptInput(String message) {
 		// Prompt the user for input and return the input
-		return optionPane.showInputDialog(window, message);
+		return optionPane.showInputDialog(window, message, testOP);
 	}
 	
 	/**
@@ -135,10 +136,9 @@ public class GUIView extends View {
 	 * @param message - The message directing the user what to enter
 	 * @return - User entered String
 	 */
-	@SuppressWarnings("static-access")
 	public Object promptSelection(String message, Object[] options) {
 		// Prompt the user for input with a list of selections and return the input
-		return optionPane.showInputDialog(window, message, "Selection", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		return optionPane.showInputDialog(window, message, "Selection", JOptionPane.QUESTION_MESSAGE, null, options, options[0], testOP);
 	}
 	
 	/**
@@ -261,8 +261,8 @@ public class GUIView extends View {
 	 * Set the option pane for prompts
 	 * @param pane - option pane instance
 	 */
-	public void setOptionPane(JOptionPane pane) {
-		this.optionPane = pane;
+	public void setOptionPane(TestableOptionPane pane) {
+		this.testOP = pane;
 	}
 	
 	/**
