@@ -44,6 +44,8 @@ public class GUIView extends View {
 	// File chooser
 	private JFileChooser fileChooser;
 	
+	private boolean isHuman;
+	
 	/**
 	 * Create a GUI view for a human
 	 * @param controller
@@ -61,18 +63,21 @@ public class GUIView extends View {
 	 */
 	public GUIView(UMLController controller, UMLClassManager model, boolean isHuman) {
 		// Setup look and feel
-		if(setLook() != 0);
+		if(isHuman && setLook() != 0);
 
 		// Setup controller and model
 		this.controller = controller;
 		this.model = model;
 		this.controller.addObserver(this);
+		
+		this.isHuman = isHuman;
 
 		// Setup options
 		optionPane = new JOptionPaneWrapper();
 		if(isHuman) {
 			// Set to a regular file chooser
 			setFileChooser(new JFileChooser());
+			setupWindow();
 		}
 		// Set to a blank test pane otherwise (to avoid null pointers)
 		else {
@@ -80,10 +85,10 @@ public class GUIView extends View {
 			setFileChooser(new TestableFileChooser(new File("")));
 		}
 		
-		setupWindow();
 		setupDiagram();
 		
-		window.pack();
+		if(isHuman)
+			window.pack();
 	}
 	
 	/**
@@ -112,13 +117,14 @@ public class GUIView extends View {
 	 */
 	private void setupDiagram() {
 		// Setup a JPanel to display the classes and relationships
-		umlDiagram = new DiagramPanel(this);
+		umlDiagram = isHuman() ? new DiagramPanel(this, true) : new DiagramPanel(this);
 		
 		// Add the umlDiagram to the list of listeners for model changes
 		controller.addObserver(umlDiagram);
 		
 		// Add the diagram to the frame
-		window.add(umlDiagram);
+		if(isHuman())
+			window.add(umlDiagram);
 	}
 	
 	/**
@@ -276,5 +282,9 @@ public class GUIView extends View {
 	@Override
 	public void updated(Observable src, String tag, Object data) {
 		
+	}
+
+	public boolean isHuman() {
+		return isHuman;
 	}
 }

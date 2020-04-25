@@ -26,26 +26,31 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 import core.ErrorHandler;
 import core.UMLFileIO;
 import model.Method;
+
 // Local imports
 import model.UMLClass;
 import model.UMLRelationship;
 import observe.Observable;
 import observe.Observer;
 import views.GUIView;
+import views.components.testable.TestableMenu;
+import views.components.testable.TestableMenuBar;
+import views.components.testable.TestableMenuItem;
+import views.components.testable.TestablePanel;
+import views.components.testable.TestablePopupMenu;
 
 /**
  * A JPanel to display the UMLClasses and relationships
  * @author 98% Ryan and a tiny bit of Dylan
  *
  */
-public class DiagramPanel extends JPanel implements Observer, MouseListener, MouseMotionListener {
+public class DiagramPanel extends TestablePanel implements Observer, MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 1L;
 
 	// Instance of the Controller
@@ -111,6 +116,15 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	 * @param isHuman - whether the view is for a human or testing
 	 */
 	public DiagramPanel(GUIView view) {
+		setupOps(view);
+	}
+	
+	public DiagramPanel(GUIView view, boolean isHuman) {
+		super(true);
+		setupOps(view);
+	}
+	
+	private void setupOps(GUIView view) {
 		this.view = view;
 		
 		// To enable dragging and dynamic locations, remove the layout manager
@@ -130,7 +144,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	 * Override paint component so we can draw in the relationships
 	 */
 	@Override
-	protected void paintComponent(Graphics g) {
+	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		// Enable better 2D graphics
 		Graphics2D g2d = (Graphics2D)g;
@@ -270,7 +284,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	 */
 	private void setupMenus() {
 		// Create the popup menu for when a user right clicks in the diagram
-		mouseMenu = new JPopupMenu();
+		mouseMenu = view.isHuman() ? new JPopupMenu() : new TestablePopupMenu();
 		mouseMenu.setName("Mouse Menu");
 		
 		// Initialize the menu items
@@ -329,12 +343,18 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 
 		
 		//main Bar initialization
-		mainMenuBar = new JMenuBar();
+		mainMenuBar = view.isHuman() ? new JMenuBar() : new TestableMenuBar();
 		mainMenuBar.setName("mainMenuBar");
 		
 		//main menu initialization
-		mainFile = new JMenu("File");
-		mainActions = new JMenu("Actions");
+		if(view.isHuman()) {
+			mainFile = new JMenu("File");
+			mainActions = new JMenu("Actions");
+		}
+		else {
+			mainFile = new TestableMenu();
+			mainActions = new TestableMenu();
+		}
 		mainFile.setName("mainFile");
 		mainActions.setName("mainActions");
 		
@@ -376,9 +396,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		mainMenuBar.add(mainFile);
 		mainMenuBar.add(mainActions);
-		view.getWindow().setJMenuBar(mainMenuBar);
-		
-		
+		if(view.isHuman())
+			view.getWindow().setJMenuBar(mainMenuBar);
 	}
 	
 	private String[] validRelationships() {
@@ -393,7 +412,11 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	 * @param name - Name for testing purposes
 	 */
 	private JMenuItem createMenuItem(String label, String name) {
-		JMenuItem temp = new JMenuItem(label);
+		JMenuItem temp;
+		if(view.isHuman())
+			temp = new JMenuItem(label);
+		else
+			temp = new TestableMenuItem();
 		temp.setName(name);
 		return temp;
 	}
@@ -1236,32 +1259,29 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Check main self children
 		for(Component c : getComponents()) {
-			if(c.getName().equals(name)) {
+			if(c != null && c.getName().equals(name)) {
 				return c;
 			}
 		}
 		
 		// Check menu children
 		for(Component c : mouseMenu.getComponents()) {
-			if(c.getName() != null && c.getName().equals(name)) {
+			if(c != null && c.getName() != null && c.getName().equals(name)) {
 				return c;
 			}
 		}
 		for(Component c : classMenu.getComponents()) {
-			if(c.getName() != null && c.getName().equals(name)) {
-				return c;
-			}
-		}
-		
-		for(int i = 0; i < mainFile.getItemCount(); i++) {
-			Component c = mainFile.getItem(i);
 			if(c != null && c.getName() != null && c.getName().equals(name)) {
 				return c;
 			}
 		}
 		
-		for(int i = 0; i < mainActions.getItemCount(); i++) {
-			Component c = mainActions.getItem(i);
+		for(Component c : mainFile.getComponents()) {
+			if(c != null && c.getName() != null && c.getName().equals(name)) {
+				return c;
+			}
+		}
+		for(Component c : mainActions.getComponents()) {
 			if(c != null && c.getName() != null && c.getName().equals(name)) {
 				return c;
 			}
