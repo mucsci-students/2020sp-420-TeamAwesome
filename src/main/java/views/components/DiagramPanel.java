@@ -29,7 +29,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import core.UMLFileIO;
 import model.Method;
@@ -919,16 +918,11 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Create save dialog instance
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setDialogTitle("Save UML");
-				
-				// Choose file
-				int result = fileChooser.showSaveDialog(DiagramPanel.this);
+				// Prompt user for file
+				File saveFile = view.getFile("", "", "Save UNL", JFileChooser.SAVE_DIALOG);
 				
 				// Make sure user didn't close the console
-				if(result == JFileChooser.APPROVE_OPTION) {
-					File saveFile = fileChooser.getSelectedFile();
+				if(saveFile != null) {
 					
 					// Check if file name ends with '.json' and if not add it manually
 					if(!saveFile.getPath().endsWith(".json"))
@@ -938,7 +932,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					UMLFileIO fileIO = new UMLFileIO();
 					
 					// Set the path
-					result = fileIO.setFile(saveFile.getAbsolutePath());
+					int result = fileIO.setFile(saveFile.getAbsolutePath());
 					if(result != 0) {
 						view.showError(DiagramPanel.this, result);
 						return;
@@ -964,26 +958,17 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Create load dialog instance
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setDialogTitle("Save UML");
-				
-				// Set extension filter to only allow JSON files
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files", "json");
-				fileChooser.setFileFilter(filter);
-				
-				// Choose file
-				int result = fileChooser.showOpenDialog(DiagramPanel.this);
+				// Prompt for file
+				File loadFile = view.getFile("JSON", ".json", "Load File", JFileChooser.OPEN_DIALOG);
 				
 				// Make sure user didn't close the console
-				if(result == JFileChooser.APPROVE_OPTION) {
-					File loadFile = fileChooser.getSelectedFile();
+				if(loadFile != null) {
 					
 					// Open the file
 					UMLFileIO fileIO = new UMLFileIO();
 					
 					// Set the path
-					result = fileIO.setFile(loadFile.getAbsolutePath());
+					int result = fileIO.setFile(loadFile.getAbsolutePath());
 					if(result != 0) {
 						view.showError(DiagramPanel.this, result);
 						return;
@@ -1024,18 +1009,11 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Create save dialog instance
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setDialogTitle("Export to PNG");
-				
-				
-				// Choose file
-				int result = fileChooser.showSaveDialog(DiagramPanel.this);
+				// Prompt user for file
+				File exportFile = view.getFile("PNG", ".png", "Export to PNG", JFileChooser.SAVE_DIALOG);
 				
 				// Make sure the user didn't cancel the operation
-				if(result == JFileChooser.APPROVE_OPTION) {
-					File exportFile = fileChooser.getSelectedFile();
-					
+				if(exportFile != null) {
 					// Check if file name ends with '.png' and if not manually add it
 					if(!exportFile.getPath().endsWith(".png")) {
 						exportFile = new File(exportFile.getAbsolutePath() + ".png");

@@ -1,12 +1,11 @@
 // Package name
 package views.components.testable;
 
+// System imports
 import java.awt.Component;
 import java.util.Collections;
 import java.util.Queue;
-
 import javax.swing.Icon;
-// System imports
 import javax.swing.JOptionPane;
 
 // Local imports
@@ -18,6 +17,7 @@ import javax.swing.JOptionPane;
  */
 public class TestableOptionPane extends JOptionPane {
 	private static final long serialVersionUID = 1L;
+	
 	// List of results
 	// Use a queue in the event testing needs to send in multiple pieces of data
 	// I.E. adding methods has several prompts in one call

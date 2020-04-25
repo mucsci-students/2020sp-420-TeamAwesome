@@ -3,12 +3,15 @@ package views;
 
 // System imports
 import java.awt.Dimension;
+import java.io.File;
 import java.util.HashMap;
 
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 //Local imports
 import controller.UMLController;
@@ -17,6 +20,7 @@ import model.UMLClassManager;
 import observe.Observable;
 import views.components.DiagramPanel;
 import views.components.GUIClass;
+import views.components.testable.TestableFileChooser;
 import views.components.testable.TestableOptionPane;
 
 /**
@@ -34,6 +38,9 @@ public class GUIView extends View {
 	
 	// Option pane
 	private JOptionPane optionPane;
+	
+	// File chooser
+	private JFileChooser fileChooser;
 	
 	/**
 	 * Create a GUI view for a human
@@ -63,10 +70,12 @@ public class GUIView extends View {
 		if(isHuman) {
 			// Set to a regular JOptionPane if human
 			setOptionPane(new JOptionPane());
+			setFileChooser(new JFileChooser());
 		}
 		// Set to a blank test pane otherwise (to avoid null pointers)
 		else {
 			setOptionPane(new TestableOptionPane(""));
+			setFileChooser(new TestableFileChooser(new File("")));
 		}
 		
 		setupWindow();
@@ -141,6 +150,39 @@ public class GUIView extends View {
 	public void showError(JComponent parent, int errorCode) {
 		// Create error message
 		optionPane.showMessageDialog(parent, ErrorHandler.toString(errorCode), "Error", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	/**
+	 * Open a JFileChooser and get a file from the user
+	 * @param desc - description of the extension
+	 * @param extension - the extension of the file, null if no filter
+	 * @param title - the title of the windoer
+	 * @param type - the type of chooser
+	 * @return - The chosen file
+	 */
+	public File getFile(String desc, String extension, String title, int type) {
+		// Set title of the chooser
+		fileChooser.setDialogTitle(title);
+		
+		// Set extension filter to only allow extension
+		fileChooser.setFileFilter(new FileNameExtensionFilter(desc, extension));
+		
+		// Choose a file
+		int result;
+		if(type == JFileChooser.SAVE_DIALOG) {
+			result = fileChooser.showSaveDialog(window);
+		}
+		else {
+			result = fileChooser.showOpenDialog(window);
+		}
+		
+		// Make sure input wasn't cancel
+		if(result == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			return file;
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -221,6 +263,14 @@ public class GUIView extends View {
 	 */
 	public void setOptionPane(JOptionPane pane) {
 		this.optionPane = pane;
+	}
+	
+	/**
+	 * Set the file chooser for selecting files
+	 * @param chooser - file chooser instance
+	 */
+	public void setFileChooser(JFileChooser chooser) {
+		this.fileChooser = chooser;
 	}
 
 	@Override
