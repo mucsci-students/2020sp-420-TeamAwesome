@@ -15,7 +15,6 @@ import java.awt.Component;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
@@ -132,7 +131,6 @@ public class GUITest {
 		assertTrue("Main menu actions child 7 separator", ((JMenu)gui.getComponent("mainActions")).getItem(10) == null);
 		assertEquals("Main menu actions child 8", "mainAddRelationship" , ((JMenu)gui.getComponent("mainActions")).getItem(11).getName());
 		assertEquals("Main menu actions child 9", "mainRemoveRelationship" , ((JMenu)gui.getComponent("mainActions")).getItem(12).getName());
-		
 	}
 	
 	/**

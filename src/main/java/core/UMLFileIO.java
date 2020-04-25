@@ -47,6 +47,12 @@ public class UMLFileIO {
 		PrintWriter printer = new PrintWriter(writer);
 		printer.print(text); 
 		printer.close(); // Force close
+		try {
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return 0;
 	}
 	 /**  
