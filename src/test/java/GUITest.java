@@ -106,12 +106,14 @@ public class GUITest {
 		
 		//Test the MainMenu initialization of components
 		assertTrue("Main File menu not empty", ((JMenu)gui.getComponent("mainFile")).getItemCount() != 0);
-		assertEquals("Main File menu number of items", 4, ((JMenu)gui.getComponent("mainFile")).getItemCount());
+		assertEquals("Main File menu number of items", 6, ((JMenu)gui.getComponent("mainFile")).getItemCount());
 		assertEquals("Main File menu first child", "mainAddClass" , ((JMenu)gui.getComponent("mainFile")).getItem(0).getName());
 		// JSeparator's seem to be represented as null menuitems
 		assertTrue("Main File menu second child separator", ((JMenu)gui.getComponent("mainFile")).getItem(1) == null);
 		assertEquals("Main File menu third child", "mainSave", ((JMenu)gui.getComponent("mainFile")).getItem(2).getName());
 		assertEquals("Main File menu fourth child", "mainLoad" , ((JMenu)gui.getComponent("mainFile")).getItem(3).getName());
+		assertTrue("Main File menu fifth child separator", ((JMenu)gui.getComponent("mainFile")).getItem(4) == null);
+		assertEquals("Main File menu sixth child", "mainExport" , ((JMenu)gui.getComponent("mainFile")).getItem(5).getName());
 		
 		assertTrue("Main action menu not empty", ((JMenu)gui.getComponent("mainActions")).getItemCount() != 0);
 		assertEquals("Main action menu number of items", 13, ((JMenu)gui.getComponent("mainActions")).getItemCount());
