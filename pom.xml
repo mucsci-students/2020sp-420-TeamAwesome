@@ -21,10 +21,10 @@
       	<artifactId>maven-surefire-plugin</artifactId>
       	<version>3.0.0-M4</version>
       	<configuration>
-      		<excludes>
-      			<exclude>GUITest.java</exclude>
-      		</excludes>
-      	</configuration>
+		    <systemPropertyVariables>
+		      <java.awt.headless>true</java.awt.headless>
+		    </systemPropertyVariables>
+ 		</configuration>
       </plugin>
       <plugin>
       	<groupId>org.jacoco</groupId>
