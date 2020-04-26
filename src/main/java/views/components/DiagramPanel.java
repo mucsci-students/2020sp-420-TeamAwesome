@@ -116,12 +116,8 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 	 * @param view- the parent view
 	 * @param isHuman - whether the view is for a human or testing
 	 */
-	public DiagramPanel(GUIView view) {
-		setupOps(view);
-	}
-	
 	public DiagramPanel(GUIView view, boolean isHuman) {
-		super(true);
+		super(isHuman);
 		setupOps(view);
 	}
 	
@@ -1094,7 +1090,7 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 					
 					// Write screen to image
 					// Temp image to copy the drawn screen to
-					BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+					BufferedImage image = new BufferedImage(Math.max(getWidth(), 100), Math.max(getHeight(), 100), BufferedImage.TYPE_INT_RGB);
 					// Graphics for the image
 					Graphics2D graphics = image.createGraphics();
 					// Copy component graphics to image graphics
@@ -1121,7 +1117,7 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 			UMLClass umlClass = (UMLClass)data;
 			
 			// Create GUIClass representation
-			GUIClass temp = new GUIClass(umlClass);
+			GUIClass temp = view.isHuman() ? new GUIClass(umlClass, true) : new GUIClass(umlClass, false);
 			// Add a mouse listener to allow dragging and different options
 			temp.addMouseListener(this);
 			temp.addMouseMotionListener(this);

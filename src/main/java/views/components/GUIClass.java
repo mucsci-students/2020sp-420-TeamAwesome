@@ -59,14 +59,14 @@ public class GUIClass extends TestablePanel {
 	 * @param umlClass
 	 */
 	public GUIClass(UMLClass umlClass) {
-		human = false;
+		super(false);
 		startOps(umlClass);
 	}
 	
 	// For human
 	public GUIClass(UMLClass umlClass, boolean human) {
-		super(true);
-		human = true;
+		super(human);
+		this.human = human;
 		startOps(umlClass);
 	}
 	
@@ -81,9 +81,9 @@ public class GUIClass extends TestablePanel {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		// Initialize region panels, with a vertical BoxLayout
-		fieldRegion = new TestablePanel();
+		fieldRegion = new TestablePanel(human);
 		fieldRegion.setLayout(new BoxLayout(fieldRegion, BoxLayout.Y_AXIS));
-		methodRegion = new TestablePanel();
+		methodRegion = new TestablePanel(human);
 		methodRegion.setLayout(new BoxLayout(methodRegion, BoxLayout.Y_AXIS));
 		
 		// Add a label of the class name

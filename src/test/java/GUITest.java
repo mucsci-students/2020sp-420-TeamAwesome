@@ -11,6 +11,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import java.awt.Component;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -20,6 +22,7 @@ import javax.swing.JSeparator;
 
 // Local imports
 import views.GUIView;
+import views.components.testable.TestableFileChooser;
 import views.components.testable.TestableMenuItem;
 import views.components.testable.TestableOptionPane;
 
@@ -997,4 +1000,113 @@ public class GUITest {
 		assertEquals("Num relationships post valid remove 2", 1, model.getRelationships().size());
 	}
 	
+	/**
+	 * Test the saving of the model for both the main menu and mouse menu
+	 */
+	@Test
+	public void save() {
+		UMLClassManager model = new UMLClassManager();
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
+		// Add some stuff to the model just cause
+		controller.addClass("myclass", 10, 10);
+		controller.addField("myclass", "int", "myInt");
+		
+		// Test save for mouse menu
+		File expectedFile = new File("uml-output.json");
+		expectedFile.deleteOnExit();
+		gui.setFileChooser(new TestableFileChooser(expectedFile));
+		((TestableMenuItem)gui.getComponent("mouseSave")).doClick();
+		// Make sure the file exists
+		assertTrue("File created", expectedFile.exists());
+		
+		// Test save for the main menu
+		File expected2electricboogaloo = new File("uml-output2.json");
+		expected2electricboogaloo.deleteOnExit();
+		gui.setFileChooser(new TestableFileChooser(expected2electricboogaloo));
+		((TestableMenuItem)gui.getComponent("mainSave")).doClick();
+		assertTrue("File created 2", expected2electricboogaloo.exists());
+	}
+	
+	/**
+	 * Test the loading of the model for both main menu and mouse menu
+	 */
+	@Test
+	public void load() {
+		UMLClassManager model = new UMLClassManager();
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
+		// Add some stuff to the model
+		controller.addClass("myclass", 10, 10);
+		controller.addField("myclass", "int", "myInt");
+		
+		// Save it so we have a file to load from
+		File expectedFile = new File("uml-output.json");
+		expectedFile.deleteOnExit();
+		gui.setFileChooser(new TestableFileChooser(expectedFile));
+		((TestableMenuItem)gui.getComponent("mouseSave")).doClick();
+		// Make sure the file exists
+		assertTrue("File created", expectedFile.exists());
+		
+		// Create a second instance
+		UMLClassManager model2 = new UMLClassManager();
+		GUIController controller2 = new GUIController(model);
+		GUIView gui2 = new GUIView(controller2, model2, false);
+		
+		// Load from file
+		File loadFile = new File("uml-output.json");
+		gui.setFileChooser(new TestableFileChooser(loadFile));
+		((TestableMenuItem)gui2.getComponent("mouseLoad")).doClick();
+		// Check if it was applied
+		assertTrue("Model has the loaded class", model.getClass("myclass") != null);
+		assertTrue("Model has the loaded class's field", model.getClass("myclass").hasField("myInt"));
+		
+		// Do it for the main menu now
+		UMLClassManager model3 = new UMLClassManager();
+		GUIController controller3 = new GUIController(model);
+		GUIView gui3 = new GUIView(controller3, model3, false);
+		
+		// Load from file
+		gui.setFileChooser(new TestableFileChooser(loadFile));
+		((TestableMenuItem)gui3.getComponent("mainLoad")).doClick();
+		// Check if it was applied
+		assertTrue("Model has the loaded class", model.getClass("myclass") != null);
+		assertTrue("Model has the loaded class's field", model.getClass("myclass").hasField("myInt"));
+	}
+	
+	/**
+	 * Test the exporting of the model to a .png
+	 */
+	@Test
+	public void export() {
+		UMLClassManager model = new UMLClassManager();
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
+		// Add some stuff to the model just cause
+		controller.addClass("myclass", 10, 10);
+		controller.addField("myclass", "int", "myInt");
+		controller.addClass("second");
+		controller.addRelationship("myclass", "aggregation", "myclass");
+		controller.addRelationship("myclass", "aggregation", "second");
+
+		// Call paint to show that it doesn't error out, mostly for code coverage
+		gui.getDiagram().paintComponent(new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB).getGraphics());
+		
+		// Test save for mouse menu
+		File expectedFile = new File("uml-image.png");
+		gui.setFileChooser(new TestableFileChooser(expectedFile));
+		((TestableMenuItem)gui.getComponent("mouseExport")).doClick();
+		// Make sure the file exists
+		assertTrue("File created", expectedFile.exists());
+		
+		// Test save for the main menu
+		File expected2electricboogaloo = new File("uml-image2.png");
+		expected2electricboogaloo.deleteOnExit();
+		gui.setFileChooser(new TestableFileChooser(expected2electricboogaloo));
+		((TestableMenuItem)gui.getComponent("mainExport")).doClick();
+		assertTrue("File created 2", expected2electricboogaloo.exists());
+	}
 }
