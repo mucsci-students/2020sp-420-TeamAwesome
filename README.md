@@ -1,7 +1,7 @@
 
 ![](https://github.com/mucsci-students/2020sp-420-TeamAwesome/workflows/Unit%20Tests/badge.svg?branch=develop)
 
-![Coverage](https://codecov.io/gh/mucsci-students/2020sp-420-TeamAwesome)
+![Coverage](https://codecov.io/gh/mucsci-students/2020sp-420-TeamAwesome/branch/develop/graph/badge.svg)
 
 # <div align="center"> UMLEditor </div> 
 
