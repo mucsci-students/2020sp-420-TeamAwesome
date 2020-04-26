@@ -142,6 +142,6 @@ Once you've created a class you can drag them to better position them to your li
 * Methods appear underneath the second solid line in the box. In the form `<methodType> <MethodName> <parameters>.`
 * Relationships are depicted as lines inbetween the classes who's ends delineate them.
   * Aggregation  <img src="pictures/UMLEditor%20images/Aggregation%2C%20gui.png">
-  * Composition  <img src="pictures/UMLEditor%20images/Composition%2C%20gui.png">
+  * Composition  <img src="pictures/UMLEditor%20images/composition%2C%20gui.png">
   * Inheritance  <img src="pictures/UMLEditor%20images/Inheritance%2C%20gui.png">
   * Realization  <img src="pictures/UMLEditor%20images/Realization%2C%20gui.png">  
