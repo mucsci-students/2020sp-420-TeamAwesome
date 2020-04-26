@@ -436,7 +436,7 @@ public class ConsoleView extends View {
 						result = 109;
 					}
 					else if(rList.isEmpty()) {
-						System.out.println("This class has no relationships.");
+						output.println("This class has no relationships.");
 					}
 					else {
 						for(String[] a : rList) {
