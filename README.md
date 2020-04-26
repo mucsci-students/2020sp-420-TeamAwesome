@@ -1,3 +1,7 @@
+[![](https://github.com/mucsci-students/2020sp-420-TeamAwesome/workflows/Unit%20Tests/badge.svg?branch=develop)](https://github.com/mucsci-students/2020sp-420-TeamAwesome/actions)
+
+[![Coverage](https://codecov.io/gh/mucsci-students/2020sp-420-TeamAwesome/branch/develop/graph/badge.svg)](https://codecov.io/gh/mucsci-students/2020sp-420-TeamAwesome)
+
 #<div align="center"> <span style="color:#07ABF5"> UMLEditor </span> </div> 
 
 Unified Modeling Language (UML) is a general-purpose, developmental, modeling language made for software engineers. It provides a standardized visualization the design of a system. UMLEditor is intended to allow the user to create, edit, and visualize the basic functions of UML.
