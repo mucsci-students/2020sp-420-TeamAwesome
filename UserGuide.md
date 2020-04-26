@@ -130,8 +130,8 @@ Click the "actions" tab or right click on a class to bring up the actions menu.
 
 <img src="pictures/UMLEditor%20images/actions%20tab%2C%20gui.PNG.jpg">
  
-#### Dynamic and movable
-Once you've created a class you can drag them to better position them to your liking. 
+#### Dynamic Classes and Relationships
+Once you've created a class you can drag them to better position them to your liking. Relationship indicators will move dynamically with the classes.
 
 #### Example Function
 
