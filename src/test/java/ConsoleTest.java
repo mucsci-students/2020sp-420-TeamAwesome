@@ -559,6 +559,22 @@ public class ConsoleTest {
 		+ System.lineSeparator() + System.lineSeparator(), bos.toString());
 		bos.reset();
 		
+		//recursive relationship
+		model.addClass("recursive");
+		model.addFields("recursive", "double", "fives");
+		model.addMethods("recursive", "boolean", "m", "isset");
+		model.addRelationship("recursive", "aggregation", "recursive");
+		assertEquals("list relationships valid return code 4", 0, console.execCommand("list relationships recursive", myout));
+		myout.flush();
+		assertEquals("recursive connects to self","+----------------+" + System.lineSeparator() + "|   recursive    |" + System.lineSeparator()
+		+ "|  double fives  |" + System.lineSeparator() + "|boolean m(isset)|" + System.lineSeparator()
+		+ "+----------------+" + System.lineSeparator() + System.lineSeparator() + " |" + System.lineSeparator() + " |" + System.lineSeparator()
+		+ " |" + System.lineSeparator() + "< >" + System.lineSeparator() + System.lineSeparator()
+		+ "+----------------+" + System.lineSeparator() + "|   recursive    |" + System.lineSeparator()
+		+ "|  double fives  |" + System.lineSeparator() + "|boolean m(isset)|" + System.lineSeparator()
+		+ "+----------------+" + System.lineSeparator() + System.lineSeparator(), bos.toString());
+		bos.reset();
+		
 		// List relationships with invalid input
 		assertEquals("list relationships invalid return code", 109, console.execCommand("list relationships class", myout));
 

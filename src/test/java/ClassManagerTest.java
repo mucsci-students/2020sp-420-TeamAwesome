@@ -31,6 +31,10 @@ public class ClassManagerTest {
 	@Test
 	public void addTest() {
 		UMLClassManager manager = new UMLClassManager();
+		int valName = manager.addClass("");
+		int val2 = manager.addClass(null);
+		assertEquals("name is not valid when empty", 407, valName);
+		assertEquals("name is not valid when null", 407, val2);
 		manager.addClass("a");
 		manager.addClass("n");
 		manager.addClass("t");
@@ -246,6 +250,8 @@ public class ClassManagerTest {
 		assertEquals("vert types match", Arrays.toString(comp), Arrays.toString(rel1));
 		assertEquals("vert types match", Arrays.toString(in), Arrays.toString(rel2));
 		assertEquals("vert types match", Arrays.toString(real), Arrays.toString(rel3));
+		int flipped = ager.removeRelationship("b", "composition", "a");
+		assertEquals("realationship is removed", 0, flipped);
 	}
 	
 	/*
