@@ -2,6 +2,7 @@ import static org.junit.Assert.assertEquals;
 // System imports
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -73,7 +74,10 @@ public class ClassManagerTest {
 		manager.addClass("c");
 		result = manager.addMethods("c", "int", "method", "string");
 		assertEquals("Success", 0, result);
-		result = manager.addMethods("c", "int", "method", "string");
+		manager.getClass("c").getMethods().get("methodstring").setReturnType("double");
+		String type = manager.getClass("c").getMethods().get("methodstring").getReturnType();
+		assertEquals("Return type was set successfully", "double", type);
+		result = manager.addMethods("c", "double", "method", "string");
 		assertEquals("Method exists already", 402, result);
 		manager.removeClass("c");
 		result = manager.removeMethods("c", "method", "string");
@@ -88,6 +92,16 @@ public class ClassManagerTest {
 		assertEquals("Success", 0, result);
 		result = manager.addMethods("d", "not real", "method", "string");
 		assertEquals("Return type is not valid", 203, result);
+		
+		UMLClassManager man = new UMLClassManager();
+		man.addClass("a");
+		man.addMethods("a", "int", "m", "int");
+		man.getClass("a").getMethods().get("mint").setName("l");
+		String name = man.getClass("a").getMethods().get("mint").getName();
+		assertEquals("Name was set successfully", "l", name);
+		man.getClass("a").getMethods().get("mint").setParams("double");
+		String params = man.getClass("a").getMethods().get("mint").getParams();
+		assertEquals("Params were set successfully", "(double)", params);
 	}
 	
 	/*
@@ -101,6 +115,8 @@ public class ClassManagerTest {
 		manager.addClass("c");
 		result = manager.addFields("c", "int", "field");
 		assertEquals("Success", 0, result);
+		String name = manager.getClass("c").getFields().get("field").getName();
+		assertEquals("Name is correct", "field", name);
 		result = manager.addFields("c", "int", "field");
 		assertEquals("Field exists already", 404, result);
 		manager.removeClass("c");
@@ -112,6 +128,12 @@ public class ClassManagerTest {
 		manager.addFields("d", "double", "field");
 		boolean r = manager.getClass("d").hasField("field");
 		assertEquals("field is the only field", true, r);
+		manager.getClass("d").getFields().get("field").setType("String");
+		String type = manager.getClass("d").getFields().get("field").getType();
+		assertEquals("type was set correctly", "String", type);
+		manager.getClass("d").getFields().get("field").setName("Field");
+		String fieldName = manager.getClass("d").getFields().get("field").getName();
+		assertEquals("name was set correctly", "Field", fieldName);
 		result = manager.removeFields("d", "field");
 		assertEquals("Success", 0, result);
 		result = manager.addFields("d", "not real", "field");
@@ -178,15 +200,52 @@ public class ClassManagerTest {
 		assertEquals("Relationship exists already", 106, result);
 		boolean r = manager.getRelationships().containsKey("c" + UMLRelationship.AGGREGATION + "d");
 		assertEquals("C is related to D", true, r);
-		manager.removeClass("c");
+		boolean c = manager.getRelationships().get("c" + UMLRelationship.AGGREGATION + "d").hasClass("c");
+		boolean d = manager.getRelationships().get("c" + UMLRelationship.AGGREGATION + "d").hasClass("c");
+		assertEquals("Realtionship contains class c", true, c);
+		assertEquals("Realtionship contains class d", true, d);	
+		String type = manager.getRelationships().get("c" + UMLRelationship.AGGREGATION + "d").getType();
+		assertEquals("Type is returned correctly", "aggregation", type);
+		manager.addClass("e");
+		manager.addRelationship("c", "composition", "e");
+		manager.addRelationship("e", "realization", "d");
+		boolean neither = manager.getRelationships().get("e" + UMLRelationship.REALIZATION + "d").hasClass("c");
+		boolean right = manager.getRelationships().get("c" + UMLRelationship.COMPOSITION + "e").hasClass("e");
+		boolean left = manager.getRelationships().get("e" + UMLRelationship.REALIZATION + "d").hasClass("e");
+		assertEquals("Realtionship does not contain either class", false, neither);
+		assertEquals("Realtionship contains class e", true, right);
+		assertEquals("Realtionship contains class e", true, left);
+		manager.removeClass("c");	
 		result = manager.removeRelationship("c","aggregation", "d");
 		assertEquals("One or more classes do not exist", 107, result);
 		manager.addClass("c");
+		manager.addRelationship("c", "reaLization", "d");
+		boolean contained = manager.getRelationships().containsKey("c" + UMLRelationship.REALIZATION + "d");
+		assertEquals("The relationship is in the hash map.", true, contained);
 		result = manager.removeRelationship("c","composition", "d");
 		assertEquals("Relationship does not exist", 108, result);
 		manager.addRelationship("c", "composition", "d");
 		result = manager.removeRelationship("c", "composition", "d");
 		assertEquals("Success", 0, result);
+		
+		UMLClassManager ager = new UMLClassManager();
+		ager.addClass("a");
+		ager.addClass("b");
+		ager.addRelationship("a", "composition", "b");
+		ager.addRelationship("b", "inheritance", "a");
+		ager.addRelationship("a", "Realization", "a");
+		
+		String[] rel1 = ager.getRelationships().get("a" + UMLRelationship.COMPOSITION + "b").vertType();
+		String[] rel2 = ager.getRelationships().get("b" + UMLRelationship.INHERITANCE + "a").vertType();
+		String[] rel3 = ager.getRelationships().get("a" + UMLRelationship.REALIZATION + "a").vertType();
+		
+		String[] comp = {" |", " |", " |", "<=>"};
+		String[] in = {" |", " |", " |", "> <"};
+		String[] real = {" |", " ", " ", " |", "> <"};
+		
+		assertEquals("vert types match", Arrays.toString(comp), Arrays.toString(rel1));
+		assertEquals("vert types match", Arrays.toString(in), Arrays.toString(rel2));
+		assertEquals("vert types match", Arrays.toString(real), Arrays.toString(rel3));
 	}
 	
 	/*
