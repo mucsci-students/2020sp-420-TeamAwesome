@@ -222,16 +222,6 @@ public class GUIView extends View {
 	}
 	
 	/**
-	 * Get the component at the specified location
-	 * @param x - x coordinate contained in component
-	 * @param y - y coordinate contained in component
-	 * @return - associated JComponent
-	 */
-	public JComponent getComponent(int x, int y) {
-		return (JComponent)umlDiagram.getComponentAt(x, y);
-	}
-	
-	/**
 	 * Get the entire window instance.
 	 * @return - window JFrame
 	 */
