@@ -1,8 +1,8 @@
 // Package name
 package core;
 
+import controller.CommandController;
 import controller.GUIController;
-import controller.UMLController;
 import model.UMLClassManager;
 
 // System imports
@@ -21,12 +21,13 @@ public class UMLDriver {
 		// Check if GUI mode
 		boolean gui = args.length > 0 && args[0].equals("gui");
 		
+		// Create model
+		UMLClassManager model = new UMLClassManager();
+		
 		if(gui) {
-			UMLClassManager model = new UMLClassManager();
-			UMLController controller = new GUIController(model);
-			new GUIView(controller, model).show();
+			new GUIView(new GUIController(model), model).show();
 		}
 		else
-			new ConsoleView().start();
+			new ConsoleView(model, new CommandController(model)).start();
 	}
 }
