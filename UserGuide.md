@@ -141,7 +141,7 @@ Once you've created a class you can drag them to better position them to your li
 * Fields are depicted underneath the first solid line in the box. In the form `<fieldType> <fieldName>.`
 * Methods appear underneath the second solid line in the box. In the form `<methodType> <MethodName> <parameters>.`
 * Relationships are depicted as lines inbetween the classes who's ends delineate them.
-  * Aggregation  <img src="pictures/UMLEditor%20images/Aggregation%2C%20gui.png">
+  * Aggregation  <img src="pictures/UMLEditor%20images/Aggregation%2C%20gui%20-%20Copy.png">
   * Composition  <img src="pictures/UMLEditor%20images/composition%2C%20gui.png">
   * Inheritance  <img src="pictures/UMLEditor%20images/Inheritance%2C%20gui.png">
   * Realization  <img src="pictures/UMLEditor%20images/Realization%2C%20gui.png">  
