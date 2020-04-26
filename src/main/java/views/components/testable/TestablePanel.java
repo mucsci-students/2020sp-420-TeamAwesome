@@ -16,14 +16,10 @@ public class TestablePanel extends JPanel {
 	private ArrayList<Component> components = new ArrayList<Component>();
 	private boolean isHuman = false;
 	
-	public TestablePanel() {
-		isHuman = false;
-	}
-	
 	// This constructor should only be called if you want a regular JPanel
 	public TestablePanel(boolean isHuman) {
 		super();
-		this.isHuman = true;
+		this.isHuman = isHuman;
 	}
 	
 	public void setLayout(LayoutManager mgr) {
@@ -75,8 +71,9 @@ public class TestablePanel extends JPanel {
 	}
 	
 	public Component add(Component comp) {
-		if(isHuman)
+		if(isHuman) {
 			return super.add(comp);
+		}
 		components.add(comp);
 		return comp;
 	}
@@ -140,7 +137,6 @@ public class TestablePanel extends JPanel {
 	}
 	
 	public void paintComponents(Graphics g) {
-		
 		if(isHuman)
 			super.paintComponents(g);
 	}

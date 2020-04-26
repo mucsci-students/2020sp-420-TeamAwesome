@@ -117,7 +117,7 @@ public class GUIView extends View {
 	 */
 	private void setupDiagram() {
 		// Setup a JPanel to display the classes and relationships
-		umlDiagram = isHuman() ? new DiagramPanel(this, true) : new DiagramPanel(this);
+		umlDiagram = isHuman() ? new DiagramPanel(this, true) : new DiagramPanel(this, false);
 		
 		// Add the umlDiagram to the list of listeners for model changes
 		controller.addObserver(umlDiagram);
@@ -171,7 +171,9 @@ public class GUIView extends View {
 		fileChooser.setDialogTitle(title);
 		
 		// Set extension filter to only allow extension
-		fileChooser.setFileFilter(new FileNameExtensionFilter(desc, extension));
+		// Make sure extension filter is not null and not empty
+		if(desc != null && !desc.isEmpty() && extension != null && !extension.isEmpty())
+			fileChooser.setFileFilter(new FileNameExtensionFilter(desc, extension));
 		
 		// Choose a file
 		int result;
