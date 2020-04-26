@@ -3,21 +3,26 @@ package views;
 
 // System imports
 import java.awt.Dimension;
+import java.io.File;
 import java.util.HashMap;
 
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 //Local imports
 import controller.UMLController;
 import core.ErrorHandler;
-import core.UMLFileIO;
 import model.UMLClassManager;
 import observe.Observable;
 import views.components.DiagramPanel;
 import views.components.GUIClass;
+import views.components.testable.JOptionPaneWrapper;
+import views.components.testable.TestableFileChooser;
+import views.components.testable.TestableOptionPane;
 
 /**
  * A graphical view of the UML editor
@@ -27,11 +32,19 @@ import views.components.GUIClass;
 public class GUIView extends View {
 	private UMLClassManager model;
 	private UMLController controller;
-	private UMLFileIO fileIO;
 	
 	// Window elements
 	private JFrame window;
 	private DiagramPanel umlDiagram;
+	
+	// Option pane
+	private JOptionPaneWrapper optionPane;
+	private TestableOptionPane testOP;
+	
+	// File chooser
+	private JFileChooser fileChooser;
+	
+	private boolean isHuman;
 	
 	/**
 	 * Create a GUI view for a human
@@ -50,20 +63,32 @@ public class GUIView extends View {
 	 */
 	public GUIView(UMLController controller, UMLClassManager model, boolean isHuman) {
 		// Setup look and feel
-		if(setLook() != 0);
-		
-		// Initialize file IO
-		fileIO = new UMLFileIO();
+		if(isHuman && setLook() != 0);
 
 		// Setup controller and model
 		this.controller = controller;
 		this.model = model;
 		this.controller.addObserver(this);
 		
-		setupWindow();
-		setupDiagram(isHuman);
+		this.isHuman = isHuman;
+
+		// Setup options
+		optionPane = new JOptionPaneWrapper();
+		if(isHuman) {
+			// Set to a regular file chooser
+			setFileChooser(new JFileChooser());
+			setupWindow();
+		}
+		// Set to a blank test pane otherwise (to avoid null pointers)
+		else {
+			setOptionPane(new TestableOptionPane(""));
+			setFileChooser(new TestableFileChooser(new File("")));
+		}
 		
-		window.pack();
+		setupDiagram();
+		
+		if(isHuman)
+			window.pack();
 	}
 	
 	/**
@@ -90,15 +115,16 @@ public class GUIView extends View {
 	/**
 	 * Initialize the diagram panel where the model will be represented
 	 */
-	private void setupDiagram(boolean isHuman) {
+	private void setupDiagram() {
 		// Setup a JPanel to display the classes and relationships
-		umlDiagram = new DiagramPanel(this, isHuman);
+		umlDiagram = isHuman() ? new DiagramPanel(this, true) : new DiagramPanel(this);
 		
 		// Add the umlDiagram to the list of listeners for model changes
 		controller.addObserver(umlDiagram);
 		
 		// Add the diagram to the frame
-		window.add(umlDiagram);
+		if(isHuman())
+			window.add(umlDiagram);
 	}
 	
 	/**
@@ -108,7 +134,7 @@ public class GUIView extends View {
 	 */
 	public Object promptInput(String message) {
 		// Prompt the user for input and return the input
-		return JOptionPane.showInputDialog(window, message);
+		return optionPane.showInputDialog(window, message, testOP);
 	}
 	
 	/**
@@ -118,7 +144,7 @@ public class GUIView extends View {
 	 */
 	public Object promptSelection(String message, Object[] options) {
 		// Prompt the user for input with a list of selections and return the input
-		return JOptionPane.showInputDialog(window, message, "Selection", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		return optionPane.showInputDialog(window, message, "Selection", JOptionPane.QUESTION_MESSAGE, null, options, options[0], testOP);
 	}
 	
 	/**
@@ -126,9 +152,43 @@ public class GUIView extends View {
 	 * @param parent - Parent component, can be null
 	 * @param errorCode
 	 */
+	@SuppressWarnings("static-access")
 	public void showError(JComponent parent, int errorCode) {
 		// Create error message
-		JOptionPane.showMessageDialog(parent, ErrorHandler.toString(errorCode), "Error", JOptionPane.ERROR_MESSAGE);
+		optionPane.showMessageDialog(parent, ErrorHandler.toString(errorCode), "Error", JOptionPane.ERROR_MESSAGE, testOP);
+	}
+	
+	/**
+	 * Open a JFileChooser and get a file from the user
+	 * @param desc - description of the extension
+	 * @param extension - the extension of the file, null if no filter
+	 * @param title - the title of the windoer
+	 * @param type - the type of chooser
+	 * @return - The chosen file
+	 */
+	public File getFile(String desc, String extension, String title, int type) {
+		// Set title of the chooser
+		fileChooser.setDialogTitle(title);
+		
+		// Set extension filter to only allow extension
+		fileChooser.setFileFilter(new FileNameExtensionFilter(desc, extension));
+		
+		// Choose a file
+		int result;
+		if(type == JFileChooser.SAVE_DIALOG) {
+			result = fileChooser.showSaveDialog(window);
+		}
+		else {
+			result = fileChooser.showOpenDialog(window);
+		}
+		
+		// Make sure input wasn't cancel
+		if(result == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			return file;
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -188,15 +248,6 @@ public class GUIView extends View {
 	}
 	
 	/**
-	 * Load a list of data to load into the diagram to substitute human input.
-	 * Note - Will only be taken into consideration when GUI is set to non-human mode
-	 * @param data - Data to load for actions
-	 */
-	public void loadData(String[] data) {
-		umlDiagram.setData(data);
-	}
-	
-	/**
 	 * Return the map of added GUIClasses
 	 * @return
 	 */
@@ -211,9 +262,29 @@ public class GUIView extends View {
 	public UMLClassManager getModel() {
 		return model;
 	}
+	
+	/**
+	 * Set the option pane for prompts
+	 * @param pane - option pane instance
+	 */
+	public void setOptionPane(TestableOptionPane pane) {
+		this.testOP = pane;
+	}
+	
+	/**
+	 * Set the file chooser for selecting files
+	 * @param chooser - file chooser instance
+	 */
+	public void setFileChooser(JFileChooser chooser) {
+		this.fileChooser = chooser;
+	}
 
 	@Override
 	public void updated(Observable src, String tag, Object data) {
 		
+	}
+
+	public boolean isHuman() {
+		return isHuman;
 	}
 }

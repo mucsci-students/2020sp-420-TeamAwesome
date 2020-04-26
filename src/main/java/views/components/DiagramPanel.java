@@ -26,27 +26,31 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import core.ErrorHandler;
 import core.UMLFileIO;
 import model.Method;
+
 // Local imports
 import model.UMLClass;
 import model.UMLRelationship;
 import observe.Observable;
 import observe.Observer;
 import views.GUIView;
+import views.components.testable.TestableMenu;
+import views.components.testable.TestableMenuBar;
+import views.components.testable.TestableMenuItem;
+import views.components.testable.TestablePanel;
+import views.components.testable.TestablePopupMenu;
 
 /**
  * A JPanel to display the UMLClasses and relationships
  * @author 98% Ryan and a tiny bit of Dylan
  *
  */
-public class DiagramPanel extends JPanel implements Observer, MouseListener, MouseMotionListener {
+public class DiagramPanel extends TestablePanel implements Observer, MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 1L;
 
 	// Instance of the Controller
@@ -82,7 +86,6 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	private JMenuItem mainLoadFile;
 	private JMenuItem mainExportPNG;
 	
-	
 	// MenuItems for generic mouse menu
 	private JMenuItem mouseAddClass;
 	private JMenuItem mouseSaveFile;
@@ -107,28 +110,23 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	private int mouseY;
 	private GUIClass prev;
 	
-	// Flag for testing
-	private boolean isHuman;
-	// Preloaded data for testing
-	private String[] data;
-	
-	/**
-	 * Create panel for human
-	 * @param view - the parent view
-	 */
-	public DiagramPanel(GUIView view) {
-		this(view, true);
-	}
-	
 	/**
 	 * Create a panel that allows components to be drawn and dragged by the user.
 	 * Also allows drawing of relationship types.
 	 * @param view- the parent view
 	 * @param isHuman - whether the view is for a human or testing
 	 */
+	public DiagramPanel(GUIView view) {
+		setupOps(view);
+	}
+	
 	public DiagramPanel(GUIView view, boolean isHuman) {
+		super(true);
+		setupOps(view);
+	}
+	
+	private void setupOps(GUIView view) {
 		this.view = view;
-		this.setHuman(isHuman);
 		
 		// To enable dragging and dynamic locations, remove the layout manager
 		setLayout(null);
@@ -147,7 +145,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	 * Override paint component so we can draw in the relationships
 	 */
 	@Override
-	protected void paintComponent(Graphics g) {
+	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		// Enable better 2D graphics
 		Graphics2D g2d = (Graphics2D)g;
@@ -287,7 +285,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	 */
 	private void setupMenus() {
 		// Create the popup menu for when a user right clicks in the diagram
-		mouseMenu = new JPopupMenu();
+		mouseMenu = view.isHuman() ? new JPopupMenu() : new TestablePopupMenu();
 		mouseMenu.setName("Mouse Menu");
 		
 		// Initialize the menu items
@@ -346,12 +344,18 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		mainExportPNG = createMenuItem("Export to PNG", "mainExport");
 		
 		//main Bar initialization
-		mainMenuBar = new JMenuBar();
+		mainMenuBar = view.isHuman() ? new JMenuBar() : new TestableMenuBar();
 		mainMenuBar.setName("mainMenuBar");
 		
 		//main menu initialization
-		mainFile = new JMenu("file");
-		mainActions = new JMenu("actions");
+		if(view.isHuman()) {
+			mainFile = new JMenu("File");
+			mainActions = new JMenu("Actions");
+		}
+		else {
+			mainFile = new TestableMenu();
+			mainActions = new TestableMenu();
+		}
 		mainFile.setName("mainFile");
 		mainActions.setName("mainActions");
 		
@@ -395,9 +399,8 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		mainMenuBar.add(mainFile);
 		mainMenuBar.add(mainActions);
-		view.getWindow().setJMenuBar(mainMenuBar);
-		
-		
+		if(view.isHuman())
+			view.getWindow().setJMenuBar(mainMenuBar);
 	}
 	
 	private String[] validRelationships() {
@@ -412,7 +415,11 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	 * @param name - Name for testing purposes
 	 */
 	private JMenuItem createMenuItem(String label, String name) {
-		JMenuItem temp = new JMenuItem(label);
+		JMenuItem temp;
+		if(view.isHuman())
+			temp = new JMenuItem(label);
+		else
+			temp = new TestableMenuItem();
 		temp.setName(name);
 		return temp;
 	}
@@ -469,24 +476,23 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Object className = null;
-				
-				// Check if human
-				if(isHuman) {
-					// Prompt the user for a class name
-					className = view.promptInput("Enter class name:");
-				} 
-				else {
-					// Ensure correct amount of data exists
-					if(data.length != 1)
-						return;
-					className = data[0];
-				}
+				// Prompt user for class name
+				Object className = view.promptInput("Enter class name:");
 				
 				// Make sure user did not cancel input
 				if(className != null) {
+					// Check if source is from the main menu, if so then offset the location
+					if(e.getSource() == mainAddClass) {
+						mouseX = 0;
+						mouseY = 0;
+						Component temp;
+						while((temp = findComponentAt(mouseX, mouseY)) != null && temp != DiagramPanel.this) {
+							mouseX += 10;
+							mouseY += 10;
+						}
+					}
 					int result = view.getController().addClass(className.toString(), mouseX, mouseY);
-					if(result != 0 && isHuman)
+					if(result != 0)
 						view.showError(DiagramPanel.this, result);
 				}
 				
@@ -503,11 +509,13 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 	private ActionListener removeClassAction() {
 		return new ActionListener() {
 			@Override
-			
-		
 			public void actionPerformed(ActionEvent e) {
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				// Make sure a selected class exists
-				if(isHuman && prev == null)
+				if(prev == null || e.getSource() == mainRemoveField)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose avaliable class:", classChoices);
@@ -516,23 +524,17 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
-				if(prev != null && isHuman) {
-					int result = view.getController().removeClass(prev.getName());
-					if(result != 0)
-						view.showError(DiagramPanel.this, result);
-					
-					// Reset prev
-					prev = null;
-				}
-				else if(!isHuman) {
-					// Ensure correct amount of data exists
-					if(data.length != 1)
-						return;
-					view.getController().removeClass(data[0]);
-				}
+				
+				int result = view.getController().removeClass(prev.getName());
+				if(result != 0)
+					view.showError(DiagramPanel.this, result);
+				
+				// Reset prev
+				prev = null;
 			}
 		};
 	}
@@ -545,9 +547,12 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {	
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
 				
 				//listener for main menu buttons
-				if(isHuman && prev == null)
+				if(prev == null || e.getSource() == mainEditClass)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose avaliable class containing class:", classChoices);
@@ -556,32 +561,23 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
 				
-				// Make sure a selected class exists
-				if(prev != null && isHuman) {
-					// Prompt the user for a new class name
-					Object className = view.promptInput("Enter new class name:");
+				// Prompt the user for a new class name
+				Object className = view.promptInput("Enter new class name:");
+				
+				// Make sure user did not cancel input
+				if(className != null) {
+					int result = view.getController().editClass(prev.getName(), className.toString());
+					if(result != 0)
+						view.showError(DiagramPanel.this, result);
+				}
 					
-					// Make sure user did not cancel input
-					if(className != null) {
-						int result = view.getController().editClass(prev.getName(), className.toString());
-						if(result != 0)
-							view.showError(DiagramPanel.this, result);
-					}
-						
-					// Reset prev
-					prev = null;
-				}
-				else if(!isHuman) {
-					// Ensure correct amount of data exists
-					if(data.length != 2) {
-						return;
-					}
-					view.getController().editClass(data[0], data[1]);
-				}
+				// Reset prev
+				prev = null;
 			}
 		};
 	}
@@ -594,9 +590,12 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
 				
 				//listener for main menu buttons
-				if(isHuman && prev == null)
+				if(prev == null || e.getSource() == mainAddField)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose avaliable class to add field:", classChoices);
@@ -605,34 +604,25 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
 				
-				// Make sure a selected class exists
-				if(prev != null && isHuman) {
-					// Prompt user for field type
-					Object fieldType = view.promptInput("Enter field type (i.e. int, double, etc.): ");
-					
-					// Prompt user for field name
-					Object fieldName = view.promptInput("Enter field name:");
-					
-					// Make sure user did not cancel input
-					if(fieldName != null && fieldType != null) {
-						int result = view.getController().addField(prev.getName(), fieldType.toString(), fieldName.toString());
-						if(result != 0)
-							view.showError(DiagramPanel.this, result);
-					}
-					
-					prev = null;
+				// Prompt user for field type
+				Object fieldType = view.promptInput("Enter field type (i.e. int, double, etc.): ");
+				
+				// Prompt user for field name
+				Object fieldName = view.promptInput("Enter field name:");
+				
+				// Make sure user did not cancel input
+				if(fieldName != null && fieldType != null) {
+					int result = view.getController().addField(prev.getName(), fieldType.toString(), fieldName.toString());
+					if(result != 0)
+						view.showError(DiagramPanel.this, result);
 				}
-				else if(!isHuman) {
-					// Ensure correct amount of data exists
-					if(data.length != 3) {
-						return;
-					}
-					view.getController().addField(data[0], data[1], data[2]);
-				}
+				
+				prev = null;
 			}
 		};
 	}
@@ -645,9 +635,12 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
-				if(isHuman && prev == null)
+				if(prev == null || e.getSource() == mainRemoveField)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose class containing field:", classChoices);
@@ -656,35 +649,26 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
 				
-				// Make sure a selected class exists
-				if(prev != null && isHuman) {
-					// Get a list of the available field names to remove
-					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getFields().keySet().toArray();
-					
-					// Make sure there is at least one field
-					if(availableOptions.length > 0) {
-						Object fieldName = view.promptSelection("Choose field name:", availableOptions);
-						// Make sure user didn't cancel input
-						if(fieldName != null) {
-							int result = view.getController().removeField(prev.getName(), fieldName.toString());
-							if(result != 0)
-								view.showError(DiagramPanel.this, result);
-						}
+				// Get a list of the available field names to remove
+				Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getFields().keySet().toArray();
+				
+				// Make sure there is at least one field
+				if(availableOptions.length > 0) {
+					Object fieldName = view.promptSelection("Choose field name:", availableOptions);
+					// Make sure user didn't cancel input
+					if(fieldName != null) {
+						int result = view.getController().removeField(prev.getName(), fieldName.toString());
+						if(result != 0)
+							view.showError(DiagramPanel.this, result);
 					}
-					
-					prev = null;
 				}
-				else if(!isHuman) {
-					// Ensure correct amount of data exists
-					if(data.length != 2) {
-						return;
-					}
-					view.getController().removeField(data[0], data[1]);
-				}
+				
+				prev = null;
 			}
 		};
 	}
@@ -697,9 +681,12 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
-				if(isHuman && prev == null)
+				if(prev == null || e.getSource() == mainEditField)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose class containing field:", classChoices);
@@ -708,41 +695,32 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
 				
-				// Make sure a selected class exists
-				if(prev != null && isHuman) {
-					// Get a list of the available field names to edit
-					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getFields().keySet().toArray();
-					
-					// Make sure there is at least one field
-					if(availableOptions.length > 0) {
-						Object fieldName = view.promptSelection("Choose field name:", availableOptions);
-						// Make sure user didn't cancel input
-						if(fieldName != null) {
-							// Prompt for the new name
-							Object newFieldName = view.promptInput("Enter the new name of the field");
-							
-							// Make sure user didn't cancel
-							if(newFieldName != null) {
-								int result = view.getController().editField(prev.getName(), fieldName.toString(), newFieldName.toString());
-								if(result != 0)
-									view.showError(DiagramPanel.this, result);
-							}
+				// Get a list of the available field names to edit
+				Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getFields().keySet().toArray();
+				
+				// Make sure there is at least one field
+				if(availableOptions.length > 0) {
+					Object fieldName = view.promptSelection("Choose field name:", availableOptions);
+					// Make sure user didn't cancel input
+					if(fieldName != null) {
+						// Prompt for the new name
+						Object newFieldName = view.promptInput("Enter the new name of the field");
+						
+						// Make sure user didn't cancel
+						if(newFieldName != null) {
+							int result = view.getController().editField(prev.getName(), fieldName.toString(), newFieldName.toString());
+							if(result != 0)
+								view.showError(DiagramPanel.this, result);
 						}
 					}
-					
-					prev = null;
 				}
-				else if(!isHuman) {
-					// Ensure correct amount of data exists
-					if(data.length != 3) {
-						return;
-					}
-					view.getController().editField(data[0], data[1], data[2]);
-				}
+				
+				prev = null;
 			}
 		};
 	}
@@ -755,9 +733,12 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
-				if(isHuman && prev == null)
+				if(prev == null || e.getSource() == mainAddMethod)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose avaliable class:", classChoices);
@@ -766,42 +747,29 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
 				
-				// Make sure a selected class exists
-				if(prev != null && isHuman) {
-					// Prompt user for return type
-					Object returnType = view.promptInput("Enter return type:");
-					
-					// Prompt user for field name
-					Object methodName = view.promptInput("Enter method name:");
-					
-					// Prompt user for argument list
-					Object argList = view.promptInput("Parameters (separated by commas):");
-					
-					// Make sure user did not cancel input
-					if(methodName != null && returnType != null && argList != null) {
-						int result = view.getController().addMethod(prev.getName(), returnType.toString(),
-								methodName.toString(), argList.toString());
-						if(result != 0)
-							view.showError(DiagramPanel.this, result);
-					}
-					
-					System.out.println("methods: " + view.getModel().getClass(prev.getName()).getMethods().toString());
-					
-					prev = null;
+				// Prompt user for return type
+				Object returnType = view.promptInput("Enter return type:");
+				
+				// Prompt user for field name
+				Object methodName = view.promptInput("Enter method name:");
+				
+				// Prompt user for argument list
+				Object argList = view.promptInput("Parameters (separated by commas):");
+				
+				// Make sure user did not cancel input
+				if(methodName != null && returnType != null && argList != null) {
+					int result = view.getController().addMethod(prev.getName(), returnType.toString(),
+							methodName.toString(), argList.toString());
+					if(result != 0)
+						view.showError(DiagramPanel.this, result);
 				}
-				else if(!isHuman) {
-					// Assumes no params
-					if(data.length == 3) {
-						view.getController().addMethod(data[0], data[1], data[2], "");
-					} 
-					else if(data.length == 4) {
-						view.getController().addMethod(data[0], data[1], data[2], data[3]);
-					}
-				}
+				
+				prev = null;
 			}
 		};
 	}
@@ -814,9 +782,12 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
-				if(isHuman && prev == null)
+				if(prev == null || e.getSource() == mainRemoveMethod)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose class containing method:", classChoices);
@@ -825,41 +796,34 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
 				
-				// Make sure a selected class exists
-				if(prev != null && isHuman) {
-					// Get a list of the available field names to remove
-					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getMethods().keySet().toArray();
-					
-					// Make sure there is at least one field
-					if(availableOptions.length > 0) {
-						Object methodName = view.promptSelection("Choose method name:", availableOptions);
-						// Make sure user didn't cancel input
-						if(methodName != null) {
-							Method method = view.getModel().getClass(prev.getName()).getMethods().get(methodName);
-							// Strip parameters
-							String methodParams = method.getParams().substring(1, method.getParams().length()-1);
-							System.out.println("method to remove: " + (method.getName() + methodParams));
-							int result = view.getController().removeMethod(prev.getName(), method.getName(), methodParams);
-							if(result != 0)
-								view.showError(DiagramPanel.this, result);
+				// Get a list of the available field names to remove
+				Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getMethods().keySet().toArray();
+				
+				// Make sure there is at least one field
+				if(availableOptions.length > 0) {
+					Object methodName = view.promptSelection("Choose method name:", availableOptions);
+					// Make sure user didn't cancel input
+					if(methodName != null) {
+						Method method = view.getModel().getClass(prev.getName()).getMethods().get(methodName);
+						// Make sure method exists
+						if(method == null) {
+							view.showError(DiagramPanel.this, ErrorHandler.setCode(406));
+							return;
 						}
-					}
-					
-					prev = null;
-				}
-				else if(!isHuman) {
-					// Assume no args
-					if(data.length == 2) {
-						view.getController().removeMethod(data[0], data[1], "");
-					}
-					else if(data.length == 3) {
-						view.getController().removeMethod(data[0], data[1], data[2]);
+						// Strip parameters
+						String methodParams = method.getParams().substring(1, method.getParams().length()-1);
+						int result = view.getController().removeMethod(prev.getName(), method.getName(), methodParams);
+						if(result != 0)
+							view.showError(DiagramPanel.this, result);
 					}
 				}
+				
+				prev = null;
 			}
 		};
 	}
@@ -873,9 +837,12 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
-				if(isHuman && prev == null)
+				if(prev == null || e.getSource() == mainEditMethod)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose class containing method:", classChoices);
@@ -884,43 +851,35 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
-				// Make sure a selected class exists
-				if(prev != null && isHuman) {
-					// Get a list of the available method names to edit
-					Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getMethods().keySet().toArray();
-					
-					// Make sure there is at least one method
-					if(availableOptions.length > 0) {
-						Object methodName = view.promptSelection("Choose method name:", availableOptions);
-						// Make sure user didn't cancel input
-						if(methodName != null) {
-							// Prompt for the new name
-							Object newMethodName = view.promptInput("Enter the new name of the method");
-							
-							// Make sure user didn't cancel
-							if(newMethodName != null) {
-								Method method = view.getModel().getClass(prev.getName()).getMethods().get(methodName);
-								// Strip parameters
-								String methodParams = method.getParams().substring(1, method.getParams().length() -1);
-								int result = view.getController().editMethod(prev.getName(), method.getName(), newMethodName.toString(), methodParams);
-								if(result != 0)
-									view.showError(DiagramPanel.this, result);
-							}
+
+				// Get a list of the available method names to edit
+				Object[] availableOptions = view.getController().getModel().getClass(prev.getName()).getMethods().keySet().toArray();
+				
+				// Make sure there is at least one method
+				if(availableOptions.length > 0) {
+					Object methodName = view.promptSelection("Choose method name:", availableOptions);
+					// Make sure user didn't cancel input
+					if(methodName != null) {
+						// Prompt for the new name
+						Object newMethodName = view.promptInput("Enter the new name of the method");
+						
+						// Make sure user didn't cancel
+						if(newMethodName != null) {
+							Method method = view.getModel().getClass(prev.getName()).getMethods().get(methodName);
+							// Strip parameters
+							String methodParams = method.getParams().substring(1, method.getParams().length() -1);
+							int result = view.getController().editMethod(prev.getName(), method.getName(), newMethodName.toString(), methodParams);
+							if(result != 0)
+								view.showError(DiagramPanel.this, result);
 						}
 					}
-					
-					prev = null;
 				}
-				else if(!isHuman) {
-					// Ensure correct length
-					if(data.length != 4) {
-						return;
-					}
-					view.getController().editMethod(data[0], data[1], data[2], data[3]);
-				}
+				
+				prev = null;
 			}
 		};
 	}
@@ -933,9 +892,12 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
-				if(isHuman && prev == null)
+				if(prev == null || e.getSource() == mainAddRelationship)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose origin class: ", classChoices);
@@ -944,36 +906,29 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
-				// Make sure a selected class exists
-				if(prev != null && isHuman) {
-					// Get a list of available second classes
-					Object[] availableClasses = view.getController().getModel().getClassNames();
-					
-					// Make sure there is at least one other class
-					if(availableClasses.length > 0) {
-						// Get the destination class
-						Object destClass = view.promptSelection("Destination class: ", availableClasses);
-						// Get the type
-						Object type = view.promptSelection("Relationship Type:", validRelationships());
-						// Make sure user didn't cancel input
-						if(destClass != null && type != null) {
-							int result = view.getController().addRelationship(prev.getName(), type.toString(), destClass.toString());
-							if(result != 0)
-								view.showError(DiagramPanel.this, result);
-						}
-					}
-					
-					prev = null;
-				}
-				else if(!isHuman) {
-					// Ensure num args
-					if(data.length == 3) {
-						view.getController().addRelationship(data[0], data[1], data[2]);
+
+				// Get a list of available second classes
+				Object[] availableClasses = view.getController().getModel().getClassNames();
+				
+				// Make sure there is at least one other class
+				if(availableClasses.length > 0) {
+					// Get the destination class
+					Object destClass = view.promptSelection("Destination class: ", availableClasses);
+					// Get the type
+					Object type = view.promptSelection("Relationship Type:", validRelationships());
+					// Make sure user didn't cancel input
+					if(destClass != null && type != null) {
+						int result = view.getController().addRelationship(prev.getName(), type.toString(), destClass.toString());
+						if(result != 0)
+							view.showError(DiagramPanel.this, result);
 					}
 				}
+				
+				prev = null;
 			}
 		};
 	}
@@ -986,9 +941,12 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// Make sure at least one class exists
+				if(view.getModel().getClassNames().length == 0)
+					return;
+				
 				//listener for main menu buttons
-				if(isHuman && prev == null)
+				if(prev == null || e.getSource() == mainRemoveRelationship)
 				{
 					Object[] classChoices = view.getController().getModel().getClassNames();
 					Object originClass = view.promptSelection("Choose origin class: ", classChoices);
@@ -997,36 +955,29 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 						prev = temp;
 					else
 					{
+						ErrorHandler.setCode(109);
 						return;	
 					}
 				}
-				// Make sure a selected class exists
-				if(prev != null && isHuman) {
-					// Get a list of available second classes
-					Object[] availableClasses = view.getController().getModel().getClassNames();
-					
-					// Make sure there is at least one field
-					if(availableClasses.length > 0) {
-						// Get the destination class
-						Object destClass = view.promptSelection("Destination class: ", availableClasses);
-						// Get the type
-						Object type = view.promptSelection("Relationship Type: ", validRelationships());
-						// Make sure user didn't cancel input
-						if(destClass != null && type != null) {
-							int result = view.getController().removeRelationship(prev.getName(), type.toString(), destClass.toString());
-							if(result != 0)
-								view.showError(DiagramPanel.this, result);
-						}
-					}
-					
-					prev = null;
-				}
-				else if(!isHuman) {
-					// Ensure num args
-					if(data.length == 3) {
-						view.getController().removeRelationship(data[0], data[1], data[2]);
+				
+				// Get a list of available second classes
+				Object[] availableClasses = view.getController().getModel().getClassNames();
+				
+				// Make sure there is at least one field
+				if(availableClasses.length > 0) {
+					// Get the destination class
+					Object destClass = view.promptSelection("Destination class: ", availableClasses);
+					// Get the type
+					Object type = view.promptSelection("Relationship Type: ", validRelationships());
+					// Make sure user didn't cancel input
+					if(destClass != null && type != null) {
+						int result = view.getController().removeRelationship(prev.getName(), type.toString(), destClass.toString());
+						if(result != 0)
+							view.showError(DiagramPanel.this, result);
 					}
 				}
+				
+				prev = null;
 			}
 		};
 	}
@@ -1039,16 +990,11 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Create save dialog instance
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setDialogTitle("Save UML");
-				
-				// Choose file
-				int result = fileChooser.showSaveDialog(DiagramPanel.this);
+				// Prompt user for file
+				File saveFile = view.getFile("", "", "Save UNL", JFileChooser.SAVE_DIALOG);
 				
 				// Make sure user didn't close the console
-				if(result == JFileChooser.APPROVE_OPTION) {
-					File saveFile = fileChooser.getSelectedFile();
+				if(saveFile != null) {
 					
 					// Check if file name ends with '.json' and if not add it manually
 					if(!saveFile.getPath().endsWith(".json"))
@@ -1058,7 +1004,7 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 					UMLFileIO fileIO = new UMLFileIO();
 					
 					// Set the path
-					result = fileIO.setFile(saveFile.getAbsolutePath());
+					int result = fileIO.setFile(saveFile.getAbsolutePath());
 					if(result != 0) {
 						view.showError(DiagramPanel.this, result);
 						return;
@@ -1084,26 +1030,18 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Create load dialog instance
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setDialogTitle("Save UML");
 				
-				// Set extension filter to only allow JSON files
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files", "json");
-				fileChooser.setFileFilter(filter);
-				
-				// Choose file
-				int result = fileChooser.showOpenDialog(DiagramPanel.this);
+				// Prompt for file
+				File loadFile = view.getFile("JSON", ".json", "Load File", JFileChooser.OPEN_DIALOG);
 				
 				// Make sure user didn't close the console
-				if(result == JFileChooser.APPROVE_OPTION) {
-					File loadFile = fileChooser.getSelectedFile();
+				if(loadFile != null) {
 					
 					// Open the file
 					UMLFileIO fileIO = new UMLFileIO();
 					
 					// Set the path
-					result = fileIO.setFile(loadFile.getAbsolutePath());
+					int result = fileIO.setFile(loadFile.getAbsolutePath());
 					if(result != 0) {
 						view.showError(DiagramPanel.this, result);
 						return;
@@ -1144,18 +1082,11 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// Create save dialog instance
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setDialogTitle("Export to PNG");
-				
-				
-				// Choose file
-				int result = fileChooser.showSaveDialog(DiagramPanel.this);
+				// Prompt user for file
+				File exportFile = view.getFile("PNG", ".png", "Export to PNG", JFileChooser.SAVE_DIALOG);
 				
 				// Make sure the user didn't cancel the operation
-				if(result == JFileChooser.APPROVE_OPTION) {
-					File exportFile = fileChooser.getSelectedFile();
-					
+				if(exportFile != null) {
 					// Check if file name ends with '.png' and if not manually add it
 					if(!exportFile.getPath().endsWith(".png")) {
 						exportFile = new File(exportFile.getAbsolutePath() + ".png");
@@ -1224,12 +1155,14 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		}
 		else if(tag.equals("classChange")) {
 			// Update names
-			// Have to loop through all since the name changed
-			for(Map.Entry<String, GUIClass> entry : guiClasses.entrySet()) {
-				GUIClass temp = entry.getValue();
-				temp.updateName();
-				guiClasses.remove(temp);
-				guiClasses.put(temp.getName(), temp);
+			// Because you can't edit the name field you have to remove and readd the class
+			// But you can't remove/add in the middle of a loop so you have to readd all classes
+			// Remove all classes
+			guiClasses.forEach((k, v) -> remove(v));
+			guiClasses.clear();
+			// Add them back
+			for(Object className : view.getModel().getClassNames()) {
+				updated(null, "addClass", view.getModel().getClass((String)className));
 			}
 		}
 		
@@ -1330,60 +1263,35 @@ public class DiagramPanel extends JPanel implements Observer, MouseListener, Mou
 		
 		// Check main self children
 		for(Component c : getComponents()) {
-			if(c.getName().equals(name)) {
+			if(c != null && c.getName().equals(name)) {
 				return c;
 			}
 		}
 		
 		// Check menu children
 		for(Component c : mouseMenu.getComponents()) {
-			if(c.getName() != null && c.getName().equals(name)) {
+			if(c != null && c.getName() != null && c.getName().equals(name)) {
 				return c;
 			}
 		}
 		for(Component c : classMenu.getComponents()) {
-			if(c.getName() != null && c.getName().equals(name)) {
-				return c;
-			}
-		}
-		
-		for(int i = 0; i < mainFile.getItemCount(); i++) {
-			Component c = mainFile.getItem(i);
 			if(c != null && c.getName() != null && c.getName().equals(name)) {
 				return c;
 			}
 		}
 		
-		for(int i = 0; i < mainActions.getItemCount(); i++) {
-			Component c = mainActions.getItem(i);
+		for(Component c : mainFile.getComponents()) {
+			if(c != null && c.getName() != null && c.getName().equals(name)) {
+				return c;
+			}
+		}
+		for(Component c : mainActions.getComponents()) {
 			if(c != null && c.getName() != null && c.getName().equals(name)) {
 				return c;
 			}
 		}
 		
 		return null;
-	}
-
-	/**
-	 * @return isHuman
-	 */
-	public boolean isHuman() {
-		return isHuman;
-	}
-	
-	/**
-	 * Pre-load the given data for testing.
-	 * @param data - new data
-	 */
-	public void setData(String[] data) {
-		this.data = data;
-	}
-
-	/**
-	 * @param isHuman - Whether the view is for a human
-	 */
-	public void setHuman(boolean isHuman) {
-		this.isHuman = isHuman;
 	}
 
 	/**

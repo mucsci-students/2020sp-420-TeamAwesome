@@ -11,18 +11,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import java.awt.Component;
-import java.lang.reflect.Array;
-import java.util.Arrays;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
 // Local imports
 import views.GUIView;
+import views.components.testable.TestableMenuItem;
+import views.components.testable.TestableOptionPane;
 
 /**
  * Class to run JUnit tests on the GUI
@@ -38,7 +37,6 @@ public class GUITest {
 	public void baseInitialization() {
 		UMLClassManager model = new UMLClassManager();
 		GUIView gui = new GUIView(new GUIController(model), model, false);
-		assertTrue("Window not null", gui.getWindow() != null);
 		assertTrue("Controller not null", gui.getController() != null);
 		assertTrue("Diagram exists", gui.getDiagram() != null);
 	}
@@ -58,11 +56,11 @@ public class GUITest {
 		Component[] mouseMenuChildren = mouseMenu.getComponents();
 		assertTrue("Main mouse menu not empty", mouseMenuChildren.length != 0);
 		assertEquals("Main mouse menu number of items", 5, mouseMenuChildren.length);
-		assertEquals("Main mouse menu first child class add", "mouseAddClass" , ((JMenuItem)mouseMenuChildren[0]).getName());
-		assertTrue("Main mouse menu second child separator", mouseMenuChildren[1] instanceof JSeparator);
-		assertEquals("Main mouse menu third child save", "mouseSave" , ((JMenuItem)mouseMenuChildren[2]).getName());
-		assertEquals("Main mouse menu fourth child load", "mouseLoad" , ((JMenuItem)mouseMenuChildren[3]).getName());
-		assertEquals("Main mouse menu fifth child load", "mouseExport" , ((JMenuItem)mouseMenuChildren[4]).getName());
+		assertEquals("Main mouse menu first child class add", "mouseAddClass" , ((TestableMenuItem)mouseMenuChildren[0]).getName());
+		assertTrue("Main mouse menu second child separator", mouseMenuChildren[1] == null);
+		assertEquals("Main mouse menu third child save", "mouseSave" , ((TestableMenuItem)mouseMenuChildren[2]).getName());
+		assertEquals("Main mouse menu fourth child load", "mouseLoad" , ((TestableMenuItem)mouseMenuChildren[3]).getName());
+		assertEquals("Main mouse menu fifth child load", "mouseExport" , ((TestableMenuItem)mouseMenuChildren[4]).getName());
 	}
 	
 	/**
@@ -80,19 +78,19 @@ public class GUITest {
 		Component[] classMenuChildren = classMenu.getComponents();
 		assertTrue("Class menu not empty", classMenuChildren.length != 0);
 		assertEquals("Class menu number of items", 13, classMenuChildren.length);
-		assertEquals("Class menu first child", "classRemoveClass" , ((JMenuItem)classMenuChildren[0]).getName());
-		assertEquals("Class menu second child", "classEditClass", ((JMenuItem)classMenuChildren[1]).getName());
+		assertEquals("Class menu first child", "classRemoveClass" , ((TestableMenuItem)classMenuChildren[0]).getName());
+		assertEquals("Class menu second child", "classEditClass", ((TestableMenuItem)classMenuChildren[1]).getName());
 		assertTrue("Class menu third child separator", classMenuChildren[2] instanceof JSeparator);
-		assertEquals("Class menu fourth child", "classAddField" , ((JMenuItem)classMenuChildren[3]).getName());
-		assertEquals("Class menu child 5", "classRemoveField" , ((JMenuItem)classMenuChildren[4]).getName());
-		assertEquals("Class menu child 6", "classEditField" , ((JMenuItem)classMenuChildren[5]).getName());
+		assertEquals("Class menu fourth child", "classAddField" , ((TestableMenuItem)classMenuChildren[3]).getName());
+		assertEquals("Class menu child 5", "classRemoveField" , ((TestableMenuItem)classMenuChildren[4]).getName());
+		assertEquals("Class menu child 6", "classEditField" , ((TestableMenuItem)classMenuChildren[5]).getName());
 		assertTrue("Class menu child 7 separator", classMenuChildren[6] instanceof JSeparator);
-		assertEquals("Class menu child 8", "classAddMethod" , ((JMenuItem)classMenuChildren[7]).getName());
-		assertEquals("Class menu child 9", "classRemoveMethod" , ((JMenuItem)classMenuChildren[8]).getName());
-		assertEquals("Class menu child 10", "classEditMethod" , ((JMenuItem)classMenuChildren[9]).getName());
+		assertEquals("Class menu child 8", "classAddMethod" , ((TestableMenuItem)classMenuChildren[7]).getName());
+		assertEquals("Class menu child 9", "classRemoveMethod" , ((TestableMenuItem)classMenuChildren[8]).getName());
+		assertEquals("Class menu child 10", "classEditMethod" , ((TestableMenuItem)classMenuChildren[9]).getName());
 		assertTrue("Class menu child 11 separator", classMenuChildren[10] instanceof JSeparator);
-		assertEquals("Class menu child 12", "classAddRelationship" , ((JMenuItem)classMenuChildren[11]).getName());
-		assertEquals("Class menu child 13", "classRemoveRelationship" , ((JMenuItem)classMenuChildren[12]).getName());
+		assertEquals("Class menu child 12", "classAddRelationship" , ((TestableMenuItem)classMenuChildren[11]).getName());
+		assertEquals("Class menu child 13", "classRemoveRelationship" , ((TestableMenuItem)classMenuChildren[12]).getName());
 	}
 	
 	/**
@@ -108,12 +106,14 @@ public class GUITest {
 		
 		//Test the MainMenu initialization of components
 		assertTrue("Main File menu not empty", ((JMenu)gui.getComponent("mainFile")).getItemCount() != 0);
-		assertEquals("Main File menu number of items", 4, ((JMenu)gui.getComponent("mainFile")).getItemCount());
+		assertEquals("Main File menu number of items", 6, ((JMenu)gui.getComponent("mainFile")).getItemCount());
 		assertEquals("Main File menu first child", "mainAddClass" , ((JMenu)gui.getComponent("mainFile")).getItem(0).getName());
 		// JSeparator's seem to be represented as null menuitems
 		assertTrue("Main File menu second child separator", ((JMenu)gui.getComponent("mainFile")).getItem(1) == null);
 		assertEquals("Main File menu third child", "mainSave", ((JMenu)gui.getComponent("mainFile")).getItem(2).getName());
 		assertEquals("Main File menu fourth child", "mainLoad" , ((JMenu)gui.getComponent("mainFile")).getItem(3).getName());
+		assertTrue("Main File menu fifth child separator", ((JMenu)gui.getComponent("mainFile")).getItem(4) == null);
+		assertEquals("Main File menu sixth child", "mainExport" , ((JMenu)gui.getComponent("mainFile")).getItem(5).getName());
 		
 		assertTrue("Main action menu not empty", ((JMenu)gui.getComponent("mainActions")).getItemCount() != 0);
 		assertEquals("Main action menu number of items", 13, ((JMenu)gui.getComponent("mainActions")).getItemCount());
@@ -133,7 +133,6 @@ public class GUITest {
 		assertTrue("Main menu actions child 7 separator", ((JMenu)gui.getComponent("mainActions")).getItem(10) == null);
 		assertEquals("Main menu actions child 8", "mainAddRelationship" , ((JMenu)gui.getComponent("mainActions")).getItem(11).getName());
 		assertEquals("Main menu actions child 9", "mainRemoveRelationship" , ((JMenu)gui.getComponent("mainActions")).getItem(12).getName());
-		
 	}
 	
 	/**
@@ -144,26 +143,26 @@ public class GUITest {
 		UMLClassManager model = new UMLClassManager();
 		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
-		gui.loadData(new String[] {"myclass"});
-		((JMenuItem)gui.getComponent("mouseAddClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass"));
+		((TestableMenuItem)gui.getComponent("mouseAddClass")).doClick();
 		assertEquals("Add class normal exit code", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Add class normal exist check", null, model.getClass("myclass"));
 		assertEquals("Number of classes after single add", 1, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"secondclass"});
-		((JMenuItem)gui.getComponent("mouseAddClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("secondclass"));
+		((TestableMenuItem)gui.getComponent("mouseAddClass")).doClick();
 		assertEquals("Add class normal exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Add class normal exist check 2", null, model.getClass("secondclass"));
 		assertEquals("Number of classes after second add", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"3*29"});
-		((JMenuItem)gui.getComponent("mouseAddClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("3*29"));
+		((TestableMenuItem)gui.getComponent("mouseAddClass")).doClick();
 		assertNotEquals("Add class invalid name error code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Add class invalid not exists check", null, model.getClass("3*29"));
 		assertEquals("Number of classes after invalid add", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"myclass"});
-		((JMenuItem)gui.getComponent("mouseAddClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass"));
+		((TestableMenuItem)gui.getComponent("mouseAddClass")).doClick();
 		assertNotEquals("Add class duplicate exit code", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Add class duplicate exist check", null, model.getClass("myclass"));
 		assertEquals("Number of classes after single add", 2, model.getClassNames().length);
@@ -177,26 +176,26 @@ public class GUITest {
 		UMLClassManager model = new UMLClassManager();
 		GUIView gui = new GUIView(new GUIController(model), model, false);
 		
-		gui.loadData(new String[] {"myclass"});
-		((JMenuItem)gui.getComponent("mainAddClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass"));
+		((TestableMenuItem)gui.getComponent("mainAddClass")).doClick();
 		assertEquals("Add class normal exit code", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Add class normal exist check", null, model.getClass("myclass"));
 		assertEquals("Number of classes after single add", 1, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"secondclass"});
-		((JMenuItem)gui.getComponent("mainAddClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("secondclass"));
+		((TestableMenuItem)gui.getComponent("mainAddClass")).doClick();
 		assertEquals("Add class normal exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Add class normal exist check 2", null, model.getClass("secondclass"));
 		assertEquals("Number of classes after second add", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"3*29"});
-		((JMenuItem)gui.getComponent("mainAddClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("3*29"));
+		((TestableMenuItem)gui.getComponent("mainAddClass")).doClick();
 		assertNotEquals("Add class invalid name error code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Add class invalid not exists check", null, model.getClass("3*29"));
 		assertEquals("Number of classes after invalid add", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"myclass"});
-		((JMenuItem)gui.getComponent("mainAddClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass"));
+		((TestableMenuItem)gui.getComponent("mainAddClass")).doClick();
 		assertNotEquals("Add class duplicate exit code", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Add class duplicate exist check", null, model.getClass("myclass"));
 		assertEquals("Number of classes after single add", 2, model.getClassNames().length);
@@ -214,25 +213,26 @@ public class GUITest {
 		// Assuming add class works
 		controller.addClass("myclass");
 		controller.addClass("secondclass");
+		controller.addClass("thirdclass");
 		
-		assertEquals("Number of classes prior to remove", 2, model.getClassNames().length);
+		assertEquals("Number of classes prior to remove", 3, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"myclass"});
-		((JMenuItem)gui.getComponent("classRemoveClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass"));
+		((TestableMenuItem)gui.getComponent("classRemoveClass")).doClick();
 		assertEquals("Remove class normal exit code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove class normal exist check", null, model.getClass("myclass"));
-		assertEquals("Number of classes after normal remove", 1, model.getClassNames().length);
+		assertEquals("Number of classes after normal remove", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"secondclass"});
-		((JMenuItem)gui.getComponent("classRemoveClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("secondclass"));
+		((TestableMenuItem)gui.getComponent("classRemoveClass")).doClick();
 		assertEquals("Remove class normal exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove class normal exist check 2", null, model.getClass("secondclass"));
-		assertEquals("Number of classes after normal remove 2", 0, model.getClassNames().length);
+		assertEquals("Number of classes after normal remove 2", 1, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"notreal"}); // Like birds
-		((JMenuItem)gui.getComponent("classRemoveClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("notreal")); // Like birds
+		((TestableMenuItem)gui.getComponent("classRemoveClass")).doClick();
 		assertNotEquals("Remove class not exist", 0, ErrorHandler.LAST_CODE);
-		assertEquals("Number of classes after invalid remove", 0, model.getClassNames().length);
+		assertEquals("Number of classes after invalid remove", 1, model.getClassNames().length);
 	}
 
 	/**
@@ -247,25 +247,25 @@ public class GUITest {
 		// Assuming add class works
 		controller.addClass("myclass");
 		controller.addClass("secondclass");
+		controller.addClass("thirdclass");
 		
-		assertEquals("Number of classes prior to remove", 2, model.getClassNames().length);
+		assertEquals("Number of classes prior to remove", 3, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"myclass"});
-		((JMenuItem)gui.getComponent("mainRemoveClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass"));
+		((TestableMenuItem)gui.getComponent("mainRemoveClass")).doClick();
 		assertEquals("Remove class normal exit code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove class normal exist check", null, model.getClass("myclass"));
-		assertEquals("Number of classes after normal remove", 1, model.getClassNames().length);
+		assertEquals("Number of classes after normal remove", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"secondclass"});
-		((JMenuItem)gui.getComponent("mainRemoveClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("secondclass"));
+		((TestableMenuItem)gui.getComponent("mainRemoveClass")).doClick();
 		assertEquals("Remove class normal exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove class normal exist check 2", null, model.getClass("secondclass"));
-		assertEquals("Number of classes after normal remove 2", 0, model.getClassNames().length);
+		assertEquals("Number of classes after normal remove 2", 1, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"notreal"}); // Like birds
-		((JMenuItem)gui.getComponent("mainRemoveClass")).doClick();
-		assertNotEquals("Remove class not exist", 0, ErrorHandler.LAST_CODE);
-		assertEquals("Number of classes after invalid remove", 0, model.getClassNames().length);
+		gui.setOptionPane(new TestableOptionPane("notreal")); // Like birds
+		((TestableMenuItem)gui.getComponent("mainRemoveClass")).doClick();
+		assertEquals("Number of classes after invalid remove", 1, model.getClassNames().length);
 	}
 	
 	/**
@@ -283,34 +283,34 @@ public class GUITest {
 		
 		assertEquals("Number of classes prior to edit", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"myclass", "changedlol"});
-		((JMenuItem)gui.getComponent("classEditClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "changedlol"));
+		((TestableMenuItem)gui.getComponent("classEditClass")).doClick();
 		assertEquals("Edit class normal exit code", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class new name exist check", null, model.getClass("changedlol"));
 		assertEquals("Number of class post name change", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"changedlol", "myclass"});
-		((JMenuItem)gui.getComponent("classEditClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("changedlol", "myclass"));
+		((TestableMenuItem)gui.getComponent("classEditClass")).doClick();
 		assertEquals("Edit class normal exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class new name exist check 2", null, model.getClass("myclass"));
 		assertEquals("Number of class post name change", 2, model.getClassNames().length);
 
-		gui.loadData(new String[] {"myclass", "n*tg*(dnamebird"});
-		((JMenuItem)gui.getComponent("classEditClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "n*tg*(dnamebird"));
+		((TestableMenuItem)gui.getComponent("classEditClass")).doClick();
 		assertNotEquals("Edit class invalid new name exit code", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class invalid old name still exists", null, model.getClass("myclass"));
 		assertEquals("Edit class invalid new name does not exist", null, model.getClass("n*tg*(dnamebird"));
 		assertEquals("Number of class post invalid name change", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"myclass", "secondclass"});
-		((JMenuItem)gui.getComponent("classEditClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "secondclass"));
+		((TestableMenuItem)gui.getComponent("classEditClass")).doClick();
 		assertNotEquals("Edit class invalid new name exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class invalid old name still exists 2", null, model.getClass("myclass"));
 		assertNotEquals("Edit class invalid new name still exists", null, model.getClass("secondclass"));
 		assertEquals("Number of class post invalid name change", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"notreal", "likebirds"});
-		((JMenuItem)gui.getComponent("classEditClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("notreal", "likebirds"));
+		((TestableMenuItem)gui.getComponent("classEditClass")).doClick();
 		assertNotEquals("Edit class invalid old name exit code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Edit class invalid old name still not exist", null, model.getClass("notreal"));
 		assertEquals("Edit class invalid new name not exists", null, model.getClass("likebirds"));
@@ -332,34 +332,34 @@ public class GUITest {
 		
 		assertEquals("Number of classes prior to edit", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"myclass", "changedlol"});
-		((JMenuItem)gui.getComponent("mainEditClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "changedlol"));
+		((TestableMenuItem)gui.getComponent("mainEditClass")).doClick();
 		assertEquals("Edit class normal exit code", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class new name exist check", null, model.getClass("changedlol"));
 		assertEquals("Number of class post name change", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"changedlol", "myclass"});
-		((JMenuItem)gui.getComponent("mainEditClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("changedlol", "myclass"));
+		((TestableMenuItem)gui.getComponent("mainEditClass")).doClick();
 		assertEquals("Edit class normal exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class new name exist check 2", null, model.getClass("myclass"));
 		assertEquals("Number of class post name change", 2, model.getClassNames().length);
 
-		gui.loadData(new String[] {"myclass", "n*tg*(dnamebird"});
-		((JMenuItem)gui.getComponent("mainEditClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "n*tg*(dnamebird"));
+		((TestableMenuItem)gui.getComponent("mainEditClass")).doClick();
 		assertNotEquals("Edit class invalid new name exit code", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class invalid old name still exists", null, model.getClass("myclass"));
 		assertEquals("Edit class invalid new name does not exist", null, model.getClass("n*tg*(dnamebird"));
 		assertEquals("Number of class post invalid name change", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"myclass", "secondclass"});
-		((JMenuItem)gui.getComponent("mainEditClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "secondclass"));
+		((TestableMenuItem)gui.getComponent("mainEditClass")).doClick();
 		assertNotEquals("Edit class invalid new name exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertNotEquals("Edit class invalid old name still exists 2", null, model.getClass("myclass"));
 		assertNotEquals("Edit class invalid new name still exists", null, model.getClass("secondclass"));
 		assertEquals("Number of class post invalid name change", 2, model.getClassNames().length);
 		
-		gui.loadData(new String[] {"notreal", "likebirds"});
-		((JMenuItem)gui.getComponent("mainEditClass")).doClick();
+		gui.setOptionPane(new TestableOptionPane("notreal", "likebirds"));
+		((TestableMenuItem)gui.getComponent("mainEditClass")).doClick();
 		assertNotEquals("Edit class invalid old name exit code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Edit class invalid old name still not exist", null, model.getClass("notreal"));
 		assertEquals("Edit class invalid new name not exists", null, model.getClass("likebirds"));
@@ -381,26 +381,26 @@ public class GUITest {
 		
 		assertEquals("Number of fields initial", 0, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "int", "myfield"});
-		((JMenuItem)gui.getComponent("classAddField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "int", "myfield"));
+		((TestableMenuItem)gui.getComponent("classAddField")).doClick();
 		assertEquals("Add field valid exit code", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Add field valid has field", myclass.hasField("myfield"));
 		assertEquals("Add field valid num fields", 1, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "UMLClass", "another"});
-		((JMenuItem)gui.getComponent("classAddField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "UMLClass", "another"));
+		((TestableMenuItem)gui.getComponent("classAddField")).doClick();
 		assertEquals("Add field valid exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Add field valid has field 2", myclass.hasField("another"));
 		assertEquals("Add field valid num fields 2", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "double", "myfield"});
-		((JMenuItem)gui.getComponent("classAddField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "double", "myfield"));
+		((TestableMenuItem)gui.getComponent("classAddField")).doClick();
 		assertNotEquals("Add field duplicate name diff type", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Add field original still exists", myclass.hasField("myfield"));
 		assertEquals("Add field duplicate num fields", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "int", "m@lf0rm*dn@me"});
-		((JMenuItem)gui.getComponent("classAddField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "int", "m@lf0rm*dn@me"));
+		((TestableMenuItem)gui.getComponent("classAddField")).doClick();
 		assertNotEquals("Add field invalid exit code", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Add field invalid does not exist", myclass.hasField("m@lf0rm*dn@me"));
 		assertEquals("Add filed invalid num fields", 2, myclass.getFields().size());
@@ -421,26 +421,26 @@ public class GUITest {
 		
 		assertEquals("Number of fields initial", 0, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "int", "myfield"});
-		((JMenuItem)gui.getComponent("mainAddField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "int", "myfield"));
+		((TestableMenuItem)gui.getComponent("mainAddField")).doClick();
 		assertEquals("Add field valid exit code", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Add field valid has field", myclass.hasField("myfield"));
 		assertEquals("Add field valid num fields", 1, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "UMLClass", "another"});
-		((JMenuItem)gui.getComponent("mainAddField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "UMLClass", "another"));
+		((TestableMenuItem)gui.getComponent("mainAddField")).doClick();
 		assertEquals("Add field valid exit code 2", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Add field valid has field 2", myclass.hasField("another"));
 		assertEquals("Add field valid num fields 2", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "double", "myfield"});
-		((JMenuItem)gui.getComponent("mainAddField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "double", "myfield"));
+		((TestableMenuItem)gui.getComponent("mainAddField")).doClick();
 		assertNotEquals("Add field duplicate name diff type", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Add field original still exists", myclass.hasField("myfield"));
 		assertEquals("Add field duplicate num fields", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "int", "m@lf0rm*dn@me"});
-		((JMenuItem)gui.getComponent("mainAddField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "int", "m@lf0rm*dn@me"));
+		((TestableMenuItem)gui.getComponent("mainAddField")).doClick();
 		assertNotEquals("Add field invalid exit code", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Add field invalid does not exist", myclass.hasField("m@lf0rm*dn@me"));
 		assertEquals("Add filed invalid num fields", 2, myclass.getFields().size());
@@ -463,25 +463,25 @@ public class GUITest {
 		
 		assertEquals("Number of fields initial", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "myfield"});
-		((JMenuItem)gui.getComponent("classRemoveField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "myfield"));
+		((TestableMenuItem)gui.getComponent("classRemoveField")).doClick();
 		assertEquals("Remove field valid return code", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Remove field valid no longer exists", myclass.hasField("myfield"));
 		assertEquals("Remove field valid num fields", 1, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "myfield"});
-		((JMenuItem)gui.getComponent("classRemoveField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "myfield"));
+		((TestableMenuItem)gui.getComponent("classRemoveField")).doClick();
 		assertNotEquals("Remove field doesn't exist", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Remove filed not in list", myclass.hasField("myfield"));
 		assertEquals("Remove field doesn't exist num fields", 1, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "n*tr3@l"}); // Like birds
-		((JMenuItem)gui.getComponent("classRemoveField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "n*tr3@l")); // Like birds
+		((TestableMenuItem)gui.getComponent("classRemoveField")).doClick();
 		assertNotEquals("Remove field invalid", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove field invalid num fields", 1, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "another"});
-		((JMenuItem)gui.getComponent("classRemoveField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "another"));
+		((TestableMenuItem)gui.getComponent("classRemoveField")).doClick();
 		assertEquals("Remove field valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Remove field valid no longer exists 2", myclass.hasField("another"));
 		assertEquals("Remove field valid num fields 2", 0, myclass.getFields().size());
@@ -504,25 +504,25 @@ public class GUITest {
 		
 		assertEquals("Number of fields initial", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "myfield"});
-		((JMenuItem)gui.getComponent("mainRemoveField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "myfield"));
+		((TestableMenuItem)gui.getComponent("mainRemoveField")).doClick();
 		assertEquals("Remove field valid return code", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Remove field valid no longer exists", myclass.hasField("myfield"));
 		assertEquals("Remove field valid num fields", 1, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "myfield"});
-		((JMenuItem)gui.getComponent("mainRemoveField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "myfield"));
+		((TestableMenuItem)gui.getComponent("mainRemoveField")).doClick();
 		assertNotEquals("Remove field doesn't exist", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Remove filed not in list", myclass.hasField("myfield"));
 		assertEquals("Remove field doesn't exist num fields", 1, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "n*tr3@l"}); // Like birds
-		((JMenuItem)gui.getComponent("mainRemoveField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "n*tr3@l")); // Like birds
+		((TestableMenuItem)gui.getComponent("mainRemoveField")).doClick();
 		assertNotEquals("Remove field invalid", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove field invalid num fields", 1, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "another"});
-		((JMenuItem)gui.getComponent("mainRemoveField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "another"));
+		((TestableMenuItem)gui.getComponent("mainRemoveField")).doClick();
 		assertEquals("Remove field valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Remove field valid no longer exists 2", myclass.hasField("another"));
 		assertEquals("Remove field valid num fields 2", 0, myclass.getFields().size());
@@ -545,28 +545,28 @@ public class GUITest {
 		
 		assertEquals("Number of fields init", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "myfield", "other"});
-		((JMenuItem)gui.getComponent("classEditField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "myfield", "other"));
+		((TestableMenuItem)gui.getComponent("classEditField")).doClick();
 		assertEquals("Edit field valid return code", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Edit field valid old name doesn't exist", myclass.hasField("myfield"));
 		assertTrue("Edit field valid new name exists", myclass.hasField("other"));
 		assertEquals("Edit field valid num fields", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "other", "myfield"});
-		((JMenuItem)gui.getComponent("classEditField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "other", "myfield"));
+		((TestableMenuItem)gui.getComponent("classEditField")).doClick();
 		assertEquals("Edit field valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Edit field valid old name not exists 2", myclass.hasField("other"));
 		assertTrue("Edit field valid new name exists 2", myclass.hasField("myfield"));
 		assertEquals("Edit field valid num fields unchanged", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "myfield", "another"});
-		((JMenuItem)gui.getComponent("classEditField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "myfield", "another"));
+		((TestableMenuItem)gui.getComponent("classEditField")).doClick();
 		assertNotEquals("Edit field duplicate return code", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Edit field duplicate original still exists", myclass.hasField("myfield"));
 		assertEquals("Edit field duplicate num fields unchanged", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "another", "_n*t()real"});
-		((JMenuItem)gui.getComponent("classEditField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "another", "_n*t()real"));
+		((TestableMenuItem)gui.getComponent("classEditField")).doClick();
 		assertNotEquals("Edit field invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Edit field invalid old name still exists", myclass.hasField("another"));
 		assertFalse("Edit field invalid new name does not exist", myclass.hasField("_n*t()real"));
@@ -590,28 +590,28 @@ public class GUITest {
 		
 		assertEquals("Number of fields init", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "myfield", "other"});
-		((JMenuItem)gui.getComponent("classEditField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "myfield", "other"));
+		((TestableMenuItem)gui.getComponent("classEditField")).doClick();
 		assertEquals("Edit field valid return code", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Edit field valid old name doesn't exist", myclass.hasField("myfield"));
 		assertTrue("Edit field valid new name exists", myclass.hasField("other"));
 		assertEquals("Edit field valid num fields", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "other", "myfield"});
-		((JMenuItem)gui.getComponent("classEditField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "other", "myfield"));
+		((TestableMenuItem)gui.getComponent("classEditField")).doClick();
 		assertEquals("Edit field valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertFalse("Edit field valid old name not exists 2", myclass.hasField("other"));
 		assertTrue("Edit field valid new name exists 2", myclass.hasField("myfield"));
 		assertEquals("Edit field valid num fields unchanged", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "myfield", "another"});
-		((JMenuItem)gui.getComponent("classEditField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "myfield", "another"));
+		((TestableMenuItem)gui.getComponent("classEditField")).doClick();
 		assertNotEquals("Edit field duplicate return code", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Edit field duplicate original still exists", myclass.hasField("myfield"));
 		assertEquals("Edit field duplicate num fields unchanged", 2, myclass.getFields().size());
 		
-		gui.loadData(new String[] {"myclass", "another", "_n*t()real"});
-		((JMenuItem)gui.getComponent("classEditField")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "another", "_n*t()real"));
+		((TestableMenuItem)gui.getComponent("classEditField")).doClick();
 		assertNotEquals("Edit field invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertTrue("Edit field invalid old name still exists", myclass.hasField("another"));
 		assertFalse("Edit field invalid new name does not exist", myclass.hasField("_n*t()real"));
@@ -635,24 +635,24 @@ public class GUITest {
 		assertEquals("Number of methods initial", 0, myclass.getMethods().size());
 		
 		// Adding method 'int noparams() {}'
-		gui.loadData(new String[] {"myclass", "int", "noparams"});
-		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "int", "noparams", ""));
+		((TestableMenuItem)gui.getComponent("classAddMethod")).doClick();
 		assertEquals("Add method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Add method valid num methods", 1, myclass.getMethods().size());
 		
 		// Adding method 'void mymethod(String par1, int par2) {}'
-		gui.loadData(new String[] {"myclass", "void", "mymethod", "String par1, int par2"});
-		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "void", "mymethod", "String par1, int par2"));
+		((TestableMenuItem)gui.getComponent("classAddMethod")).doClick();
 		assertEquals("Add method valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Add method valid num methods 2", 2, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "void", "mymethod", "String overloaded"});
-		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "void", "mymethod", "String overloaded"));
+		((TestableMenuItem)gui.getComponent("classAddMethod")).doClick();
 		assertEquals("Add overload method return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods", 3, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "void", "*not()real*"});
-		((JMenuItem)gui.getComponent("classAddMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "void", "*not()real*", ""));
+		((TestableMenuItem)gui.getComponent("classAddMethod")).doClick();
 		assertNotEquals("Add method invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods", 3, myclass.getMethods().size());
 	}
@@ -673,24 +673,24 @@ public class GUITest {
 		assertEquals("Number of methods initial", 0, myclass.getMethods().size());
 		
 		// Adding method 'int noparams() {}'
-		gui.loadData(new String[] {"myclass", "int", "noparams"});
-		((JMenuItem)gui.getComponent("mainAddMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "int", "noparams", ""));
+		((TestableMenuItem)gui.getComponent("mainAddMethod")).doClick();
 		assertEquals("Add method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Add method valid num methods", 1, myclass.getMethods().size());
 		
 		// Adding method 'void mymethod(String par1, int par2) {}'
-		gui.loadData(new String[] {"myclass", "void", "mymethod", "String par1, int par2"});
-		((JMenuItem)gui.getComponent("mainAddMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "void", "mymethod", "String par1, int par2"));
+		((TestableMenuItem)gui.getComponent("mainAddMethod")).doClick();
 		assertEquals("Add method valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Add method valid num methods 2", 2, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "void", "mymethod", "String overloaded"});
-		((JMenuItem)gui.getComponent("mainAddMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "void", "mymethod", "String overloaded"));
+		((TestableMenuItem)gui.getComponent("mainAddMethod")).doClick();
 		assertEquals("Add overload method return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods", 3, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "void", "*not()real*"});
-		((JMenuItem)gui.getComponent("mainAddMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "void", "*not()real*", ""));
+		((TestableMenuItem)gui.getComponent("mainAddMethod")).doClick();
 		assertNotEquals("Add method invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods", 3, myclass.getMethods().size());
 	}
@@ -713,19 +713,19 @@ public class GUITest {
 		assertEquals("Init number of methods", 3, myclass.getMethods().size());
 		
 		// Remove mymethod with no params
-		gui.loadData(new String[] {"myclass", "mymethod"});
-		((JMenuItem)gui.getComponent("classRemoveMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "mymethod", ""));
+		((TestableMenuItem)gui.getComponent("classRemoveMethod")).doClick();
 		assertEquals("Remove method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods post remove", 2, myclass.getMethods().size());
 		
 		// Remove another with args
-		gui.loadData(new String[] {"myclass", "another", "String par1"});
-		((JMenuItem)gui.getComponent("classRemoveMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "another", "String par1"));
+		((TestableMenuItem)gui.getComponent("classRemoveMethod")).doClick();
 		assertEquals("Remove overload method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods post overload remove", 1, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "d*e$n0#"});
-		((JMenuItem)gui.getComponent("classRemoveMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "d*e$n0#", ""));
+		((TestableMenuItem)gui.getComponent("classRemoveMethod")).doClick();
 		assertNotEquals("Remove method invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove invalid method nothing removed", 1, myclass.getMethods().size());
 	}
@@ -748,19 +748,19 @@ public class GUITest {
 		assertEquals("Init number of methods", 3, myclass.getMethods().size());
 		
 		// Remove mymethod with no params
-		gui.loadData(new String[] {"myclass", "mymethod"});
-		((JMenuItem)gui.getComponent("mainRemoveMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "mymethod"));
+		((TestableMenuItem)gui.getComponent("mainRemoveMethod")).doClick();
 		assertEquals("Remove method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods post remove", 2, myclass.getMethods().size());
 		
 		// Remove another with args
-		gui.loadData(new String[] {"myclass", "another", "String par1"});
-		((JMenuItem)gui.getComponent("mainRemoveMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "another", "String par1"));
+		((TestableMenuItem)gui.getComponent("mainRemoveMethod")).doClick();
 		assertEquals("Remove overload method valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods post overload remove", 1, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "d*e$n0#"});
-		((JMenuItem)gui.getComponent("mainRemoveMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "d*e$n0#"));
+		((TestableMenuItem)gui.getComponent("mainRemoveMethod")).doClick();
 		assertNotEquals("Remove method invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Remove invalid method nothing removed", 1, myclass.getMethods().size());
 	}
@@ -782,18 +782,18 @@ public class GUITest {
 		
 		assertEquals("Init number of methods", 3, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "mymethod", "newmethod", ""});
-		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "mymethod", "newmethod", ""));
+		((TestableMenuItem)gui.getComponent("classEditMethod")).doClick();
 		assertEquals("Edit method name valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods the same", 3, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "newmethod", "mymethod", ""});
-		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "newmethod", "mymethod", ""));
+		((TestableMenuItem)gui.getComponent("classEditMethod")).doClick();
 		assertEquals("Edit method name valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods unchanged", 3, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "mymethod", "another", ""});
-		((JMenuItem)gui.getComponent("classEditMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "mymethod", "another", ""));
+		((TestableMenuItem)gui.getComponent("classEditMethod")).doClick();
 		assertNotEquals("Edit method to duplicate name return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods unchanged", 3, myclass.getMethods().size());
 	}
@@ -815,18 +815,18 @@ public class GUITest {
 		
 		assertEquals("Init number of methods", 3, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "mymethod", "newmethod", ""});
-		((JMenuItem)gui.getComponent("mainEditMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "mymethod", "newmethod", ""));
+		((TestableMenuItem)gui.getComponent("mainEditMethod")).doClick();
 		assertEquals("Edit method name valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods the same", 3, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "newmethod", "mymethod", ""});
-		((JMenuItem)gui.getComponent("mainEditMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "newmethod", "mymethod", ""));
+		((TestableMenuItem)gui.getComponent("mainEditMethod")).doClick();
 		assertEquals("Edit method name valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods unchanged", 3, myclass.getMethods().size());
 		
-		gui.loadData(new String[] {"myclass", "mymethod", "another", ""});
-		((JMenuItem)gui.getComponent("mainEditMethod")).doClick();
+		gui.setOptionPane(new TestableOptionPane("myclass", "mymethod", "another", ""));
+		((TestableMenuItem)gui.getComponent("mainEditMethod")).doClick();
 		assertNotEquals("Edit method to duplicate name return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num methods unchanged", 3, myclass.getMethods().size());
 	}
@@ -849,28 +849,28 @@ public class GUITest {
 		//assertEquals("Init number of relationships for class3", "[]", model.listRelationships("class3")[0]);
 		assertEquals("Init number total relationships", 0, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "aggregation", "class2"});
-		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
+		((TestableMenuItem)gui.getComponent("classAddRelationship")).doClick();
 		assertEquals("Add relationship valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships after valid add", 1, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class2", "inheritance", "class3"});
-		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class2", "class3", "inheritance"));
+		((TestableMenuItem)gui.getComponent("classAddRelationship")).doClick();
 		assertEquals("Add relationship valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "not real", "class3"});
-		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "class3", "not real"));
+		((TestableMenuItem)gui.getComponent("classAddRelationship")).doClick();
 		assertNotEquals("Add relationship invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "aggregation", "class2"});
-		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
+		((TestableMenuItem)gui.getComponent("classAddRelationship")).doClick();
 		assertNotEquals("Add relationship duplicate return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "aggregation", "notreal"});
-		((JMenuItem)gui.getComponent("classAddRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "notreal", "aggregation"));
+		((TestableMenuItem)gui.getComponent("classAddRelationship")).doClick();
 		assertNotEquals("Add relationship invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 	}
@@ -893,28 +893,28 @@ public class GUITest {
 		assertEquals("Init number of relationships for class3", "[]", model.listRelationships("class3")[0]);
 		assertEquals("Init number total relationships", 0, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "aggregation", "class2"});
-		((JMenuItem)gui.getComponent("mainAddRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
+		((TestableMenuItem)gui.getComponent("mainAddRelationship")).doClick();
 		assertEquals("Add relationship valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships after valid add", 1, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class2", "inheritance", "class3"});
-		((JMenuItem)gui.getComponent("mainAddRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class2", "class3", "inheritance"));
+		((TestableMenuItem)gui.getComponent("mainAddRelationship")).doClick();
 		assertEquals("Add relationship valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "not real", "class3"});
-		((JMenuItem)gui.getComponent("mainAddRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "class3", "not real"));
+		((TestableMenuItem)gui.getComponent("mainAddRelationship")).doClick();
 		assertNotEquals("Add relationship invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "aggregation", "class2"});
-		((JMenuItem)gui.getComponent("mainAddRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
+		((TestableMenuItem)gui.getComponent("mainAddRelationship")).doClick();
 		assertNotEquals("Add relationship duplicate return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "aggregation", "notreal"});
-		((JMenuItem)gui.getComponent("mainAddRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "notreal", "aggregation"));
+		((TestableMenuItem)gui.getComponent("mainAddRelationship")).doClick();
 		assertNotEquals("Add relationship invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num total relationships", 2, model.getRelationships().size());
 	}
@@ -927,6 +927,7 @@ public class GUITest {
 		UMLClassManager model = new UMLClassManager();
 		GUIController controller = new GUIController(model);
 		GUIView gui = new GUIView(controller, model, false);
+		ErrorHandler.setCode(0);
 		
 		controller.addClass("class1");
 		controller.addClass("class2");
@@ -937,23 +938,22 @@ public class GUITest {
 		
 		assertEquals("Init num relationships", 3, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "aggregation", "class2"});
-		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
-		assertEquals("Remove valid return code", 0, ErrorHandler.LAST_CODE);
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
+		((TestableMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
 		assertEquals("Num relationships post remove", 2, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "aggregation", "class2"});
-		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
+		((TestableMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
 		assertNotEquals("Remove invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post invalid remove", 2, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class2", "notrealtype", "class3"});
-		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class2", "class3", "notrealtype"));
+		((TestableMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
 		assertNotEquals("Remove invalid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post invalid remove 2", 2, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "inheritance", "class3"});
-		((JMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "class3", "inheritance"));
+		((TestableMenuItem)gui.getComponent("classRemoveRelationship")).doClick();
 		assertEquals("Remove valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post valid remove 2", 1, model.getRelationships().size());
 	}
@@ -976,23 +976,23 @@ public class GUITest {
 		
 		assertEquals("Init num relationships", 3, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "aggregation", "class2"});
-		((JMenuItem)gui.getComponent("mainRemoveRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
+		((TestableMenuItem)gui.getComponent("mainRemoveRelationship")).doClick();
 		assertEquals("Remove valid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post remove", 2, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "aggregation", "class2"});
-		((JMenuItem)gui.getComponent("mainRemoveRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "class2", "aggregation"));
+		((TestableMenuItem)gui.getComponent("mainRemoveRelationship")).doClick();
 		assertNotEquals("Remove invalid return code", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post invalid remove", 2, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class2", "notrealtype", "class3"});
-		((JMenuItem)gui.getComponent("mainRemoveRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class2", "class3", "notrealtype"));
+		((TestableMenuItem)gui.getComponent("mainRemoveRelationship")).doClick();
 		assertNotEquals("Remove invalid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post invalid remove 2", 2, model.getRelationships().size());
 		
-		gui.loadData(new String[] {"class1", "inheritance", "class3"});
-		((JMenuItem)gui.getComponent("mainRemoveRelationship")).doClick();
+		gui.setOptionPane(new TestableOptionPane("class1", "class3", "inheritance"));
+		((TestableMenuItem)gui.getComponent("mainRemoveRelationship")).doClick();
 		assertEquals("Remove valid return code 2", 0, ErrorHandler.LAST_CODE);
 		assertEquals("Num relationships post valid remove 2", 1, model.getRelationships().size());
 	}
