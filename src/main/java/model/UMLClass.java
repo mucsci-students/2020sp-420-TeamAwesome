@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  * Allows building of classes for use as something like a node
- * @author antho and Dylan
+ * @author Anthony and Dylan
  * 
  */
 public class UMLClass implements Serializable {
