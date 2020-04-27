@@ -1,38 +1,44 @@
 package views;
 
+import java.io.PrintStream;
+import java.util.ArrayList;
 // System imports
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Scanner;
+
 
 // Local imports
 import controller.CommandController;
 import controller.UMLController;
-import main.ErrorHandler;
-import main.UMLFileIO;
+import core.ErrorHandler;
+import core.UMLFileIO;
+//import model.UMLClass;
 import model.UMLClassManager;
 import observe.Observable;
 
 public class ConsoleView extends View {
 	private Scanner scanner;
+	private UMLClassManager model;
 	private UMLController controller;
 	private UMLFileIO fileIO;
 	
 	// All valid commands
-	private Hashtable<String, String[]> validCommands;
+	private LinkedHashMap<String, String[]> validCommands;
 	
 	/**
 	 * Initialize required variables for console
 	 */
-	public ConsoleView() {
+	public ConsoleView(UMLClassManager model, UMLController controller) {
 		scanner = new Scanner(System.in);
 		
 		fileIO = new UMLFileIO();
 		
-		controller = new CommandController(new UMLClassManager());
-		controller.addObserver(this);
+		this.model = model;
+		this.controller = controller;
+		this.controller.addObserver(this);
 		
-		validCommands = new Hashtable<String, String[]>();
+		validCommands = new LinkedHashMap<String, String[]>();
 		populateValidCommands();
 	}
 	
@@ -45,7 +51,7 @@ public class ConsoleView extends View {
 			
 			// Check if command is empty or only whitespace
 			if(!input.isEmpty() && !input.replaceAll(" ", "").isEmpty()) {
-				int result = execCommand(input);
+				int result = execCommand(input, System.out);
 				
 				// If the result did not execute successfully, print error.
 				if(result != 0) {
@@ -58,10 +64,11 @@ public class ConsoleView extends View {
 	
 	/**
 	 * Execute the given command and report errors as necessary
-	 * 
+	 * @param command - Command to be processed
+	 * @param output - Where to print information to
 	 * @return boolean indicating if command was successfully executed
 	 */
-	public int execCommand(String command) {
+	public int execCommand(String command, PrintStream output) {
 		// Split command on white space
 		// args[0] = name of the command
 		// args[1...] = any arguments for the command
@@ -79,11 +86,8 @@ public class ConsoleView extends View {
 		// Check command, if it is a valid command then perform associated action
 		//	Otherwise return false
 		if(args[0].equals("exit") || args[0].equals("quit")) {
-			System.out.println("Force quitting...");
-			System.out.println("Goodbye :)");
-			
-			// Close the scanner
-			closeConsole();
+			output.println("Force quitting...");
+			output.println("Goodbye :)");
 			
 			System.exit(0);
 		}
@@ -105,7 +109,7 @@ public class ConsoleView extends View {
 				if (result == 0)
 				{
 					//successfully added class
-				System.out.println("Added class \'" + className + "\'.");
+					output.println("Added class \'" + className + "\'.");
 				}
 				}
 				else {
@@ -121,7 +125,7 @@ public class ConsoleView extends View {
 					//takes exactly five arguments; add field classname, type, fieldname
 					result = controller.addField(args[2], args[3], args[4]);
 					//adds fieldname (if valid) to given exisiting class
-					System.out.println("Added field \'" + args[4] + "\' to class \'" + args[2] + "\' of type \'" + args[3] + "\'.");
+					output.println("Added field \'" + args[4] + "\' to class \'" + args[2] + "\' of type \'" + args[3] + "\'.");
 				}
 				else {
 					//invalid arguments
@@ -147,7 +151,7 @@ public class ConsoleView extends View {
 					
 					result = controller.addMethod(args[2], args[3], args[4], paramlist);
 					//adds valid methodName to given exisiting class
-					System.out.println("Added method \'" + args[4] + "\' which accepts \'"+ paramlist + "\' with returnType: \'" + args[3] + "\' to class \'" + args[2] + "\'.");
+					output.println("Added method \'" + args[4] + "\' which accepts \'"+ paramlist + "\' with returnType: \'" + args[3] + "\' to class \'" + args[2] + "\'.");
 				}
 				else {
 					//invalid amount of arguments
@@ -160,7 +164,7 @@ public class ConsoleView extends View {
 				if(args.length == 5) {
 					//takes exactly 5 arguments in order of add relationship class1 type class2
 					result = controller.addRelationship(args[2], args[3],  args[4]);
-					System.out.println("Added " + args[3] +  " relationship from \'" + args[2] + "\' to \'" + args[4] + "\'.");
+					output.println("Added " + args[3] +  " relationship from \'" + args[2] + "\' to \'" + args[4] + "\'.");
 				}
 				else {
 					//invalid number arguments
@@ -186,7 +190,7 @@ public class ConsoleView extends View {
 					
 					result = controller.removeClass(className);
 					if(result == 0)
-						System.out.println("Removed class \'" + className + "\'.");
+						output.println("Removed class \'" + className + "\'.");
 				} 
 				else {
 					//invalid arg count
@@ -199,10 +203,10 @@ public class ConsoleView extends View {
 				if(args.length == 4) {
 					//takes exactly 4 arguments; remove, field, classname, fieldname
 					result = controller.removeField(args[2], args[3]);
-					System.out.println("Removed field \'" + args[3] + "\' from class \'" + args[2] + "\'.");
+					output.println("Removed field \'" + args[3] + "\' from class \'" + args[2] + "\'.");
 				}
 				else {
-					//invalid arugment amount
+					//invalid argument amount
 					return 102;
 				}
 			}
@@ -221,7 +225,7 @@ public class ConsoleView extends View {
 					}
 					paramlist = paramlist.trim();
 					result = controller.removeMethod(args[2], args[3], paramlist);
-					System.out.println("Removed method \'" + args[3] + "\' ( " + paramlist + " )" + " from class \'" + args[2] + "\'.");
+					output.println("Removed method \'" + args[3] + "\' ( " + paramlist + " )" + " from class \'" + args[2] + "\'.");
 				}
 				else {
 					//invalid amount of parameters
@@ -234,7 +238,7 @@ public class ConsoleView extends View {
 				if(args.length == 5) {
 					//takes exaclty 5 arguments; remove, relationship, classname1, type, classname2
 					result = controller.removeRelationship(args[2], args[3], args[4]);
-					System.out.println("Removed " + args[3] + " relationship between \'" + args[4] + "\' and \'" + args[2] + "\'.");
+					output.println("Removed " + args[3] + " relationship between \'" + args[4] + "\' and \'" + args[2] + "\'.");
 				}
 				else {
 					//invalid amount of params
@@ -261,7 +265,7 @@ public class ConsoleView extends View {
 					
 					result = ((CommandController) controller).editClass(className, newName);
 					if(result == 0)
-						System.out.println("Changed class \'" + className + "\' to \'" + newName + "\'.");
+						output.println("Changed class \'" + className + "\' to \'" + newName + "\'.");
 				}
 				else {
 					// invalid param amount
@@ -279,7 +283,7 @@ public class ConsoleView extends View {
 						
 					result = ((CommandController) controller).editField(className, oldName, newName);
 					if(result == 0)
-						System.out.println("Changed field \'" + oldName + "\' to \'" + newName + "\' in class \'" + className + "\'.");
+						output.println("Changed field \'" + oldName + "\' to \'" + newName + "\' in class \'" + className + "\'.");
 				}
 				else {
 					//invalid param count
@@ -304,7 +308,7 @@ public class ConsoleView extends View {
 					paramlist = paramlist.trim();
 					result = ((CommandController) controller).editMethod(className, oldName, newName, paramlist);
 					if(result == 0)
-						System.out.println("Changed method \'" + oldName + "\' from \'" + className + "\' to \'" + newName + "\'.");
+						output.println("Changed method \'" + oldName + "\' from \'" + className + "\' to \'" + newName + "\'.");
 				}
 				else return 102;
 			}
@@ -321,10 +325,8 @@ public class ConsoleView extends View {
 				// If the user did not specify a save file check to see if one is already saved.
 				// If there is no file saved, prompt for one.
 				if(!fileIO.fileSet()) {
-					System.err.println("Save file not set.");
-					System.err.flush();
-					System.out.flush();
-					System.out.print("Save file: ");
+					output.println("Save file not set.");
+					output.print("Save file: ");
 					filePath = scanner.nextLine();
 					
 				}
@@ -382,62 +384,95 @@ public class ConsoleView extends View {
 		}
 		
 		
-		
-		else if(args[0].equals("list-fields")) {
-			// Expects args[1]=className
+		//Split for list
+		else if(args[0].equals("list")) {
+			// Expects minimum of 2 args and maximum of 3 args.
 			if(args.length == 2) {
-				String className = args[1];
-				
-				Object[] objResult = controller.getModel().listFields(className);
-				result = (int)objResult[1];
-				
-				if(result == 0)
-					System.out.println(className + ": " + objResult[0]);
-			} else
+				if(args[1].equals("classes")) {
+					ArrayList<String[]> listBoxes = ((CommandController)controller).printClasses();
+					if(listBoxes == null) {
+						output.println("There are no classes to display.");
+					}
+					else {
+						for(String[] s : listBoxes) {
+							for(String t : s) {
+								output.println(t);
+							}
+							output.println();
+						}
+					}
+				}
+				else if(args[1].equals("relationships")) {
+					ArrayList<ArrayList<String[]>> rBoxes = ((CommandController)controller).printRelationships();
+					if(rBoxes == null) {
+						output.print("There are no relationships to display.");
+					}
+					else {
+						for(ArrayList<String[]> a : rBoxes) {
+							for(String[] s : a) {
+								for(String r : s) {
+									output.println(r);
+								}
+								output.println();
+							}
+						}
+					}
+				}
+			} else if(args.length == 3) {
+				//Expect arg[2] to be class name
+				if(args[1].equals("classes")) {
+					String[] box = ((CommandController)controller).printClasses(args[2]);
+					if(box == null) {
+						result = 109;
+					}
+					else {
+						for(String s : box)
+							output.println(s);
+					}
+				}
+				else if(args[1].equals("relationships")) {
+					ArrayList<String[]> rList = ((CommandController)controller).printRelationships(args[2]);
+					if(rList == null) {
+						result = 109;
+					}
+					else if(rList.isEmpty()) {
+						output.println("This class has no relationships.");
+					}
+					else {
+						for(String[] a : rList) {
+							for(String s : a) {
+								output.println(s);
+							}
+							output.println();
+						}
+					}
+				}
+			} else{
 				return 102;
+			}
 		}
-		else if(args[0].equals("list-methods")) {
-			// Expects args[1]=className
-			if(args.length == 2) {
-				String className = args[1];
-				
-				Object[] objResult = controller.getModel().listMethods(className);
-				result = (int)objResult[1];
-				
-				if(result == 0)
-					System.out.println(className + ": " + objResult[0]);
-			} else
-				return 102;
-		}
-		else if(args[0].equals("list-relationships")) {
-			// Expects args[1]=className
-			if(args.length == 2) {
-				String className = args[1];
-				
-				Object[] objResult = controller.getModel().listRelationships(className);
-				result = (int)objResult[1];
-				
-				if(result == 0)
-					System.out.println(className + ": " + objResult[0]);
-			} else
-				return 102;
-		}
-		else if(args[0].equals("list-classes")) {
-			System.out.println("Classes: " + controller.getModel().listClasses());
-		}
-		else if(args[0].equals("help") && args.length == 1) {
-			printHelp();
-		}
-		else if (args[0].equals("help") && args.length == 2 && !args[1].isEmpty())
-		{
-			commandHelp(args[1]);
+		//split for help
+		else if(args[0].equals("help")) {
+			//Expect maximum of 2 args
+			if(args.length == 1) {
+				printHelp(output);
+				return 0;
+			}
+			else if(args.length == 2) {
+				if (validCommands.containsKey(args[1]))
+				{
+					commandHelp(args[1], output);
+					return 0;
+				}
+				else {
+					output.println("Command does not exist, try \"help\" for a list of avaliable commands");
+				}
+			}
+			return 102;
 		}
 		else {
 			return 104;
 		}
-		
-		System.out.flush();
-		System.err.flush();
 		
 		return result;
 	}
@@ -451,14 +486,12 @@ public class ConsoleView extends View {
 		return str;
 	}
 	
-	private void commandHelp(String command) {
-		if (!validCommands.contains(command)){
-			System.out.println("Command does not exist, try \"help\" for a list of avaliable commands");
-		}
-		else {
-			System.out.println();
-			String desc = validCommands.get(command)[0];
-			System.out.printf("%25s: %-40s\n", command, desc);
+	private void commandHelp(String command, PrintStream output) {
+		output.println();
+		String[] desc = validCommands.get(command);
+		for(String s : desc) {
+			output.println(s);
+			output.println();
 		}
 	}
 	/**
@@ -469,67 +502,43 @@ public class ConsoleView extends View {
 	 * 		list_description_lines = an array of strings where each item is a new line to print out as a description
 	 */
 	private void populateValidCommands() {
-		validCommands.put("help", new String[]{"Prints out a list of valid commands with descriptions"});
-		validCommands.put("add", new String[]{"Base command, accepts a Class, Method, relationship, or Field; for more help try 'help add <parameter>'"});
-		validCommands.put("add class <class_name>", new String[]{"Add the given class name"});
-		validCommands.put("edit class <class_name>", new String[]{"Edit the given existing class to the new given class name"});
-		validCommands.put("remove class <class_name>", new String[]{"Add the given class name"});
-		validCommands.put("exit", new String[]{"Quit the program"});
-		validCommands.put("quit", new String[]{"Quit the program"});
-		validCommands.put("save", new String[]{"Save the current state of the UML diagram", "if a file has not been set it will prompt the user."});
-		validCommands.put("load <file_path>", new String[] {"Load the given file into the UML editor"});
-		validCommands.put("list classes", new String[]{"List all of the created classes"});
-		validCommands.put("add field", new String[]{"Takes a exisiting className and new fieldName to add the field into the class"});
-		validCommands.put("edit field <class_name>", new String[]{"Takes an existing field in an existing class and change it to the given new name"});
-		validCommands.put("add method", new String[]{"Takes a exisiting className and new methodName to add the method into the class"});
-		validCommands.put("edit field <class_name>", new String[]{"Takes an existing method in an existing class and change it to the given new name"});
-		validCommands.put("remove field", new String[]{"Takes a exisiting className and existing fieldName to remove the field from the class"});
-		validCommands.put("remove method", new String[]{"Takes a exisiting className and existing methodName to remove the method from the class"});
-		validCommands.put("add relationship", new String[]{"Takes two exisiting classNames and creates a relationship between the two"});
-		validCommands.put("remove relationship", new String[]{"Takes two exisiting classNames and removes an exisiting relationship between the two"});
-		validCommands.put("list fields", new String[]{"Takes an exisiting class and lists all fields assoicatied with the class"});
-		validCommands.put("list methods", new String[]{"Takes an exisiting class and lists all methods assoicatied with the class"});
-		validCommands.put("list relationships", new String[]{"Takes an exisiting class and lists all relationships assoicatied with the class"});
+		validCommands.put("help", new String [] {"help: Prints out a list of valid commands with descriptions for each command.", "Typing help <command> describes a specific command."});
+		validCommands.put("add", new String[] {"add: Can add class with:", "add <class_name>.","Also adds fields and methods to specified class in the form:", "add <field/method> <class_name> <type/return_type> <field/method_name> <parameter_list>(for methods).",
+		"Add relationship in the form:", "add <relationship> <class_name1> <relationship_type> <class_name2>."});
+		validCommands.put("edit", new String[ ]{"edit: Edit classes with:", "edit class <old_class_name> <new_class_name>.","Edit fields and methods with:", "edit <field/method> <source_class> <old_name> <new_name> <parameter_list>(for method)."});
+		validCommands.put("remove", new String[] {"remove: Can remove class with:", "remove <class_name>.", "Also removes fields and methods from specified class in the form:", "remove <field/method> <class_name> <field/method_name> <parameter_list>(for methods).",
+		"Remove relationships in the form:", "remove <relationship> <class_name1> <relationship_type> <class_name2>."});
+		validCommands.put("exit", new String[] {"exit: Quit the program."});
+		validCommands.put("quit", new String[] {"quit: Quit the program."});
+		validCommands.put("save", new String[] {"save: Save the current state of the UML diagram.  If a file has not been set it will prompt the user."});
+		validCommands.put("load", new String[] {"load <file_path>: Load the given file into the UML editor."});
+		validCommands.put("list", new String[] {"list: Can list all classes with:", "list classes", "or specific class with:", "list classes <class_name>.", "These lists take the form of boxes with the class name and its associated attributes inside.",
+		"List all relationships with:", "list relationships", "or", "list relationships <class_name>.", "Takes the form boxes for each class containing their associated attributes with a delimiter for relationship type between classes."});
 	}
 	
 	/**
 	 * Get the list of valid commands
 	 * @return validCommands
 	 */
-	public String[] getValidCommands() {
-		String[] commands = new String[validCommands.size()];
-		
-		// Convert Dictionary keys to array
-		int count = 0;
-		for(Enumeration<String> keys = validCommands.keys(); keys.hasMoreElements();) {
-			commands[count++] = keys.nextElement();
-		}
-		
-		return commands;
+	public LinkedHashMap<String, String[]> getValidCommands() {
+		return validCommands;
 	}
 	
 	/**
 	 * Print out the a list of commands with descriptions
 	 */
-	private void printHelp() {
-		System.out.println();
-		System.out.println("VALID COMMANDS");
-		System.out.println("---------------------------------");
+	private void printHelp(PrintStream output) {
+		output.println();
+		output.println("VALID COMMANDS");
+		output.println("---------------------------------");
 		
 		// For every key in dictionary print corresponding description
-		for(Enumeration<String> keys = validCommands.keys(); keys.hasMoreElements();) {
-			// Get the name of the command
-			String commName = (String)keys.nextElement();
-			// Get the list of description lines
-			String[] desc = validCommands.get(commName);
-			// Print first line with command name
-			System.out.printf("%-25s: %-40s\n", commName, desc[0]);
-			// Print rest of the command descriptions
-			for(int i = 1; i < desc.length; i++) {
-				System.out.printf("%-25s  %-40s\n", "", desc[i]);
+		for(Map.Entry<String, String[]> entry : validCommands.entrySet()) {
+			for(String s : entry.getValue()) {
+				output.println(s);
+				output.println();
 			}
 		}
-		System.out.println();
 	}
 
 	@Override
@@ -541,21 +550,5 @@ public class ConsoleView extends View {
 	 */
 	public Scanner getScanner() {
 		return scanner;
-	}
-	
-	/**
-	 * Close the input scanner
-	 * @return - return code
-	 */
-	public int closeConsole() {
-		scanner.close();
-		
-		// If scanner has been successfully closed an error should be thrown
-		try {
-			scanner.nextLine();
-			return 100;
-		} catch(IllegalStateException ise) {
-			return 0;
-		}
 	}
 }

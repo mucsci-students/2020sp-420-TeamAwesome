@@ -3,7 +3,6 @@ package controller;
 
 // System imports
 
-
 // Local imports
 import model.UMLClass;
 import model.UMLClassManager;
@@ -145,5 +144,4 @@ public class GUIController extends UMLController {
 		}
 		return result;
 	}
-
 }

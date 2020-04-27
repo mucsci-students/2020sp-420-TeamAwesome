@@ -19,6 +19,9 @@ import javax.swing.border.Border;
 
 //Local imports
 import model.UMLClass;
+import views.components.testable.TestableLabel;
+import views.components.testable.TestablePanel;
+import views.components.testable.TestableSeparator;
 import model.Method;
 import model.Field;
 
@@ -27,7 +30,7 @@ import model.Field;
  * @author Ryan
  *
  */
-public class GUIClass extends JPanel {
+public class GUIClass extends TestablePanel {
 	private static final long serialVersionUID = 1L;
 
 	// Instance of UMLClass
@@ -49,11 +52,25 @@ public class GUIClass extends JPanel {
 	private JPanel fieldRegion;
 	private JPanel methodRegion;
 	
+	private boolean human;
+	
 	/**
 	 * Initialize a graphical view of a given UMLClass
 	 * @param umlClass
 	 */
 	public GUIClass(UMLClass umlClass) {
+		super(false);
+		startOps(umlClass);
+	}
+	
+	// For human
+	public GUIClass(UMLClass umlClass, boolean human) {
+		super(human);
+		this.human = human;
+		startOps(umlClass);
+	}
+	
+	private void startOps(UMLClass umlClass) {
 		this.umlClass = umlClass;
 		
 		// Initialize label maps
@@ -64,9 +81,9 @@ public class GUIClass extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		// Initialize region panels, with a vertical BoxLayout
-		fieldRegion = new JPanel();
+		fieldRegion = new TestablePanel(human);
 		fieldRegion.setLayout(new BoxLayout(fieldRegion, BoxLayout.Y_AXIS));
-		methodRegion = new JPanel();
+		methodRegion = new TestablePanel(human);
 		methodRegion.setLayout(new BoxLayout(methodRegion, BoxLayout.Y_AXIS));
 		
 		// Add a label of the class name
@@ -92,12 +109,18 @@ public class GUIClass extends JPanel {
 		setLocation(umlClass.getX(), umlClass.getY());
 		
 		// Add padding and a border
-		Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-		Border outline = BorderFactory.createLineBorder(Color.BLACK, 2);
-		setBorder(BorderFactory.createCompoundBorder(outline, padding));
+		if(human) {
+			Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+			Border outline = BorderFactory.createLineBorder(Color.BLACK, 2);
+			setBorder(BorderFactory.createCompoundBorder(outline, padding));
+		}
 		
 		// Update the box bounds
 		updateBounds();
+		
+		// Update fields and methods
+		updateFields();
+		updateMethods();
 	}
 	
 	/**
@@ -122,8 +145,8 @@ public class GUIClass extends JPanel {
 	 * @param text - The label text
 	 * @return - JLabel instance
 	 */
-	public static JLabel generateLabel(String text) {
-		JLabel temp = new JLabel(text);
+	public JLabel generateLabel(String text) {
+		JLabel temp = (human) ? new JLabel(text) : new TestableLabel(text);
 		temp.setAlignmentX(Component.CENTER_ALIGNMENT);
 		temp.setAlignmentY(Component.TOP_ALIGNMENT);
 		return temp;
@@ -133,8 +156,8 @@ public class GUIClass extends JPanel {
 	 * Generate a horizontal separator
 	 * @return - JSeparator instance
 	 */
-	public static JSeparator generateSeparator(Color c) {
-		JSeparator mySep = new JSeparator(SwingConstants.HORIZONTAL);
+	public JSeparator generateSeparator(Color c) {
+		JSeparator mySep = (human) ? new JSeparator(SwingConstants.HORIZONTAL) : new TestableSeparator();
 		mySep.setAlignmentY(TOP_ALIGNMENT);
 		mySep.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, c));
 		return mySep;
