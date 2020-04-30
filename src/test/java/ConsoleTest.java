@@ -475,21 +475,20 @@ public class ConsoleTest {
 		model.addRelationship("myclass", "aggregation", "another");
 		model.addRelationship("another", "composition", "third");
 				
-		//Edit relationships with valid throughput 
+		//Edit relationships with valid input 
 		assertEquals("edit relationship with valid return code", 0, console.execCommand("edit relationship myclass aggregation another composition", myout));
 		myout.flush();
 		assertEquals("edit relationship with valid return message", "Changed relationship from class \'myclass\' to class \'another\' of type \'aggregation\' to type \'composition\'.", scrubOut(bos.toString()));
 		bos.reset();
 		assertEquals("edit relationship with valid return code again", 0, console.execCommand("edit relationship another composition third realization", myout));
 		myout.flush();
-		assertEquals("edit relationship with valid return message", "changed relationship from class \'another\' to class \'third\' of type \'aggregation\' to type \'realization\'.", scrubOut(bos.toString()));
+		assertEquals("edit relationship with valid return message", "Changed relationship from class \'another\' to class \'third\' of type \'composition\' to type \'realization\'.", scrubOut(bos.toString()));
 		bos.reset();
 		
-		//Edit relationships with invalid throuhput
+		//Edit relationships with invalid input
 		assertEquals("edit relationship with no exisiting relationship", 108, console.execCommand("edit relationship myclass inheritance another composition", myout));
 		myout.flush();
-		assertEquals("edit relationship message for no exisitng relationship", "Relationship between specified classes does not exist.", scrubOut(bos.toString()));
-		bos.reset();
+		
 		
 	}
 	/**

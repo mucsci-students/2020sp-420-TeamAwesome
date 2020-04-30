@@ -323,6 +323,9 @@ public class ConsoleView extends View {
 					result = controller.editRelationships(originClass, oldType, destClass, newType);
 					if (result == 0)
 						output.println("Changed relationship from class \'" + originClass + "\' to class \'" + destClass + "\' of type \'" + oldType + "\' to type \'" + newType + "\'.");
+					else 
+						output.println("");
+				
 				}
 			}
 		}
