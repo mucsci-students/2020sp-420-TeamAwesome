@@ -312,6 +312,19 @@ public class ConsoleView extends View {
 				}
 				else return 102;
 			}
+			else if (args[1].equals("relationship"))
+			{
+				//needs exactly 6 arguments
+				if (args.length == 6) {
+					String originClass = args[2];
+					String oldType = args[3];
+					String destClass = args[4];
+					String newType = args[5];
+					result = controller.editRelationships(originClass, oldType, destClass, newType);
+					if (result == 0)
+						output.println("Changed relationship from class \'" + originClass + "\' to class \'" + destClass + "\' of type \'" + oldType + "\' to type \'" + newType + "\'.");
+				}
+			}
 		}
 
 		else if(args[0].equals("save")) {

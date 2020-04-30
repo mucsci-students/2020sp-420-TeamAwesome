@@ -134,6 +134,16 @@ public class GUIController extends UMLController {
 		}
 		return result;
 	}
+	
+	@Override
+	public int editRelationships(String originClass, String oldType, String destClass, String newType) {
+		int result = model.editRelationships(originClass, oldType, destClass, newType);
+		if (result == 0) {
+			notify("editRelationships", model);
+		}
+		return result;
+	}
+	
 
 	@Override
 	public int editMethod(String className, String oldMethod, String newMethod, String params) {
