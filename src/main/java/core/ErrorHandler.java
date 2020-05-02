@@ -35,6 +35,7 @@ public class ErrorHandler {
 		tempMap.put(109, "Class does not exists.");
 		tempMap.put(110, "Unable to set GUI look and feel.");
 		tempMap.put(111, "Unable to export to PNG");
+		tempMap.put(112, "Invalid input entered.");
 		tempMap.put(200, "Class not added. Duplicate class.");
 		tempMap.put(201, "Class not removed. Class does not exist.");
 		tempMap.put(202, "Relationship is not of a valid type.");

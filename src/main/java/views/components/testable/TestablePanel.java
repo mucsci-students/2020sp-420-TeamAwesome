@@ -16,6 +16,9 @@ public class TestablePanel extends JPanel {
 	private ArrayList<Component> components = new ArrayList<Component>();
 	private boolean isHuman = false;
 	
+	private int width;
+	private int height;
+	
 	// This constructor should only be called if you want a regular JPanel
 	public TestablePanel(boolean isHuman) {
 		super();
@@ -61,13 +64,13 @@ public class TestablePanel extends JPanel {
 	public int getWidth() {
 		if(isHuman)
 			return super.getWidth();
-		return 0;
+		return width;
 	}
 	
 	public int getHeight() {
 		if(isHuman)
 			return super.getHeight();
-		return 0;
+		return height;
 	}
 	
 	public Component add(Component comp) {
@@ -113,6 +116,8 @@ public class TestablePanel extends JPanel {
 	public void setSize(Dimension size) {
 		if(isHuman)
 			super.setSize(size);
+		this.width = size.width;
+		this.height = size.height;
 	}
 	
 	public void setBounds(int x, int y, int width, int height) {
@@ -153,5 +158,7 @@ public class TestablePanel extends JPanel {
 	public void setPreferredSize(Dimension d) {
 		if(isHuman)
 			super.setPreferredSize(d);
+		this.width = d.width;
+		this.height = d.height;
 	}
 }
