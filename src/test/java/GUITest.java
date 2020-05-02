@@ -109,7 +109,7 @@ public class GUITest {
 		
 		//Test the MainMenu initialization of components
 		assertTrue("Main File menu not empty", ((JMenu)gui.getComponent("mainFile")).getItemCount() != 0);
-		assertEquals("Main File menu number of items", 6, ((JMenu)gui.getComponent("mainFile")).getItemCount());
+		assertEquals("Main File menu number of items", 8, ((JMenu)gui.getComponent("mainFile")).getItemCount());
 		assertEquals("Main File menu first child", "mainAddClass" , ((JMenu)gui.getComponent("mainFile")).getItem(0).getName());
 		// JSeparator's seem to be represented as null menuitems
 		assertTrue("Main File menu second child separator", ((JMenu)gui.getComponent("mainFile")).getItem(1) == null);
@@ -117,6 +117,8 @@ public class GUITest {
 		assertEquals("Main File menu fourth child", "mainLoad" , ((JMenu)gui.getComponent("mainFile")).getItem(3).getName());
 		assertTrue("Main File menu fifth child separator", ((JMenu)gui.getComponent("mainFile")).getItem(4) == null);
 		assertEquals("Main File menu sixth child", "mainExport" , ((JMenu)gui.getComponent("mainFile")).getItem(5).getName());
+		assertTrue("Main File menu seventh child separator", ((JMenu)gui.getComponent("mainFile")).getItem(6) == null);
+		assertEquals("Main File menu eigth child", "mainResize" , ((JMenu)gui.getComponent("mainFile")).getItem(7).getName());
 		
 		assertTrue("Main action menu not empty", ((JMenu)gui.getComponent("mainActions")).getItemCount() != 0);
 		assertEquals("Main action menu number of items", 13, ((JMenu)gui.getComponent("mainActions")).getItemCount());
@@ -1108,5 +1110,26 @@ public class GUITest {
 		gui.setFileChooser(new TestableFileChooser(expected2electricboogaloo));
 		((TestableMenuItem)gui.getComponent("mainExport")).doClick();
 		assertTrue("File created 2", expected2electricboogaloo.exists());
+	}
+	
+	/**
+	 * Test the resize ability
+	 */
+	@Test
+	public void resize() {
+		UMLClassManager model = new UMLClassManager();
+		GUIController controller = new GUIController(model);
+		GUIView gui = new GUIView(controller, model, false);
+		
+		// Ensure original size
+		assertEquals("Original diagram width", 600, gui.getDiagram().getWidth());
+		assertEquals("Original diagram height", 600, gui.getDiagram().getHeight());
+		
+		gui.setOptionPane(new TestableOptionPane("800", "800"));
+		((TestableMenuItem)gui.getComponent("mainResize")).doClick();
+		
+		// Ensure new size
+		assertEquals("New diagram width", 800, gui.getDiagram().getWidth());
+		assertEquals("New diagram height", 800, gui.getDiagram().getHeight());
 	}
 }

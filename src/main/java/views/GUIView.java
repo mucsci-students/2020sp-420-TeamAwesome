@@ -4,12 +4,12 @@ package views;
 // System imports
 import java.awt.Dimension;
 import java.io.File;
-import java.util.HashMap;
 
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -19,7 +19,6 @@ import core.ErrorHandler;
 import model.UMLClassManager;
 import observe.Observable;
 import views.components.DiagramPanel;
-import views.components.GUIClass;
 import views.components.testable.JOptionPaneWrapper;
 import views.components.testable.TestableFileChooser;
 import views.components.testable.TestableOptionPane;
@@ -35,6 +34,7 @@ public class GUIView extends View {
 	
 	// Window elements
 	private JFrame window;
+	private JScrollPane scrollPane;
 	private DiagramPanel umlDiagram;
 	
 	// Option pane
@@ -106,7 +106,7 @@ public class GUIView extends View {
 		window = new JFrame("UML Editor");
 		
 		// Set the initial size of the window
-		window.setPreferredSize(new Dimension(600, 600));
+		window.setSize(new Dimension(600, 600));
 		
 		// Set the close button behavior to exit the program
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -122,9 +122,12 @@ public class GUIView extends View {
 		// Add the umlDiagram to the list of listeners for model changes
 		controller.addObserver(umlDiagram);
 		
-		// Add the diagram to the frame
+		// Create scroll view
+		scrollPane = new JScrollPane(umlDiagram);
+		
+		// Add the scroll pane to the frame
 		if(isHuman())
-			window.add(umlDiagram);
+			window.add(scrollPane);
 	}
 	
 	/**
@@ -240,14 +243,6 @@ public class GUIView extends View {
 	}
 	
 	/**
-	 * Return the map of added GUIClasses
-	 * @return
-	 */
-	public HashMap<String, GUIClass> getGUIClasses() {
-		return umlDiagram.getGuiClasses();
-	}
-	
-	/**
 	 * Get the view's model
 	 * @return - model
 	 */
@@ -276,7 +271,18 @@ public class GUIView extends View {
 		
 	}
 
+	/**
+	 * Get whether GUI is running in human or testable mode
+	 * @return isHuman
+	 */
 	public boolean isHuman() {
 		return isHuman;
+	}
+
+	/**
+	 * Update the scroll pane to reflect dimension changes
+	 */
+	public void updateFrame() {
+		scrollPane.revalidate();
 	}
 }

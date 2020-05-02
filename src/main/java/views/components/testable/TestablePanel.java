@@ -1,20 +1,31 @@
+// Package name
 package views.components.testable;
 
+// System imports
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.LayoutManager;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+/**
+ * Testable JPanel that can run in a GUIless environment
+ * @author Ryan
+ *
+ */
 public class TestablePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
+	// Store components manually for checks
 	private ArrayList<Component> components = new ArrayList<Component>();
 	private boolean isHuman = false;
+	
+	// The theoretical dimensions of the pane
+	private int width;
+	private int height;
 	
 	// This constructor should only be called if you want a regular JPanel
 	public TestablePanel(boolean isHuman) {
@@ -61,13 +72,13 @@ public class TestablePanel extends JPanel {
 	public int getWidth() {
 		if(isHuman)
 			return super.getWidth();
-		return 0;
+		return width;
 	}
 	
 	public int getHeight() {
 		if(isHuman)
 			return super.getHeight();
-		return 0;
+		return height;
 	}
 	
 	public Component add(Component comp) {
@@ -113,6 +124,8 @@ public class TestablePanel extends JPanel {
 	public void setSize(Dimension size) {
 		if(isHuman)
 			super.setSize(size);
+		this.width = size.width;
+		this.height = size.height;
 	}
 	
 	public void setBounds(int x, int y, int width, int height) {
@@ -143,5 +156,17 @@ public class TestablePanel extends JPanel {
 	
 	public Graphics getComponentGraphics(Graphics g) {
 		return super.getComponentGraphics(g);
+	}
+	
+	public void setSize(int width, int height) {
+		if(isHuman)
+			super.setSize(width, height);
+	}
+	
+	public void setPreferredSize(Dimension d) {
+		if(isHuman)
+			super.setPreferredSize(d);
+		this.width = d.width;
+		this.height = d.height;
 	}
 }

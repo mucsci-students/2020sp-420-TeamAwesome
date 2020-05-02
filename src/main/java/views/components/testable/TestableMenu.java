@@ -1,15 +1,23 @@
+// Package name
 package views.components.testable;
 
+// System imports
 import java.awt.Component;
 import java.util.ArrayList;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+/**
+ * Testable version of a JMenu
+ * @author Ryan
+ *
+ */
 public class TestableMenu extends JMenu {
 	private static final long serialVersionUID = 1L;
 	
 	private String name;
+	// Manually store menu items
 	private ArrayList<JMenuItem> menuItems = new ArrayList<>();
 	
 	public TestableMenu() {}

@@ -1,16 +1,25 @@
+// Package name
 package views.components.testable;
 
+// System imports
 import java.awt.Component;
-
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 
+/**
+ * Wrapper class for JOptionPane because JOptionPane's 'show' methods can't be overridden
+ * @author Ryan
+ *
+ */
 public class JOptionPaneWrapper {
-	/**
-	 * Initialize instance of a testable JOptionPane
-	 * @param desiredResult - as many values as you want the input dialog to return
-	 */
 	
+	/**
+	 * Show an input dialog
+	 * @param parent - Parent component
+	 * @param message - Message to present
+	 * @param top - A TestableOptionPane for testing, null if human
+	 * @return - User entered data
+	 */
 	public String showInputDialog(Component parent, Object message, TestableOptionPane top) {
 		if(top == null)
 			return JOptionPane.showInputDialog(parent, message);

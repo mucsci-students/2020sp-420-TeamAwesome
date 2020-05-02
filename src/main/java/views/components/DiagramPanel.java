@@ -1,16 +1,18 @@
 // Package name
 package views.components;
 
+//System imports
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
-
-//System imports
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -29,11 +31,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
+// Local imports
 import core.ErrorHandler;
 import core.UMLFileIO;
 import model.Method;
-
-// Local imports
 import model.UMLClass;
 import model.UMLRelationship;
 import observe.Observable;
@@ -85,6 +86,7 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 	private JMenuItem mainSaveFile;
 	private JMenuItem mainLoadFile;
 	private JMenuItem mainExportPNG;
+	private JMenuItem mainResize;
 	
 	// MenuItems for generic mouse menu
 	private JMenuItem mouseAddClass;
@@ -129,6 +131,16 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 		
 		// Setup map of class names to guiClasses (very similar to class manager)
 		guiClasses = new HashMap<String, GUIClass>();
+		
+		// Set default size
+		setPreferredSize(new Dimension(600, 600));
+		
+		// Add component listener to set prefferedSize
+		addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent e) {
+				setPreferredSize(getSize());
+			}
+		});
 		
 		// Add mouse listener for clicks
 		addMouseListener(this);
@@ -191,6 +203,9 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 				int rectY = 0;
 				int angleRotate = 45;
 				
+				// Check how which way we need to rotate the rectangle and determine
+				// 	where the location should really be based on the classes relative
+				//	locations to each other
 				if(Math.abs(c2centerY - c1centerY) < c2.getHeight()/2) {
 					rectY = c2centerY - (c2centerY - c1centerY) - rectLen/2;
 					if(c2centerX > c1centerX) {
@@ -209,9 +224,11 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 					angleRotate += 180;
 				}
 				
-				// Rotate rectangle
+				// Rotate rectangle to create diamond shape
 				AffineTransform old = g2d.getTransform();
 				g2d.rotate(Math.toRadians(angleRotate), rectX + rectLen/2, rectY + rectLen/2);
+				
+				// Determine if we need to fill the rectangle or not
 				if(relation.getType().toLowerCase().equals("composition"))
 					g2d.fillRect(rectX, rectY, rectLen, rectLen);
 				else if(relation.getType().equals("aggregation")) {
@@ -220,11 +237,14 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 					g2d.setColor(Color.BLACK);
 					g2d.drawRect(rectX, rectY, rectLen, rectLen);
 				}
+				// Determine if we need dashed line
 				else {
 					g2d.setStroke(new BasicStroke(1));
 					g2d.drawLine(rectX, rectY, rectX + rectLen, rectY);
 					g2d.drawLine(rectX, rectY, rectX, rectY + rectLen);
 				}
+				
+				// Reset the rotation
 				g2d.setTransform(old);
 			}
 			// Otherwise do a loop in the shape of approximately:
@@ -338,6 +358,7 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 		mainSaveFile = createMenuItem("Save to File", "mainSave");
 		mainLoadFile = createMenuItem("Load File", "mainLoad");
 		mainExportPNG = createMenuItem("Export to PNG", "mainExport");
+		mainResize = createMenuItem("Resize", "mainResize");
 		
 		//main Bar initialization
 		mainMenuBar = view.isHuman() ? new JMenuBar() : new TestableMenuBar();
@@ -362,6 +383,8 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 		mainFile.add(mainLoadFile);
 		mainFile.addSeparator();
 		mainFile.add(mainExportPNG);
+		mainFile.addSeparator();
+		mainFile.add(mainResize);
 		
 		//main menu items initialization 
 		mainRemoveClass = createMenuItem("Remove Class", "mainRemoveClass");
@@ -399,6 +422,10 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 			view.getWindow().setJMenuBar(mainMenuBar);
 	}
 	
+	/**
+	 * Get a list of the valid relationship types
+	 * @return String array of types
+	 */
 	private String[] validRelationships() {
 		String[] relationships = {"aggregation", "composition", "inheritance", "realization"};
 		return relationships;
@@ -433,6 +460,7 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 		mainSaveFile.addActionListener(saveFileAction());
 		mainLoadFile.addActionListener(loadFileAction());
 		mainExportPNG.addActionListener(exportPNGAction());
+		mainResize.addActionListener(resizeAction());
 		mouseExportPNG.addActionListener(exportPNGAction());
 		
 		// Setup actions for class menu items
@@ -1102,6 +1130,42 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 						view.showError(DiagramPanel.this, 111);
 					}
 				}
+			}
+		};
+	}
+	
+	/**
+	 * Action to set the size of the UML Diagram
+	 * @return
+	 */
+	private ActionListener resizeAction() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int newWidth, newHeight;
+
+				// Prompt user for dimensions
+				Object widthInput = view.promptInput("New width: ");
+				// Make sure user didn't cancel
+				if(widthInput == null)
+					return;
+				Object heightInput = view.promptInput("New height: ");
+				// Make sure user didn't cancel
+				if(heightInput == null)
+					return;
+				
+				// Cast input as int
+				try {
+					newWidth = Integer.parseInt(widthInput.toString());
+					newHeight = Integer.parseInt(heightInput.toString());
+				} catch(NumberFormatException nfe) {
+					view.showError(DiagramPanel.this, 112);
+					return;
+				}
+				
+				// Resize panel
+				setPreferredSize(new Dimension(newWidth, newHeight));
+				view.updateFrame();
 			}
 		};
 	}
