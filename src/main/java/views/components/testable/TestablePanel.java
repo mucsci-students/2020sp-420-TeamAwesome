@@ -1,21 +1,29 @@
+// Package name
 package views.components.testable;
 
+// System imports
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.LayoutManager;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+/**
+ * Testable JPanel that can run in a GUIless environment
+ * @author Ryan
+ *
+ */
 public class TestablePanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
+	// Store components manually for checks
 	private ArrayList<Component> components = new ArrayList<Component>();
 	private boolean isHuman = false;
 	
+	// The theoretical dimensions of the pane
 	private int width;
 	private int height;
 	
