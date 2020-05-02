@@ -144,4 +144,14 @@ public class TestablePanel extends JPanel {
 	public Graphics getComponentGraphics(Graphics g) {
 		return super.getComponentGraphics(g);
 	}
+	
+	public void setSize(int width, int height) {
+		if(isHuman)
+			super.setSize(width, height);
+	}
+	
+	public void setPreferredSize(Dimension d) {
+		if(isHuman)
+			super.setPreferredSize(d);
+	}
 }

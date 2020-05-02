@@ -1,6 +1,7 @@
 // Package name
 package views;
 
+import java.awt.BorderLayout;
 // System imports
 import java.awt.Dimension;
 import java.io.File;
@@ -10,6 +11,7 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -23,6 +25,7 @@ import views.components.GUIClass;
 import views.components.testable.JOptionPaneWrapper;
 import views.components.testable.TestableFileChooser;
 import views.components.testable.TestableOptionPane;
+import views.components.testable.TestableScrollPane;
 
 /**
  * A graphical view of the UML editor
@@ -35,6 +38,7 @@ public class GUIView extends View {
 	
 	// Window elements
 	private JFrame window;
+	private JScrollPane scrollPane;
 	private DiagramPanel umlDiagram;
 	
 	// Option pane
@@ -122,9 +126,14 @@ public class GUIView extends View {
 		// Add the umlDiagram to the list of listeners for model changes
 		controller.addObserver(umlDiagram);
 		
-		// Add the diagram to the frame
+		// Create scroll view
+		scrollPane = isHuman() ? new JScrollPane(umlDiagram) : new TestableScrollPane();
+		
+		// Add diagram to scroll pane
+		
+		// Add the scroll pane to the frame
 		if(isHuman())
-			window.add(umlDiagram);
+			window.add(scrollPane);
 	}
 	
 	/**

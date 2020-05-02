@@ -4,13 +4,15 @@ package views.components;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
-
+import java.awt.Dimension;
 //System imports
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -129,6 +131,14 @@ public class DiagramPanel extends TestablePanel implements Observer, MouseListen
 		
 		// Setup map of class names to guiClasses (very similar to class manager)
 		guiClasses = new HashMap<String, GUIClass>();
+		
+		setPreferredSize(new Dimension(getWidth(), getHeight()));
+		// Add component listener to set prefferedSize
+		addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent e) {
+				setPreferredSize(getSize());
+			}
+		});
 		
 		// Add mouse listener for clicks
 		addMouseListener(this);
