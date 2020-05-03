@@ -465,6 +465,37 @@ public class ConsoleTest {
 		myout.close();
 	}
 	
+	@Test
+	public void editRelationshipCommand() {
+		// Create output stream for executing commands
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		PrintStream myout = new PrintStream(bos);
+		
+		// Setup console and model
+		UMLClassManager model = new UMLClassManager();
+		ConsoleView console = new ConsoleView(model, new CommandController(model));
+		model.addClass("myclass");
+		model.addClass("another");
+		model.addClass("third");
+		model.addRelationship("myclass", "aggregation", "another");
+		model.addRelationship("another", "composition", "third");
+				
+		//Edit relationships with valid input 
+		assertEquals("edit relationship with valid return code", 0, console.execCommand("edit relationship myclass aggregation another composition", myout));
+		myout.flush();
+		assertEquals("edit relationship with valid return message", "Changed relationship from class \'myclass\' to class \'another\' of type \'aggregation\' to type \'composition\'.", scrubOut(bos.toString()));
+		bos.reset();
+		assertEquals("edit relationship with valid return code again", 0, console.execCommand("edit relationship another composition third realization", myout));
+		myout.flush();
+		assertEquals("edit relationship with valid return message", "Changed relationship from class \'another\' to class \'third\' of type \'composition\' to type \'realization\'.", scrubOut(bos.toString()));
+		bos.reset();
+		
+		//Edit relationships with invalid input
+		assertEquals("edit relationship with no exisiting relationship", 108, console.execCommand("edit relationship myclass inheritance another composition", myout));
+		myout.flush();
+		
+		
+	}
 	/**
 	 * Test the edit method output
 	 * NOTE SOME OUTPUT RELIES ON FUNCTIONING MODEL

@@ -53,6 +53,7 @@ public class ErrorHandler {
 		tempMap.put(407, "Class name entered is invalid.");
 		tempMap.put(408, "Method name entered is invalid.");
 		tempMap.put(409, "Field name entered is invalid.");
+		tempMap.put(410, "Relationship of this type already exists between specified classes");
 		return tempMap;
 	}
 	

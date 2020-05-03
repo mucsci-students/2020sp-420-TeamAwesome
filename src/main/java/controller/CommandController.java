@@ -38,6 +38,14 @@ public class CommandController extends UMLController {
 		return result;
 	}
 	
+	public int editRelationships(String className, String oldRType, String destClass, String newRType)
+	{
+		int result = getModel().editRelationships(className, oldRType, destClass, newRType );
+		if (result == 0)
+			notify("editRelationship", getModel());
+		return result;
+	}
+	
 	public int editMethod(String className, String oldName, String newName, String params) {
 		int result = getModel().editMethods(className, oldName, newName, params);
 		if(result == 0)
@@ -90,6 +98,7 @@ public class CommandController extends UMLController {
 			notify("addRelationship", getModel());
 		return result;
 	}
+	
 
 	public int removeRelationship(String class1, String type, String class2) {
 		int result = getModel().removeRelationship(class1, type, class2);
@@ -126,5 +135,7 @@ public class CommandController extends UMLController {
 			notify("printRelationships", getModel());
 		return result;
 	}
+
+	
 
 }

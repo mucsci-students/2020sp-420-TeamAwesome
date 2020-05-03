@@ -188,6 +188,27 @@ public class UMLClassManager implements Serializable {
 		}
 		return ErrorHandler.setCode(401);
 	}
+	
+	public int editRelationships(String originClass, String oldType, String destClass, String newType) 
+	{
+		if(!relationshipExists(originClass, oldType, destClass))
+			{
+				return ErrorHandler.setCode(108);
+			}
+		if (!validRealationshipType(originClass, newType, destClass))
+			{
+				return ErrorHandler.setCode(202);
+			}
+		if (relationshipExists(originClass, newType, destClass))
+			{
+				return ErrorHandler.setCode(410);
+			}
+			//here we "edit" your relationship it's totally the same one!
+			removeRelationship(originClass, oldType,destClass);
+			addRelationship(originClass, newType, destClass);
+			return ErrorHandler.setCode(0);
+		
+	}
 		/**
 	 * @param className; the class holding the field we want to edit
 	 * @param oldField; the field we want to change 
