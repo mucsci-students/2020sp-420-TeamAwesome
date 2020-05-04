@@ -652,6 +652,8 @@ public class ConsoleTest {
 		+ "edit class <old_class_name> <new_class_name>." + System.lineSeparator() + System.lineSeparator()
 		+ "Edit fields and methods with:" + System.lineSeparator() + System.lineSeparator()
 		+ "edit <field/method> <source_class> <old_name> <new_name> <parameter_list>(for method)." + System.lineSeparator() + System.lineSeparator()
+		+ "Edit Relationships with:" + System.lineSeparator() + System.lineSeparator()
+		+ "edit relationship <class_name1> <old_type> <class_name2> <new_type>." + System.lineSeparator() + System.lineSeparator()
 		+ "remove: Can remove class with:" + System.lineSeparator() + System.lineSeparator()
 		+ "remove <class_name>." + System.lineSeparator() + System.lineSeparator()
 		+ "Also removes fields and methods from specified class in the form:" + System.lineSeparator() + System.lineSeparator()
