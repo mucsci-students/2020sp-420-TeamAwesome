@@ -11,11 +11,12 @@ UMLEditor can
   * fields
   * methods
   * relationships (between classes)
-* rename 
+* Rename 
   * classes
   * fields
   * methods 
-* Save/load files 
+* Change Relationship types 
+* Save/load files
 
 ### <div align="center"> Getting Started </div>
 
